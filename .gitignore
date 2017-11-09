@@ -1,0 +1,16 @@
+logs/
+npm-debug.log
+node_modules/
+coverage/
+.idea/
+run/
+.DS_Store
+*.swp
+
+node_modules
+npm-debug.log
+
+*.iml
+*.ipr
+*.iws
+*.log

@@ -1,0 +1,30 @@
+
+.login-section[data-v-734a2f55] {
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  background-clip: padding-box;
+  margin: 180px auto;
+  width: 350px;
+  padding: 35px 35px 15px 35px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+  -webkit-box-shadow: 0 0 25px #cac6c6;
+          box-shadow: 0 0 25px #cac6c6;
+}
+.login-section .heading[data-v-734a2f55] {
+  margin: 0px auto 40px auto;
+  text-align: center;
+  color: #505458;
+}
+.login-section .user-ops[data-v-734a2f55] {
+  float: right;
+}
+.login-section .user-ops .user-op[data-v-734a2f55] {
+  color: #1f2d3d;
+}
+.login-section .user-ops .user-op[data-v-734a2f55]:hover {
+  color: #35b5ff;
+}
+.login-section .login-btns[data-v-734a2f55] {
+  text-align: center;
+}
