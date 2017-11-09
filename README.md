@@ -1,4 +1,4 @@
-# freelog-user
+# freelog.com
 
 > freelog-user interface
 
@@ -9,14 +9,20 @@
 3. [ElementUI](https://github.com/ElemeFE/element)
 4. [Eslint](https://github.com/eslint/eslint)
 5. [Postcss](https://github.com/postcss/postcss)
+6. [pug](https://github.com/pugjs/pug)
 
-## Dev
+## Usage
 
 ``` bash
 # serve with hot reload at localhost:8010
 npm run dev
-
 ```
+
+``` bash
+# serve with hot reload at localhost:8010
+npm run dev
+```
+
 
 [http://localhost:8010/user/login.html](http://localhost:8010/user/login.html)
 
