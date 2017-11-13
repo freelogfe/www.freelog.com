@@ -76,7 +76,17 @@
                     }
 
                     this.error = null
-                    this.loading = true
+                    this.loading = true;
+
+                    fetch('//api.freelog.com/v1/passport/login', {
+                        method: 'POST',
+                        data: self.model
+                    }).then((res) => {
+                        this.loading = false
+                        return res.json()
+                    }).then((data)=>{
+                        console.log(data)
+                    })
                 })
             }
         }

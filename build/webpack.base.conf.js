@@ -1,12 +1,12 @@
-'use strict'
 const path = require('path')
-const webpack = require('webpack')
+const utils = require('./utils')
+const config = require('../config')
 const glob = require('glob')
+const webpack = require('webpack')
 const DIRNAME = __dirname;
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin')
-const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const CWD = process.cwd();
 const SrcDir = path.join(CWD, 'src')
 
@@ -23,33 +23,40 @@ function getChunkName(filepath) {
     return path.dirname(path.relative(SrcDir, filepath))
 }
 
-
 function getHtmlName(filepath) {
     return path.dirname(path.relative(SrcDir, filepath)) + '.html'
 }
 
-const entries = {}
-const chunks = []
+var entries = {}
+var chunks = []
 glob.sync('./src/pages/**/app.js').forEach(filepath => {
     const chunk = getChunkName(filepath)
     entries[chunk] = filepath
     chunks.push(chunk)
 })
 
-const config = {
+
+var webpackConfig = {
     entry: entries,
+    node: {
+        module: "empty",
+        fs: "empty"
+    },
     output: {
-        path: path.resolve(DIRNAME, './dist'),
+        path: path.join(CWD, 'dist'),
         filename: '[name].[chunkhash].js',
-        publicPath: '/'
+        publicPath: process.env.NODE_ENV === 'production'
+            ? config.build.assetsPublicPath
+            : config.dev.assetsPublicPath
     },
     resolve: {
-        extensions: ['.js', '.vue'],
+        extensions: ['.js', '.vue', '.json'],
         alias: {
-            '@':  path.join(DIRNAME, 'src'),
-            assets: path.join(DIRNAME, 'src/assets'),
-            components: path.join(DIRNAME, 'src/components'),
-            root: path.join(DIRNAME, 'node_modules')
+            'vue$': 'vue/dist/vue.esm.js',
+            '@': SrcDir,
+            static: path.join(SrcDir, 'static'),
+            components: path.join(SrcDir, 'components'),
+            root: path.join(CWD, 'node_modules')
         }
     },
     module: {
@@ -108,15 +115,28 @@ const config = {
                 }]
             },
             {
-                test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
-                exclude: /favicon\.png$/,
-                use: [{
-                    loader: 'url-loader',
-                    options: {
-                        limit: 10000,
-                        name: 'assets/img/[name].[hash:7].[ext]'
-                    }
-                }]
+                test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    name: utils.assetsPath('img/[name].[hash:7].[ext]')
+                }
+            },
+            {
+                test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    name: utils.assetsPath('media/[name].[hash:7].[ext]')
+                }
+            },
+            {
+                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+                }
             }
         ]
     },
@@ -124,30 +144,13 @@ const config = {
         new webpack.optimize.ModuleConcatenationPlugin(),
         new CommonsChunkPlugin({
             name: 'vendors',
-            filename: 'assets/js/vendors.js',
+            filename: 'static/js/vendors.js',
             chunks: chunks,
             minChunks: chunks.length
         }),
         extractLESS,
-        extractCSS
-    ],
-    devServer: {
-        host: 'localhost',
-        port: 8010,
-        historyApiFallback: false,
-        noInfo: true,
-        proxy: {
-            // '/api': {
-            //     target: 'http://127.0.0.1:8080',
-            //     changeOrigin: true,
-            //     pathRewrite: {'^/api': ''}
-            // }
-        },
-        open: true,
-        openPage: 'pages/user/login.html'
-    },
-    devtool: '#eval-source-map'
-}
+        extractCSS]
+};
 
 glob.sync('./src/pages/**/*.pug').forEach(filepath => {
     const chunk = getChunkName(filepath)
@@ -156,30 +159,12 @@ glob.sync('./src/pages/**/*.pug').forEach(filepath => {
         filename: filename,
         template: filepath,
         inject: 'body',
-        favicon: './src/assets/img/logo.png',
+        favicon: './src/static/img/logo.png',
         hash: process.env.NODE_ENV === 'production',
         chunks: ['vendors', chunk]
     }
-    config.plugins.push(new HtmlWebpackPlugin(htmlConf))
+    webpackConfig.plugins.push(new HtmlWebpackPlugin(htmlConf))
 })
 
-if (process.env.NODE_ENV === 'production') {
-    module.exports.devtool = '#source-map'
-    // http://vue-loader.vuejs.org/en/workflow/production.html
-    module.exports.plugins = (module.exports.plugins || []).concat([
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: '"production"'
-            }
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            },
-            sourceMap: true
-        }),
-        new OptimizeCSSPlugin()
-    ])
-}
+module.exports = webpackConfig
 
-module.exports = config
