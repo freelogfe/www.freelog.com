@@ -88,6 +88,7 @@ var webpackConfig = {
             {
                 test: /\.js$/,
                 use: 'babel-loader',
+                include: [SrcDir],
                 exclude: /node_modules/
             },
             {
@@ -159,7 +160,7 @@ glob.sync('./src/pages/**/*.pug').forEach(filepath => {
         filename: filename,
         template: filepath,
         inject: 'body',
-        favicon: './src/static/img/logo.png',
+        // favicon: './src/static/img/logo.png',
         hash: process.env.NODE_ENV === 'production',
         chunks: ['vendors', chunk]
     }

@@ -16,7 +16,6 @@
     <meta name="description" content="freelog.com节点页面">
     <meta name="keywords" content="freelog.com,freelog,飞致,节点渲染,pagebuild">
 
-    <link rel="stylesheet" href="./static/css/reset.css">
     <link rel="import" href="./lib/QI/index.html">
     <link rel="stylesheet" href="./app.css">
 </head>
@@ -26,12 +25,17 @@
 <div class="page-container" id="js-page-container">
 
     <!--page build content-->
+    <freelog-demo-image data-widget-src="./widgets/image.html"
+                        class="js-widget"
+                        style="width: 50%;left: 0;"></freelog-demo-image>
+    <w-md-viewer data-widget-src="./widgets/md-viewer.html"
+                 class="js-widget"
+                 style="width: 30%;left: 50%;height: 500px;overflow: auto"></w-md-viewer>
+    <freelog-reveal data-widget-src="./widgets/reveal.html"
+                    class="js-widget"
+                    style="width: 30%;left: 50%;height: 500px;overflow: auto"></freelog-reveal>
 </div>
-<script>
-    window.__page_build_config = {
-        nodeId: 10013
-    };
-</script>
-<script src="./app.js"></script>
+
+<script src="app.js"></script>
 </body>
 </html>

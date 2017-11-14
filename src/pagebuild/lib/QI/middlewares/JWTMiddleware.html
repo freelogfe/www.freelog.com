@@ -6,25 +6,13 @@
         }
 
         transform_request(target, req) {
-            var token = sessionStorage.getItem('Authorization');
             req = req || {};
-            req.headers = req.headers || {};
-            if (token) {
-                Object.assign(req.headers, {
-                    Authorization: token
-                });
-            } else {
-                //to auth
-            }
-            return req;
-        }
 
-        transform_response(res) {
-            var token = res.headers.get('Authorization');
-            if (token) {
-                sessionStorage.setItem('Authorization', token);
+            if (!req.credentials) {
+                req.credentials= 'same-origin'
             }
-            return res;
+
+            return req;
         }
     }
 

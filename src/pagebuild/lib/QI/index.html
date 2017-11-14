@@ -27,6 +27,15 @@
             get QI() {
                 return this.$QI
             }
+
+            fetch(target, req) {
+                return this.$QI.fetch(target, req)
+            }
+
+            fetchPresentable(pid) {
+                var url = `//api.freelog.com/v1/nodes/${window.__page_build_config.nodeId}/presentables/${pid}`
+                return this.$QI.fetch(url)
+            }
         }
 
         customElements.define('freelog-lib-qi', QI);

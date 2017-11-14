@@ -3,6 +3,7 @@
         <header class="login-header">
             <el-alert v-if="error" :title="error.title" type="warning" :description="error.message" show-icon/>
         </header>
+
         <el-form class="login-form" auto-complete="off" :model="model" :rules="rules" ref="loginForm" label-width="0">
             <h2 class="heading">用户登录</h2>
             <el-form-item prop="loginName">
@@ -21,7 +22,7 @@
                 </el-input>
             </el-form-item>
             <el-form-item>
-                <el-checkbox v-model="rememberUser">记住我</el-checkbox>
+                <el-checkbox v-model="model.isRememer">记住我</el-checkbox>
                 <span class="user-ops">
           <a class="user-op" href="/user/reset_pw">忘记密码</a> | <a class="user-op" href="/user/signup">注册新用户</a>
         </span>
@@ -38,6 +39,8 @@
 </template>
 
 <script>
+    import store from '@/lib/storage';
+
     export default {
         name: 'login',
 
@@ -51,17 +54,17 @@
                     {required: true, message: '请输入密码', trigger: 'blur'},
                     {min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur'}
                 ]
-            }
+            };
 
             return {
                 model: {
-                    loginName: '',
+                    loginName: '13480125810',
                     password: '',
+                    isRememer: false,
                 },
                 rules: rules,
                 error: null,
-                loading: false,
-                rememberUser: false
+                loading: false
             }
         },
         mounted() {
@@ -80,12 +83,20 @@
 
                     fetch('//api.freelog.com/v1/passport/login', {
                         method: 'POST',
-                        data: self.model
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(self.model)
                     }).then((res) => {
                         this.loading = false
                         return res.json()
-                    }).then((data)=>{
-                        console.log(data)
+                    }).then((data) => {
+                        if (data.ret === 0 && data.errcode === 0) {
+                            store.set('userInfo', data.data);
+                            location.href = '/pages/user/index.html'
+                        } else {
+                            this.error = data.msg
+                        }
                     })
                 })
             }

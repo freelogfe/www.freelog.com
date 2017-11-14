@@ -14,6 +14,7 @@
 
 
         transform_request(target, req) {
+
             return req;
         }
 
@@ -26,7 +27,7 @@
         }
 
         fetch(target, req) {
-            return this.next.fetch(target, this.transform_request(req)).then(this.transform_response);
+            return this.next.fetch(target, this.transform_request(target, req)).then(this.transform_response);
         }
     }
 
