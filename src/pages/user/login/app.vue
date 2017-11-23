@@ -81,12 +81,15 @@
                     this.error = null
                     this.loading = true;
 
-                    fetch('//api.freelog.com/v1/passport/login', {
+
+                    var data = Object.assign({},self.model)
+                    data.isRememer = data.isRememer ? 1: 0
+                    window.fetch('//api.freelog.com/v1/passport/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(self.model)
+                        body: JSON.stringify(data)
                     }).then((res) => {
                         this.loading = false
                         return res.json()

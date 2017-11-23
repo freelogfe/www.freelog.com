@@ -1,9 +1,14 @@
 <link rel="import" href="./middlewares/MiddleStack.html">
+<link rel="import" href="./middlewares/FetchMiddleware.html">
 <link rel="import" href="./middlewares/JWTMiddleware.html">
+<link rel="import" href="./middlewares/AuthMiddleware.html">
+
 
 <template>
     <middleware-stack id="js-mw-stack">
-        <middleware-jwt id="js-jwt"></middleware-jwt>
+        <middleware-auth></middleware-auth>
+        <middleware-fetch></middleware-fetch>
+        <middleware-jwt></middleware-jwt>
     </middleware-stack>
 </template>
 
@@ -32,9 +37,13 @@
                 return this.$QI.fetch(target, req)
             }
 
-            fetchPresentable(pid) {
-                var url = `//api.freelog.com/v1/nodes/${window.__page_build_config.nodeId}/presentables/${pid}`
-                return this.$QI.fetch(url)
+            fetchResource(rid, param){
+                return this.fetchPresentable(rid, {needAuth: true})
+            }
+
+            fetchPresentable(pid, param) {
+                var url = `//api.freelog.com/v1/nodes/${window.__auth_info__.__auth_node_id__}/presentables/${pid}`
+                return this.$QI.fetch(url, param)
             }
         }
 

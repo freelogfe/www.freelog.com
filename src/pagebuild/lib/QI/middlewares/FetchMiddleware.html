@@ -1,0 +1,40 @@
+<link rel="import" href="./Middleware.html">
+<script>
+    class FetchMiddleware extends Middleware {
+        constructor() {
+            super();
+        }
+
+        transform_request(target, req) {
+            req = req || {};
+            var method = req.method;
+            if (req.data && method && method.toLowerCase() === 'post') {
+                try {
+                    req.body = JSON.stringify(req.data)
+                } catch (err) {
+                    console.error(err)
+                }
+
+                var headers = req.headers
+                if (!headers) {
+                    headers = {
+                        'content-type': 'application/json'
+                    };
+                } else {
+                    Object.keys(headers).forEach(function (key) {
+                        if (key.toLowerCase() === 'content-type' && !headers[key]) {
+                            headers[key] = 'application/json'
+                        }
+                    });
+                }
+
+
+                delete req.data
+                req.headers = headers
+            }
+            return req;
+        }
+    }
+
+    window.customElements.define('middleware-fetch', FetchMiddleware);
+</script>

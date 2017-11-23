@@ -1,0 +1,38 @@
+<link rel="import" href="./Middleware.html">
+<script>
+    class AuthMiddleware extends Middleware {
+        constructor() {
+            super();
+        }
+
+        transform_response(response) {
+            //走系统授权的
+            if (!response.request || !response.request.needAuth) {
+                return response
+            }
+            var cloneResponse = response.clone() //body仅允许读取一次，因此需要clone，避免污染response
+
+            return new Promise(function (resolve, reject) {
+                cloneResponse.json()
+                    .then(function (body) {
+                        if (body.errcode !== 0) {
+                            console.log('body', body)
+                        }
+                        if (body.errcode !== 0){
+                            var event = new CustomEvent('authService', { 'detail': body });
+                            window.dispatchEvent(event)
+                            console.warn('没有授权')
+                            resolve(null)
+                        } else {
+                            resolve(response)
+                        }
+                    })
+                    .catch(function () {
+                        resolve(response)
+                    })
+            })
+        }
+    }
+
+    window.customElements.define('middleware-auth', AuthMiddleware);
+</script>

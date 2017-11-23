@@ -27,7 +27,11 @@
         }
 
         fetch(target, req) {
-            return this.next.fetch(target, this.transform_request(target, req)).then(this.transform_response);
+            var self = this;
+            return this.next.fetch(target, this.transform_request(target, req)).then(function (res) {
+                res.request = req
+                return self.transform_response(res)
+            });
         }
     }
 
