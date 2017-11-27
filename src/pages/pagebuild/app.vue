@@ -236,9 +236,13 @@
                     return this.$message.warning('没有选择策略')
                 }
 
-                this.$confirm(`确定签约该合同？`, '提示', {
+                console.log(policyData)
+
+                var tip = `presentable name: ${policyData.name}, resource name: ${policyData.tagInfo.resourceInfo.resourceName}`
+                this.$confirm(`合同详情：${tip}。确定签约合同？`, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
+                    dangerouslyUseHTMLString: true,
                     type: 'warning'
                 }).then(() => {
                     window.QI.fetch('//api.freelog.com/v1/contracts', {

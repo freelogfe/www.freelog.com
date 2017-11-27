@@ -58,7 +58,7 @@
 
             return {
                 model: {
-                    loginName: '13480125810',
+                    loginName: '',
                     password: '',
                     isRememer: false,
                 },

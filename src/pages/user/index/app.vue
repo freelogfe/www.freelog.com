@@ -9,7 +9,7 @@
         </section>
 
         <section class="actions">
-            <el-button type="primary" plain @click="gotoLogin">To User Login Page</el-button>
+            <el-button type="primary" plain @click="logoutHandler">log out</el-button>
         </section>
     </div>
 </template>
@@ -41,8 +41,12 @@
                     self.user = data.data;
                 })
             },
-            gotoLogin() {
-                location.assign('../user/login.html')
+            logoutHandler() {
+                window.fetch('//api.freelog.com/v1/passport/logout', {
+                    credentials: 'same-origin'
+                }).then(function (res) {
+                    location.assign('../user/login.html')
+                })
             }
         }
     }
