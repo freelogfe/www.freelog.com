@@ -15,14 +15,15 @@
             return new Promise(function (resolve, reject) {
                 cloneResponse.json()
                     .then(function (body) {
+                        //todo 细化根据不同的errcode调用不同的service
                         if (body.errcode !== 0) {
-                            console.log('body', body)
-                        }
-                        if (body.errcode !== 0){
-                            var event = new CustomEvent('authService', { 'detail': body });
+                            var event = new CustomEvent('freelogService', {'detail': {
+                                action: 'authService',
+                                data: body
+                            }});
                             window.dispatchEvent(event)
-                            console.warn('没有授权')
-                            resolve(null)
+                            //不阻塞响应流程的开发体验，错误的情况返回一个前端根据errcode创建的response
+                            resolve(new Response('', {headers: response.headers, statusText: 'UNAUTH', status: 401}))
                         } else {
                             resolve(response)
                         }

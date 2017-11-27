@@ -10,5 +10,13 @@ export default {
     },
     mounted(){
 
+    },
+    methods: {
+        showAuthDialog(){
+            var event = new CustomEvent('freelogService', {detail: {
+                action: 'showAuthDialog'
+            }});
+            window.dispatchEvent(event)
+        }
     }
 }

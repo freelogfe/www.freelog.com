@@ -19,19 +19,29 @@
     display: inline-block;
     width: 90%;
   }
+
+  .wait-state {
+    border: 1px solid;
+    border-radius: 50%;
+    font-size: 20px;
+    padding: 4px;
+    .el-icon-more {
+      vertical-align: center;
+    }
+  }
 }
 
 .state-steps {
   padding: 12px;
   border-radius: 4px;
-  background: #f5f7fa;
+  background: #eeeeee;
   display: flex;
   .state-step {
     display: flex;
     align-items: center;
     position: relative;
     flex-shrink: 1;
-    flex-basis: 50%;
+    flex-basis: 100%;
     &.is-finish {
       color: #409eff
     }

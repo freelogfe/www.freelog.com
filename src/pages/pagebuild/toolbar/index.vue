@@ -1,7 +1,8 @@
 <template>
-    <div class="tool-bar-wrap">
-        <div class="user-tab"><i class="el-icon-fa-user" aria-hidden="true"></i></div>
-    </div>
+    <ul class="tool-bar-wrap">
+        <li class="user-tab" title="个人中心"><a href="/pages/user/index.html" target="_blank"><i class="el-icon-fa-user" aria-hidden="true"></i></a></li>
+        <li class="contract-tab" @click="showAuthDialog" title="合同管理"><i class="el-icon-document"></i></li>
+    </ul>
 </template>
 
 <script>
@@ -10,14 +11,6 @@
 </script>
 
 <style lang="less" scoped>
-.tool-bar-wrap {
-    background-color: #333333;
-    position: fixed;
-    width: 35px;
-    z-index: 9;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    color: white;
-}
+@import "index.less";
+
 </style>

@@ -4,13 +4,11 @@
         <el-dialog
                 :close-on-click-modal="false"
                 title="签约"
-                :visible.sync="showAuthDialog"
+                :visible.sync="shouldShowAuthDialog"
                 :fullscreen="false"
                 custom-class="auth-dialog"
                 width="50%"
                 center>
-            <el-button @click="debugHandler">debugger</el-button>
-
             <el-tabs type="border-card" value="contract">
                 <el-tab-pane label="签约合同">
                     <el-table
@@ -61,7 +59,7 @@
                         </el-table-column>
                     </el-table>
                 </el-tab-pane>
-                <el-tab-pane label="激活合同" name="contract">
+                <el-tab-pane label="合同管理" name="contract">
                     <el-table
                             stripe
                             :data="contracts"
@@ -71,19 +69,41 @@
                             <template slot-scope="scope">
                                 <h3 class="contract-title">合同流程</h3>
                                 <ul class="state-steps">
-                                    <li class="state-step" v-for="(state, index) in scope.row.states" :class="[
+                                    <li class="state-step"
+                                        v-for="(state, index) in resolveStateTree(scope.row.statesData.stateTreeRoot)"
+                                        :class="[
                                     getStateClass(state)
                                     ]">
                                         <div class="state-main">
-                                            <div class="state-title">{{state.currentState}} <i class="dot"></i></div>
+                                            <div class="state-title">
+                                                <span v-if="state.state">
+                                                    {{state.state}} <i class="dot"></i>
+                                                </span>
+                                                <div v-else-if="state.isWait" class="wait-state">
+                                                    <i class="el-icon-more"></i>
+                                                </div>
+                                            </div>
+
                                             <div class="state-step-arrow">
-                                                <el-button size="mini" v-if="state.isProcess"
-                                                           @click="activateContractHandler(scope.row, index)">trigger<i
+                                                <el-select v-model="state.selected"
+                                                           size="mini"
+                                                           v-if="state.isMore"
+                                                           placeholder="请选择">
+                                                    <el-option
+                                                            v-for="(next,nextIndex) in state.nextStates"
+                                                            key=""
+                                                            :label="next.state"
+                                                            :value="next.state">
+                                                        <span style="float: left">{{ next.state }}</span>
+                                                        <span style="float: right; color: #8492a6; font-size: 13px"
+                                                              @click="activateContractHandler(scope.row, state, next, nextIndex)">trigger</span>
+                                                    </el-option>
+                                                </el-select>
+                                                <el-button size="mini" v-else-if="state.isProcess"
+                                                           @click="activateContractHandler(scope.row, state)">trigger<i
                                                         class="el-icon-arrow-right"></i></el-button>
-                                                <i class="el-icon-arrow-right" v-else></i>
-                                                <span v-if="index == 3">
-                                <i class="el-icon-more"></i><i class="el-icon-arrow-right"></i>
-                            </span>
+                                                <i class="el-icon-arrow-right"></i>
+
                                             </div>
                                         </div>
                                     </li>
@@ -143,7 +163,7 @@
                 contracts: [],
                 policyData: null,
                 contractData: null,
-                showAuthDialog: true
+                shouldShowAuthDialog: true
             }
         },
         components: {ToolBar},
@@ -152,7 +172,9 @@
             var authInfo = window.__auth_info__;
             var authErrorData = authInfo.__auth_error_info__ || {}
 
-            window.addEventListener('authService', self.authServiceHandler.bind(self), false)
+
+            //统一监听服务，根据action进行分发执行器
+            window.addEventListener('freelogService', self.serviceDispatchHandler.bind(self), false)
 
             this.checkAuthHandler(authErrorData.data || {})
                 .then(() => {
@@ -164,9 +186,25 @@
             debugHandler() {
                 debugger
             },
-            authServiceHandler(event) {
+            showAuthDialog(){
+                this.shouldShowAuthDialog = true;
+            },
+            serviceDispatchHandler(event) {
                 var detail = event.detail;
-                this.checkAuthHandler(detail.data, detail.msg)
+                var data = detail.data;
+                var action = detail.action
+
+                if (this[action]) {
+                    this[action](detail)
+                } else {
+                    switch (action) {
+                        case 'authService':
+                            this.checkAuthHandler(data.data, data.msg)
+                            break;
+                        default:
+                            console.warn('没有定义的服务');
+                    }
+                }
             },
             getStateClass(state) {
                 var stateCls = 'is-wait'
@@ -174,6 +212,10 @@
                     stateCls = 'is-finish'
                 } else if (state.isNext) {
                     stateCls = 'is-process'
+                }
+
+                if (state.isMore) {
+                    stateCls = 'is-more'
                 }
 
                 if (state.isActiveState) {
@@ -193,32 +235,48 @@
                 if (!policyData.selectedSegmentId) {
                     return this.$message.warning('没有选择策略')
                 }
-                window.QI.fetch('//api.freelog.com/v1/contracts', {
-                    method: 'POST',
-                    data: {
-                        contractType: 3,
-                        targetId: policyData.presentableId,
-                        segmentId: policyData.selectedSegmentId,
-                        serialNumber: policyData.serialNumber,
-                        partyTwo: window.__auth_info__.__auth_user_id__
 
-                    }
-                }).then((res) => {
-                    return res.json()
-                }).then((data) => {
-                    if (data.ret === 0 && data.errcode === 0) {
-                        self.policies.splice(index, 1)
-                        self.$message.success('签约成功')
-                        self.resolveContract({contract: data.data})
-                    } else {
-                        self.$message.error(data.msg)
-                    }
-                })
+                this.$confirm(`确定签约该合同？`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    window.QI.fetch('//api.freelog.com/v1/contracts', {
+                        method: 'POST',
+                        data: {
+                            contractType: 3,
+                            targetId: policyData.presentableId,
+                            segmentId: policyData.selectedSegmentId,
+                            serialNumber: policyData.serialNumber,
+                            partyTwo: window.__auth_info__.__auth_user_id__
+
+                        }
+                    }).then((res) => {
+                        return res.json()
+                    }).then((data) => {
+                        if (data.ret === 0 && data.errcode === 0) {
+                            self.policies.splice(index, 1)
+                            self.$message.success('签约成功')
+                            self.resolveContract({contract: data.data})
+                        } else {
+                            self.$message.error(data.msg)
+                        }
+                    })
+                }).catch(() => {
+                    //取消
+                });
             },
-            activateContractHandler(contract, index) {
+            activateContractHandler(contract, state, nextState, nextIndex) {
+                debugger
                 var self = this;
-                var triggerState = contract.states[index]
                 var contractId = contract.contractId
+                var triggerState
+
+                if (nextState) {
+                    triggerState = state.targetEvents[nextIndex]
+                } else {
+                    triggerState = state.targetEvents[0]
+                }
 
                 function triggerHandler(event) {
                     var promise;
@@ -238,7 +296,7 @@
                     Promise.resolve(promise).then((data) => {
                         if (data.ret === 0 && data.errcode === 0) {
                             self.$message.success('操作成功');
-                            self.updateContractState(contract, index)
+                            self.updateContractState(contract, nextState)
                         } else {
                             self.$message.error(data.msg)
                         }
@@ -253,19 +311,9 @@
                     triggerHandler(triggerState.event)
                 }
             },
-            updateContractState(contract, index) {
-                var state = contract.states[index];
-                var nextState;
-                state.isProcess = false
+            updateContractState(contract, state) {
+                state.isProcess = true
                 state.isActivated = true;
-
-                if ((nextState = contract.states[index + 1])) {
-                    nextState.isProcess = true
-                    nextState.isNext = false
-                    if (contract.states[index + 2]) {
-                        contract.states[index + 2].isNext = true
-                    }
-                }
             },
             triggerLicense(data) {
                 return window.QI.fetch('//api.freelog.com/v1/contracts/signingLicenses', {
@@ -288,6 +336,40 @@
                 var $widgets = $page.querySelectorAll('.js-wc-widget');
                 return $widgets
             },
+            resolveStateTree(root) {
+                var states = []
+
+                states.push(root)
+
+                if (root.nextStates.length) {
+                    var nextStates = root.nextStates;
+                    var nextState
+
+                    if (nextStates.length > 1) {
+                        for (var i = 0; i < nextStates.length; i++) {
+                            var tmp = nextStates[i]
+                            if (tmp.isProcess) {
+                                nextState = tmp
+                                break
+                            }
+                        }
+                    } else {
+                        nextState = root.nextStates[0]
+                    }
+
+                    if (nextState) {
+                        states = states.concat(this.resolveStateTree(nextState))
+                    } else if (nextStates.length > 1) {
+                        root.isMore = true
+                        states.push({
+                            isWait: true,
+                            nextStates: nextStates
+                        })
+                    }
+                }
+
+                return states
+            },
             loadResourceDetail(resourceId) {
                 return window.QI.fetch(`//api.freelog.com/v1/resources/${resourceId}`).then((res) => {
                     if (res.status === 200) {
@@ -308,7 +390,7 @@
                 var contractData = data.contract
                 this.loadResourceDetail(contractData.resourceId)
                     .then((resource) => {
-                        contractData.states = self.parseContract(contractData)
+                        contractData.statesData = self.parseContract(contractData)
                         contractData.resourceDetail = resource
                         self.contracts.push(contractData)
                     })
@@ -317,71 +399,66 @@
                 var curState = contractData.fsmState
                 var policySegment = contractData.policySegment
                 var descs = policySegment.fsmDescription
-                var stateLinks = {}
-                var states = []
                 var activatedStates = policySegment.activatedStates
                 var initialState = policySegment.initialState
-                var activated = true
-                var isOver = false //避免一个状态多次出现
                 var stateMap = {}
-                var stateTree = {
-                    state: initialState,
-                    nextStates: []
-                }
+                var stateTreeRoot;
 
-
-                descs.forEach((desc) => {
-                    var stateNode = {
+                function initStateNode(stateName) {
+                    return {
                         nextStates: [],
-                        targetEvents: [desc], //到当前状态可能的路径(事件)
-                        state: desc.nextState
-                    }
-
-                    if (desc.currentState === initialState) {
-                        stateTree.nextStates.push(stateNode)
-                    }
-
-                    if (stateMap[desc.nextState]) {
-                        stateMap[desc.nextState].targetEvents.push(desc)
-                    } else {
-                        stateMap[desc.nextState] = stateNode
-                    }
-                })
-
+                        targetEvents: [], //到下一状态可能的路径(事件)
+                        state: stateName,
+                        isActiveState: activatedStates.includes(stateName),
+                        isProcess: stateName === curState
+                    };
+                }
 
                 function walkTree(node) {
-                    if (node.nextStates.length) {
-                        node.nextStates.forEach(function (stateNode) {
-                            stateNode.targetEvents.forEach(function (next) {
-                                stateNode.nextStates.push(stateMap[next.currentState])
+                    if (!node.nextStates.length) {
+                        return
+                    }
+
+                    node.nextStates.forEach(function (stateNode) {
+                        var nextStateNode = stateMap[stateNode.state]
+//                        nextStateNode.isNext = node.isProcess
+
+                        if (nextStateNode.targetEvents.length) {
+                            nextStateNode.targetEvents.forEach(function (event) {
+                                if (stateMap[event.nextState] && event.nextState !== node.state) {
+                                    nextStateNode.nextStates.push(stateMap[event.nextState])
+                                }
                             })
-                            walkTree(stateNode)
-                        })
-                    }
-                }
-
-//                walkTree(stateTree)
-
-
-                for (var i = 0; i < descs.length; i++) {
-                    let state = descs[i]
-                    if (state.currentState === curState && !isOver) {
-                        //后续的状态改成未激活
-                        state.isProcess = true
-                        if (descs[i + 1]) {
-                            descs[i + 1].isNext = true
                         }
-                        isOver = true
-                        activated = false
-                    }
-                    state.isActiveState = (activatedStates.includes(state.currentState))
-                    states.push(state)
-//                    if (state.isActiveState) {
-//                        break;
-//                    }
+                        walkTree(nextStateNode)
+                    })
                 }
 
-                return states
+                descs.forEach((desc) => {
+                    var curStateNode = stateMap[desc.currentState] || initStateNode(desc.currentState)
+                    var nextStateNode = stateMap[desc.nextState]
+
+                    curStateNode.targetEvents.push(desc)
+
+                    if (!nextStateNode) {
+                        nextStateNode = initStateNode(desc.nextState);
+                        stateMap[desc.nextState] = nextStateNode
+                    }
+
+                    //标记根节点的next，便于初始化遍历
+                    if (desc.currentState === initialState) {
+                        curStateNode.nextStates.push(nextStateNode)
+                    }
+                    stateMap[desc.currentState] = curStateNode
+                })
+
+                stateTreeRoot = stateMap[initialState]
+                walkTree(stateTreeRoot)
+
+                var tree = this.resolveStateTree(stateTreeRoot);
+                console.log(tree)
+
+                return {stateTreeRoot, stateMap}
             },
             checkAuthHandler(authData, errorMsg) {
                 var self = this;
@@ -389,7 +466,7 @@
                 return new Promise((resolve, reject) => {
                     //如果有报错信息
                     if (authData.authResult) {
-                        self.showAuthDialog = true
+                        self.shouldShowAuthDialog = true
                         switch (authData.authResult.authErrorCode) {
                             //未激活状态
                             case 70080104:

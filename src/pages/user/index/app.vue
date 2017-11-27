@@ -27,10 +27,20 @@
                 user: store.get('userInfo') || {}
             }
         },
-        mounted(){
-          console.log(this.user)
+        mounted() {
+            this.loadUserInfo()
         },
         methods: {
+            loadUserInfo() {
+                var self = this;
+                window.fetch('//api.freelog.com/v1/userinfos/10024', {
+                    credentials: 'same-origin'
+                }).then(function (res) {
+                    return res.json()
+                }).then(function (data) {
+                    self.user = data.data;
+                })
+            },
             gotoLogin() {
                 location.assign('../user/login.html')
             }
@@ -43,6 +53,7 @@
         margin: 15px auto;
         width: 50%;
     }
+
     .index-card {
         width: 800px;
         margin: 100px auto;
