@@ -9,6 +9,7 @@
                 custom-class="auth-dialog"
                 width="50%"
                 center>
+            <el-button @click="debugHandler">debug</el-button>
             <el-tabs type="border-card" value="contract">
                 <el-tab-pane label="签约合同">
                     <el-table
@@ -68,6 +69,7 @@
                         <el-table-column type="expand">
                             <template slot-scope="scope">
                                 <h3 class="contract-title">合同流程</h3>
+                                <contract-state class="contract-state-chart" :contract="scope.row"></contract-state>
                                 <ul class="state-steps">
                                     <li class="state-step"
                                         v-for="(state, index) in resolveStateTree(scope.row.statesData.stateTreeRoot)"
@@ -143,6 +145,7 @@
 
 <script>
     import ToolBar from './toolbar/index.vue'
+    import ContractState from './contract-state/index.vue'
 
     function importHtml(href) {
         return new Promise(function (resolve, reject) {
@@ -155,7 +158,6 @@
         });
     }
 
-
     export default {
         data() {
             return {
@@ -163,10 +165,11 @@
                 contracts: [],
                 policyData: null,
                 contractData: null,
-                shouldShowAuthDialog: true
+                shouldShowAuthDialog: true,
+                contractStateData: {}
             }
         },
-        components: {ToolBar},
+        components: {ToolBar,ContractState},
         mounted() {
             var self = this
             var authInfo = window.__auth_info__;
@@ -236,7 +239,7 @@
                     return this.$message.warning('没有选择策略')
                 }
 
-                console.log(policyData)
+//                console.log(policyData)
 
                 var tip = `presentable name: ${policyData.name}, resource name: ${policyData.tagInfo.resourceInfo.resourceName}`
                 this.$confirm(`合同详情：${tip}。确定签约合同？`, '提示', {
@@ -394,6 +397,8 @@
                 var contractData = data.contract
                 this.loadResourceDetail(contractData.resourceId)
                     .then((resource) => {
+//                        self.contractStateData = Object.assign({},contractData)
+//                        self.$refs.contractState.update(self.contractStateData)
                         contractData.statesData = self.parseContract(contractData)
                         contractData.resourceDetail = resource
                         self.contracts.push(contractData)
@@ -460,7 +465,7 @@
                 walkTree(stateTreeRoot)
 
                 var tree = this.resolveStateTree(stateTreeRoot);
-                console.log(tree)
+//                console.log(tree)
 
                 return {stateTreeRoot, stateMap}
             },
@@ -469,7 +474,7 @@
 
                 return new Promise((resolve, reject) => {
                     //如果有报错信息
-                    if (authData.authResult) {
+                    if (authData && authData.authResult) {
                         self.shouldShowAuthDialog = true
                         switch (authData.authResult.authErrorCode) {
                             //未激活状态
@@ -504,7 +509,7 @@
                     var policy = self.parsePolicy(data.data, presentableId)
                     policy.presentableId = presentableId
                     self.policies.push(policy)
-                    console.log(policy)
+//                    console.log(policy)
                 })
             },
             parsePolicy(data) {
@@ -562,6 +567,10 @@
 
 <style lang="less" scoped>
     @import "./app.less";
+
+    .contract-state-chart {
+
+    }
 
     .event-state {
         padding: 5px;

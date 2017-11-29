@@ -6,15 +6,16 @@ var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 var env = config.build.env
 
 var webpackConfig = merge(baseWebpackConfig, {
   module: {
-    rules: utils.styleLoaders({
-      sourceMap: config.build.productionSourceMap,
-      extract: true
-    })
+    // rules: utils.styleLoaders({
+    //   sourceMap: config.build.productionSourceMap,
+    //   extract: true
+    // })
   },
   devtool: config.build.productionSourceMap ? '#source-map' : false,
   plugins: [
@@ -33,7 +34,17 @@ var webpackConfig = merge(baseWebpackConfig, {
           },
           sourceMap: true
       }),
-      new OptimizeCSSPlugin(),
+      // extract css into its own file
+      // new ExtractTextPlugin({
+      //     filename: utils.assetsPath('css/[name].[contenthash].css')
+      // }),
+      // Compress extracted CSS. We are using this plugin so that possible
+      // duplicated CSS from different components can be deduped.
+      new OptimizeCSSPlugin({
+          cssProcessorOptions: {
+              safe: true
+          }
+      }),
     // keep module.id stable when vender modules does not change
     new webpack.HashedModuleIdsPlugin(),
     // split vendor js into its own file
