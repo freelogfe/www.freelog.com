@@ -6,25 +6,53 @@
     stroke-opacity: 0.6;
   }
 
-  .nodes circle {
-    stroke: #fff;
-    stroke-width: 1.5px;
+  .nodes {
+    circle {
+      stroke: #fff;
+      stroke-width: 1.5px;
+    }
+  }
+
+  .node {
+    stroke:rgba(13, 15, 16, 0.5);
+    &.is-process {
+      fill: #409EFF;
+    }
+
+    &.is-finish {
+      fill: #67C23A;
+      stroke:#67C23A;
+    }
+
+
+    &.is-active {
+      .dot {
+        border: 3px solid #67c23a;
+        border-radius: 50%;
+        display: inline-block;
+        float: right;
+      }
+    }
+
+    &.is-disabled {
+      fill: #878D99;
+    }
+
+    &.is-wait {
+      fill: #b4bccc;
+    }
+
+    &.is-active {
+      stroke: #44ce14;
+    }
   }
 
   svg {
     background-color: #FFF;
     cursor: default;
     padding: 20px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
     user-select: none;
     margin: auto;
-  }
-
-  svg:not(.active):not(.ctrl) {
-    cursor: crosshair;
   }
 
   path.link {
@@ -38,26 +66,13 @@
     cursor: pointer;
   }
 
-  path.link.selected {
+  path.is-disabled.link {
     stroke-dasharray: 10,2;
-  }
-
-  path.link.dragline {
-    pointer-events: none;
-  }
-
-  path.link.hidden {
-    stroke-width: 0;
   }
 
   circle.node {
     stroke-width: 1.5px;
     cursor: pointer;
-  }
-
-  circle.node.reflexive {
-    stroke: #000 !important;
-    stroke-width: 2.5px;
   }
 
   text {
@@ -68,21 +83,11 @@
   text.id {
     text-anchor: middle;
     font-weight: bold;
+    fill: #333;
   }
 
   .tip {
     position: absolute;
-    /*display: none;*/
-    //opacity: 0;
-    //transition: opacity 0.5s;
-    //background-color: white;
-    //padding: 10px;
-    //border: 1px solid #ddd;
-    //border-radius: 5px;
-    //width: 50%;
-    //word-break: break-word;
-    //z-index: 9;
-    //overflow: auto;
-    //height: 100%;
+    text-align: center;
   }
 }

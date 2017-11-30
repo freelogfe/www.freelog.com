@@ -62,11 +62,9 @@ function DirectGraph(opts) {
         .attr('d', 'M10,-5L0,0L10,5')
         .attr('fill', '#000');
 
-    var selected_link
-// handles to link and node element groups
+    // handles to link and node element groups
     var path = $svg.append('svg:g').selectAll('path'),
         circle = $svg.append('svg:g').selectAll('g');
-    var showPathTip = false
 
 // update force layout (called automatically each iteration)
     function tick() {
@@ -99,15 +97,16 @@ function DirectGraph(opts) {
         // update existing links
         path.style('marker-start', function (d) {
             return d.left ? 'url(#start-arrow)' : '';
-        })
-            .style('marker-end', function (d) {
-                return d.right ? 'url(#end-arrow)' : '';
-            });
+        }).style('marker-end', function (d) {
+            return d.right ? 'url(#end-arrow)' : '';
+        });
 
 
         // add new links
         path.enter().append('svg:path')
-            .attr('class', 'link')
+            .attr('class', function (d) {
+                return d.target.data.stateClass + ' link'
+            })
             .style('marker-start', function (d) {
                 return d.left ? 'url(#start-arrow)' : '';
             })
@@ -119,15 +118,11 @@ function DirectGraph(opts) {
                 var target = p.target
                 var pos = d3.mouse(this)
 
-                selected_link = this
-                showPathTip = true
                 $tip.style.opacity = 1
                 $tip.style.top = pos[1] + 'px'
                 $tip.style.left = pos[0] + 'px'
-                // this.classList.add('selected')
                 if (self._opts.overlayHandler) {
-                    // self._opts.overlayHandler(p)
-                    $tip.innerHTML = self._opts.overlayHandler(p)
+                    self._opts.overlayHandler(p, $tip)
                 } else {
                     $tip.innerHTML = JSON.stringify({
                         source: src.data.state,
@@ -147,9 +142,6 @@ function DirectGraph(opts) {
 
         // update existing nodes (reflexive & selected visual states)
         circle.selectAll('circle')
-            .style('fill', function (d) {
-                return colors(d.id);
-            })
             .classed('reflexive', function (d) {
                 return d.reflexive;
             });
@@ -157,25 +149,16 @@ function DirectGraph(opts) {
         // add new nodes
         var g = circle.enter().append('svg:g');
         g.append('svg:circle')
-            .attr('class', 'node')
+            .attr('class', function (d) {
+                return 'node ' + (d.data.stateClass || '')
+            })
             .attr('r', Radius)
-            .style('fill', function (d) {
-                return colors(d.id);
-            })
-            .style('stroke', function (d) {
-                return d3.rgb(colors(d.id)).darker().toString();
-            })
-            .classed('reflexive', function (d) {
-                return d.reflexive;
-            })
             .on('click', function (d) {
-                // console.log(d)
-                $tip.style.display = 'block'
                 $tip.style.opacity = 1
                 $tip.style.top = (d.y - Radius) + 'px'
                 $tip.style.left = (d.x + Radius * 1.5) + 'px'
                 if (self._opts.overlayHandler) {
-                    $tip.innerHTML = self._opts.overlayHandler(d.data)
+                    self._opts.overlayHandler(d.data, $tip)
                 } else {
                     $tip.innerHTML = JSON.stringify(d.data)
                 }
@@ -187,7 +170,6 @@ function DirectGraph(opts) {
             .attr('y', 4)
             .attr('class', 'id')
             .text(function (d) {
-                console.log(d)
                 // return d.data.state
                 return d.id;
             });
@@ -199,47 +181,7 @@ function DirectGraph(opts) {
         force.start();
     }
 
-// only respond once per keydown
-    this.linkNodes = function (node1, node2) {
-        var source, target, direction;
-        var srcNode = node1
-        var targetNode = node2
-        if (srcNode.id < targetNode.id) {
-            source = srcNode;
-            target = targetNode;
-            direction = 'right';
-        } else {
-            source = targetNode;
-            target = srcNode;
-            direction = 'left';
-        }
-
-        var link;
-        link = links.filter(function (l) {
-            return (l.source === source && l.target === target);
-        })[0];
-
-        if (link) {
-            link[direction] = true;
-        } else {
-            link = {source: source, target: target, left: false, right: false};
-            link[direction] = true;
-            links.push(link);
-        }
-
-        restart();
-    }
-
-    // $svg.on('click', function () {
-    //     if (!showPathTip) {
-    //         $tip.style.opacity = 0
-    //         selected_link && selected_link.classList.remove('selected')
-    //     }
-    //     showPathTip = false
-    // });
-
     opts.nodes.forEach(function (node) {
-        // $svg.classed('active', true);
         nodes.push(node);
         restart();
     })

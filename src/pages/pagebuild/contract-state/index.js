@@ -8,6 +8,7 @@ function createNode(props, data) {
     return node
 }
 
+//创建渲染需要的数据结构
 function formatNodes(nodeList) {
     var nodes = [];
     var links = []
@@ -15,6 +16,7 @@ function formatNodes(nodeList) {
 
     nodeList.forEach(function (nodeArr, index) {
         nodeArr.forEach(function (node) {
+            node.stateClass = resolveStateClass(node)
             var tmp = createNode(node.pos, node)
 
             nodeMap[node.state] = tmp
@@ -35,6 +37,8 @@ function formatNodes(nodeList) {
     return {nodes, links}
 }
 
+
+//生成d3 tree结构
 function generateRoot(stateTreeRoot) {
     var node = {
         name: stateTreeRoot.state,
@@ -48,6 +52,23 @@ function generateRoot(stateTreeRoot) {
     return node
 }
 
+function resolveStateClass(state) {
+    var stateCls = 'is-disabled'
+    if (state.isProcess) {
+        stateCls = 'is-process'
+    } else if (state.isFinish) {
+        stateCls = 'is-finish'
+    } else if (state.isWaiting) {
+        stateCls = 'is-wait'
+    }
+
+    if (state.isActive) {
+        stateCls += ' is-active'
+    }
+    return stateCls
+}
+
+//根据d3 tree生成的节点坐标设置force 节点的坐标
 function setTreeNodePosition(result, opts) {
     var root = generateRoot(result.stateTreeRoot)
     var height = opts.height;
@@ -62,11 +83,97 @@ function setTreeNodePosition(result, opts) {
             keys.forEach(function (key) {
                 stateNode.pos[key] = node[key]
             })
+            //将纵向变成横向
             var x = stateNode.pos.x
             stateNode.pos.x = stateNode.pos.y
             stateNode.pos.y = x
         }
     })
+}
+
+function parseContract(contractData) {
+    var curState = contractData.fsmState
+    var policySegment = contractData.policySegment
+    var descs = policySegment.fsmDescription
+    var activatedStates = policySegment.activatedStates
+    var initialState = policySegment.initialState
+    var stateMap = {}
+    var stateTreeRoot;
+
+    function initStateNode(stateName) {
+        return {
+            nextStates: [],
+            targetEvents: [], //到下一状态可能的路径(事件)
+            state: stateName,
+            isActive: activatedStates.includes(stateName),
+            isProcess: stateName === curState,
+            deep: 0
+        };
+    }
+
+    var nodeList = [] //每层的节点列表
+
+    function walkTree(node) {
+        if (!nodeList[node.deep]) {
+            nodeList[node.deep] = []
+        }
+        nodeList[node.deep].push(node)
+
+        if (!node.nextStates.length) {
+            return
+        }
+
+        node.nextStates.forEach(function (nextNode) {
+            var nextStateNode = stateMap[nextNode.state]
+            nextStateNode.deep = node.deep + 1
+
+            if (node.isProcess || node.isWaiting) {
+                nextStateNode.isWaiting = true
+            }
+
+            if (nextStateNode.isProcess) {
+                node.isFinish = true
+            }
+
+            if (nextStateNode.targetEvents.length) {
+                nextStateNode.targetEvents.forEach(function (event) {
+                    if (stateMap[event.nextState] && event.nextState !== node.state) {
+                        nextStateNode.nextStates.push(stateMap[event.nextState])
+                    }
+                })
+            }
+            walkTree(nextStateNode)
+
+            if (nextStateNode.isFinish) {
+                node.isFinish = true
+            }
+        })
+    }
+
+    descs.forEach((desc) => {
+        var curStateNode = stateMap[desc.currentState] || initStateNode(desc.currentState)
+        var nextStateNode = stateMap[desc.nextState]
+
+        curStateNode.targetEvents.push(desc)
+
+        if (!nextStateNode) {
+            nextStateNode = initStateNode(desc.nextState);
+            stateMap[desc.nextState] = nextStateNode
+        }
+
+        //标记根节点的next，便于初始化遍历
+        if (desc.currentState === initialState) {
+            curStateNode.nextStates.push(nextStateNode)
+        }
+        stateMap[desc.currentState] = curStateNode
+    })
+
+    stateTreeRoot = stateMap[initialState]
+    walkTree(stateTreeRoot)
+
+    console.log(stateTreeRoot)
+
+    return {stateTreeRoot, stateMap, nodeList}
 }
 
 export default {
@@ -90,123 +197,123 @@ export default {
                 height: 200,
                 container: null,
                 overlayHandler: function (data) {
-                    //path
-                    var popData = data
-                    var html = ''
+                    var popData = Object.assign({}, data)
+                    console.log(data)
                     if (data.source) {
                         popData.type = 'path'
-                        html += `<h3>状态流转</h3><p>from: ${data.source.data.state} -> target:${data.target.data.state}</p><p><button>执行事件</button></p>`
+                        popData.disabled = data.target.data.stateClass.indexOf('is-disabled') > -1;
+                        var triggerEvents = data.source.data.targetEvents.filter((event) => {
+                            return event.nextState === data.target.data.state
+                        });
+                        popData.event = (triggerEvents[0] && triggerEvents[0].event) || {}
                     } else { //node
                         popData.type = 'node'
-                        html += `<h3>${data.state}</h3>`
                     }
 
-                    Object.assign(self.popData, popData)
-                    self.popData = popData
-                    self.$refs.popover.showPoper = true
-                    return html
+                    if (!popData.disabled) {
+                        self.popData = popData
+                        self.$refs.popover.showPopper = true
+                    }
                 }
             }
         }
     },
     mounted() {
-        var self = this;
         var style = getComputedStyle(this.$refs.wrapper)
 
         this.opts.container = this.$refs.stateTree;
         this.opts.width = parseInt(parseInt(style.width) * .8)
-
+        console.log(this.contract)
         this.draw()
     },
     methods: {
-        parseContract(contractData) {
-            var curState = contractData.fsmState
-            var policySegment = contractData.policySegment
-            var descs = policySegment.fsmDescription
-            var activatedStates = policySegment.activatedStates
-            var initialState = policySegment.initialState
-            var stateMap = {}
-            var stateTreeRoot;
+        updateContractState(state) {
+            state.isProcess = true
+            state.isActivated = true;
+        },
+        triggerLicense(data) {
+            return window.QI.fetch('//api.freelog.com/v1/contracts/signingLicenses', {
+                method: 'POST',
+                data: data
+            }).then((res) => {
+                return res.json()
+            })
+        },
+        triggerContractState(data) {
+            return window.QI.fetch('//api.freelog.com/v1/contracts/test', {
+                method: 'POST',
+                data: data
+            }).then((res) => {
+                return res.json()
+            })
+        },
+        activateContractHandler(data) {
+            var self = this;
+            var contract = self.contract;
+            var contractId = contract.contractId
+            var source = data.source.data
+            var target = data.target.data
+            var nextState = target.state;
 
-            function initStateNode(stateName) {
-                return {
-                    nextStates: [],
-                    targetEvents: [], //到下一状态可能的路径(事件)
-                    state: stateName,
-                    isActiveState: activatedStates.includes(stateName),
-                    isProcess: stateName === curState,
-                    deep: 0
-                };
-            }
+            var triggerEvents = source.targetEvents.filter((event) => {
+                return event.nextState === nextState
+            })
 
-            var deepCounter = {}
-            var nodeList = []
-
-            function walkTree(node) {
-                if (!deepCounter[node.deep]) {
-                    deepCounter[node.deep] = 0
-                }
-
-                deepCounter[node.deep]++
-
-                if (!nodeList[node.deep]) {
-                    nodeList[node.deep] = []
-                }
-                nodeList[node.deep].push(node)
-
-                if (!node.nextStates.length) {
-                    return
-                }
-
-                node.nextStates.forEach(function (stateNode) {
-                    var nextStateNode = stateMap[stateNode.state]
-                    nextStateNode.deep = node.deep + 1
-                    if (nextStateNode.targetEvents.length) {
-                        nextStateNode.targetEvents.forEach(function (event) {
-                            if (stateMap[event.nextState] && event.nextState !== node.state) {
-                                nextStateNode.nextStates.push(stateMap[event.nextState])
-                            }
+            if (triggerEvents.length === 0) {
+                return self.$message.error('没有可触发的事件')
+            } else {
+                triggerEvents.forEach((trigger) => {
+                    if (trigger.event.type === 'compoundEvents') {
+                        trigger.event.params.forEach((event) => {
+                            triggerHandler(event)
                         })
+                    } else {
+                        triggerHandler(trigger.event)
                     }
-                    walkTree(nextStateNode)
                 })
             }
 
-            descs.forEach((desc) => {
-                var curStateNode = stateMap[desc.currentState] || initStateNode(desc.currentState)
-                var nextStateNode = stateMap[desc.nextState]
-
-                curStateNode.targetEvents.push(desc)
-
-                if (!nextStateNode) {
-                    nextStateNode = initStateNode(desc.nextState);
-                    stateMap[desc.nextState] = nextStateNode
+            function triggerHandler(event) {
+                var promise;
+                if (event.type === 'signing') {
+                    promise = self.triggerLicense({
+                        contractId: contractId,
+                        eventId: event.eventId,
+                        licenseIds: event.params
+                    })
+                } else {
+                    promise = self.triggerContractState({
+                        contractId: contractId,
+                        eventId: event.eventId
+                    })
                 }
 
-                //标记根节点的next，便于初始化遍历
-                if (desc.currentState === initialState) {
-                    curStateNode.nextStates.push(nextStateNode)
-                }
-                stateMap[desc.currentState] = curStateNode
-            })
-
-            stateTreeRoot = stateMap[initialState]
-            walkTree(stateTreeRoot)
-
-            // var tree = resolveStateTree(stateTreeRoot);
-            // console.log(tree)
-
-            return {stateTreeRoot, stateMap, nodeList}
+                Promise.resolve(promise).then((data) => {
+                    if (data.ret === 0 && data.errcode === 0) {
+                        self.$message.success('操作成功');
+                        self.updateContractState(contract, nextState)
+                    } else {
+                        self.$message.error(data.msg)
+                    }
+                })
+            }
+        },
+        hidePopover(event) {
+            if (['circle', 'path'].includes(event.target.nodeName) || this.$refs.popover.$el.contains(event.target)) {
+                event.stopPropagation()
+            } else {
+                this.$refs.popover.showPopper = false
+            }
         },
         draw() {
             if (!this.contract.contractId) {
                 return
             }
-            var result = this.parseContract(this.contract)
+            var result = parseContract(this.contract)
             setTreeNodePosition(result, this.opts)
             var resolveData = formatNodes(result.nodeList)
             Object.assign(this.opts, resolveData)
-            var graph = new DirectGraph(this.opts)
+            new DirectGraph(this.opts)
         },
         update(data) {
             this.contract = data;
