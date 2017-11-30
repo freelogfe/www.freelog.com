@@ -1,6 +1,5 @@
 
 
-
 export default {
     name: 'tool-bar',
     data(){
