@@ -15,13 +15,9 @@
 </template>
 
 <script>
-    import modal from 'components/modal.vue'
     import store from '@/lib/storage';
 
     export default {
-        components: {
-            modal
-        },
         data() {
             return {
                 user: store.get('userInfo') || {}

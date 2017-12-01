@@ -7,8 +7,6 @@ run/
 .DS_Store
 *.swp
 
-dist/
-
 node_modules
 npm-debug.log
 
