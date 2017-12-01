@@ -48,7 +48,7 @@
 
 <script>
 
-import ToolBar from '../pagebuild/toolbar/index.vue'
+import ToolBar from '../../components/toolbar/index.vue'
 
     export default {
       data() {

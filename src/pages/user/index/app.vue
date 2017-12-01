@@ -1,31 +1,40 @@
 <template>
     <div id="app">
-        <header>
-            userName:{{user.nickname}}
-        </header>
 
-        <section class="links">
-            <a href="/node/home/philyoung">node Page</a>
-        </section>
+      <el-row >
+        <el-col :span="12" :offset="6" >
+          <div class="mainContent">
+            <user-nav-bar></user-nav-bar>
+            <h1>
+                userName:{{user.nickname}}
+            </h1>
 
-        <section class="actions">
-            <el-button type="primary" plain @click="logoutHandler">log out</el-button>
-        </section>
+            <section class="links">
+                <a href="/node/home/philyoung">node Page</a>
+            </section>
+
+            <section class="actions">
+                <el-button type="primary" plain @click="logoutHandler">log out</el-button>
+            </section>
+          </div>
+      </el-col>
+      </el-row>
     </div>
 </template>
 
 <script>
     import store from '@/lib/storage';
-
+    import UserNavBar from '@/pages/userCenterNavBar/index.vue';
     export default {
         data() {
             return {
-                user: store.get('userInfo') || {}
+                user: store.get('userInfo') || {nickname:'pending'}
             }
         },
         mounted() {
             this.loadUserInfo()
         },
+        components: {UserNavBar},
         methods: {
             loadUserInfo() {
                 var self = this;
@@ -51,11 +60,16 @@
 <style lang="postcss" scoped>
     #app {
         margin: 15px auto;
-        width: 50%;
     }
 
     .index-card {
         width: 800px;
         margin: 100px auto;
+    }
+
+    .mainContent {
+
+      background-color: white;
+              min-height: 800px;
     }
 </style>
