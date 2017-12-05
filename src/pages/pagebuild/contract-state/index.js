@@ -171,8 +171,6 @@ function parseContract(contractData) {
     stateTreeRoot = stateMap[initialState]
     walkTree(stateTreeRoot)
 
-    console.log(stateTreeRoot)
-
     return {stateTreeRoot, stateMap, nodeList}
 }
 
@@ -198,7 +196,6 @@ export default {
                 container: null,
                 overlayHandler: function (data) {
                     var popData = Object.assign({}, data)
-                    console.log(data)
                     if (data.source) {
                         popData.type = 'path'
                         popData.disabled = data.target.data.stateClass.indexOf('is-disabled') > -1;
@@ -223,7 +220,6 @@ export default {
 
         this.opts.container = this.$refs.stateTree;
         this.opts.width = parseInt(parseInt(style.width) * .8)
-        console.log(this.contract)
         this.draw()
     },
     methods: {

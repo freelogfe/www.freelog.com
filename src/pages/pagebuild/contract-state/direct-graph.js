@@ -113,7 +113,7 @@ function DirectGraph(opts) {
             .style('marker-end', function (d) {
                 return d.right ? 'url(#end-arrow)' : '';
             })
-            .on('click', function (p) {
+            .on('mouseenter', function (p) {
                 var src = p.source;
                 var target = p.target
                 var pos = d3.mouse(this)
@@ -153,7 +153,7 @@ function DirectGraph(opts) {
                 return 'node ' + (d.data.stateClass || '')
             })
             .attr('r', Radius)
-            .on('click', function (d) {
+            .on('mouseenter', function (d) {
                 $tip.style.opacity = 1
                 $tip.style.top = (d.y - Radius) + 'px'
                 $tip.style.left = (d.x + Radius * 1.5) + 'px'
