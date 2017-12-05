@@ -1,31 +1,83 @@
 <template>
     <div id="app">
-        <header>
-            userName:{{user.nickname}}
-        </header>
 
-        <section class="links">
-            <a href="/node/home/philyoung">node Page</a>
-        </section>
+      <el-row >
+        <el-col :span="12" :offset="6" >
+          <div class="mainContent">
+            <user-nav-bar index="1"></user-nav-bar>
+            <div class="contentBody">
+              <p>Username: {{user.nickname}}</p>
+              <div>账户余额：100FC  <a href="#">去充值</a></div>
+              <p>最近浏览节点：</p>
+              <el-table
+                :data="tableData"
+                style="width: 100%">
+                <el-table-column
+                  prop="date"
+                  label="日期"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="name"
+                  label="姓名"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="address"
+                  label="地址">
+                  <template slot-scope="scope">
+                    <a>{{ scope.row.address }}</a>
+                    <el-button
+             size="mini"
+             @click="handleEdit(scope.$index, scope.row)">查看</el-button>
+             <el-button
+          size="mini"
+          @click="handleContract(scope.$index, scope.row)">管理合同</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
 
-        <section class="actions">
-            <el-button type="primary" plain @click="logoutHandler">log out</el-button>
-        </section>
+              <section class="actions">
+                  <el-button type="primary" plain @click="logoutHandler">log out</el-button>
+              </section>
+            </div>
+
+          </div>
+      </el-col>
+      </el-row>
     </div>
 </template>
 
 <script>
     import store from '@/lib/storage';
-
+    import UserNavBar from '@/pages/userCenterNavBar/index.vue';
     export default {
         data() {
             return {
-                user: store.get('userInfo') || {}
+                user: store.get('userInfo') || {nickname:'pending'},
+                tableData: [{
+                  date: '2016-05-02',
+                  name: 'philyoung',
+                  address: 'address1'
+                }, {
+                  date: '2016-05-04',
+                  name: '王小虎',
+                  address: '上海市普陀区金沙江路 1517 弄'
+                }, {
+                  date: '2016-05-01',
+                  name: '王小虎',
+                  address: '上海市普陀区金沙江路 1519 弄'
+                }, {
+                  date: '2016-05-03',
+                  name: '王小虎',
+                  address: '上海市普陀区金沙江路 1516 弄'
+                }]
             }
         },
         mounted() {
-            this.loadUserInfo()
+            //this.loadUserInfo()
         },
+        components: {UserNavBar},
         methods: {
             loadUserInfo() {
                 var self = this;
@@ -51,11 +103,20 @@
 <style lang="postcss" scoped>
     #app {
         margin: 15px auto;
-        width: 50%;
     }
 
     .index-card {
         width: 800px;
         margin: 100px auto;
+    }
+
+    .mainContent {
+      color:#878d99;
+      background-color: white;
+      min-height: 800px;
+    }
+
+    .contentBody {
+      padding: 20px;
     }
 </style>
