@@ -1,17 +1,30 @@
+var routeMap = {
+  "1" : "/pages/user/index.html",
+  "3" : "/pages/favorites.html",
+  "4" : "/pages/userResource.html",
+  "5" : "/pages/accountManagement.html",
+};
 export default {
     name: 'user-nav-bar',
     data(){
         return {
-          activeIndex: this.index|| '1'
+
         }
     },
     props:['index'],
+    computed : {
+      activeIndex: function () {
+        if(this.index) {
+          return this.index
+        }
+        return  '1'
+      }
+    },
     mounted(){
-
     },
     methods: {
-      handleSelect() {
-
+      handleSelect(index)  {
+        window.location.assign(routeMap[index]);
       }
     }
 }
