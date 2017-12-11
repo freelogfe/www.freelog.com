@@ -3,7 +3,9 @@
   <el-col :span="12" :offset="6" >
   <div class="mainContent">
     <user-nav-bar index="3"></user-nav-bar>
+    <div class="contentBody">
 
+    </div>
   </div>
 </el-col>
 </el-row>

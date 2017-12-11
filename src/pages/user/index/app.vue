@@ -58,19 +58,19 @@
                 tableData: [{
                   date: '2016-05-02',
                   name: 'philyoung',
-                  address: 'address1'
+                  address: 'http://api.freelog.com/node/home/philyoung'
                 }, {
                   date: '2016-05-04',
                   name: '王小虎',
-                  address: '上海市普陀区金沙江路 1517 弄'
+                  address: 'http://api.freelog.com/node/home/philyoung'
                 }, {
                   date: '2016-05-01',
                   name: '王小虎',
-                  address: '上海市普陀区金沙江路 1519 弄'
+                  address: 'http://api.freelog.com/node/home/philyoung'
                 }, {
                   date: '2016-05-03',
                   name: '王小虎',
-                  address: '上海市普陀区金沙江路 1516 弄'
+                  address: 'http://api.freelog.com/node/home/philyoung'
                 }]
             }
         },
@@ -95,6 +95,9 @@
                 }).then(function (res) {
                     location.assign('../user/login.html')
                 })
+            },
+            handleEdit (index, row) {
+              window.location.assign(row.address)
             }
         }
     }

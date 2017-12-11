@@ -160,6 +160,7 @@
                 if (this[action]) {
                     this[action](detail)
                 } else {
+                  //这一块需要防止多个服务同时出现
                     switch (action) {
                         case 'authService':
                             this.checkAuthHandler(data.data, data.msg)
