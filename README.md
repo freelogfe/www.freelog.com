@@ -27,6 +27,11 @@ npm run dev
 [http://localhost:8010/user/login.html](http://localhost:8010/user/login.html)
 
 
+### todo
+
+aliyun oss构建自动部署
+
+
 from:
 https://github.com/Plortinus/vue-multiple-pages
 

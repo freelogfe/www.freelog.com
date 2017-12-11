@@ -9,9 +9,8 @@
                 custom-class="auth-dialog"
                 width="50%"
                 center>
-            <!--<el-button @click="debugHandler">debug</el-button>-->
             <el-tabs type="border-card" value="contract">
-                <el-tab-pane label="签约合同">
+                <el-tab-pane label="待签约合同">
                     <el-table
                             :data="policies"
                             ref="policyTable"
@@ -88,7 +87,6 @@
                         </el-table-column>
                         <el-table-column label="操作" align="center" width="150px">
                             <template slot-scope="scope">
-                                <!--v-show="!scope.row.expanded"-->
                                 <el-button
                                         size="mini"
                                         @click="showContractDetailHandler(scope.row, scope.$index)">
@@ -146,9 +144,6 @@
                 })
         },
         methods: {
-            debugHandler() {
-                debugger
-            },
             showAuthDialog() {
                 this.shouldShowAuthDialog = true;
             },
@@ -182,8 +177,6 @@
                 if (!policyData.selectedSegmentId) {
                     return this.$message.warning('没有选择策略')
                 }
-
-//                console.log(policyData)
 
                 var tip = `presentable name: ${policyData.name}, resource name: ${policyData.tagInfo.resourceInfo.resourceName}`
                 this.$confirm(`合同详情：${tip}。确定签约合同？`, '提示', {
@@ -285,7 +278,6 @@
                     var policy = self.parsePolicy(data.data, presentableId)
                     policy.presentableId = presentableId
                     self.policies.push(policy)
-//                    console.log(policy)
                 })
             },
             parsePolicy(data) {
@@ -324,7 +316,7 @@
                                 var result = JSON.parse(data)
                                 self.checkAuthHandler(result.data, result.msg)
                             } catch (err) {
-                                //json解析不成功默认是成功情况,待优化
+                                //json解析不成功默认是成功情况,待优化判断逻辑
                                 var src = url + `${prensentableId}.data`;
                                 importHtml(src)
                             }
@@ -341,24 +333,4 @@
 <style lang="less" scoped>
     @import "./app.less";
 
-    .contract-state-chart {
-
-    }
-
-    .event-state {
-        padding: 5px;
-        font-size: 16px;
-    }
-
-    .current-state {
-        color: #35b5ff;
-    }
-
-    .policy-wrap {
-        text-align: center;
-    }
-
-    .active-state {
-        color: #67C23A;
-    }
 </style>
