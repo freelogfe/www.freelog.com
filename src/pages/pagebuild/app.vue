@@ -133,15 +133,15 @@
             var authInfo = window.__auth_info__;
             var authErrorData = authInfo.__auth_error_info__ || {}
 
-
+            window.FreeLogUI = this
             //统一监听服务，根据action进行分发执行器
-            window.addEventListener('freelogService', self.serviceDispatchHandler.bind(self), false)
-
-            this.checkAuthHandler(authErrorData.data || {})
-                .then(() => {
-                    self.$widgets = self.getWidgets()
-                    self.loadWidgets()
-                })
+//            window.addEventListener('freelogService', self.serviceDispatchHandler.bind(self), false)
+//
+//            this.checkAuthHandler(authErrorData.data || {})
+//                .then(() => {
+//                    self.$widgets = self.getWidgets()
+//                    self.loadWidgets()
+//                })
         },
         methods: {
             showAuthDialog() {
@@ -178,7 +178,7 @@
                 }
 
                 var tip = `presentable name: ${policyData.name}, resource name: ${policyData.tagInfo.resourceInfo.resourceName}`
-                this.$confirm(`合同详情：${tip}。确定签约合同？`, '提示', {
+                this.$confirm(`<h3>合同详情</h3><p>${tip}。</p>确定签约合同？`, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     dangerouslyUseHTMLString: true,
@@ -309,16 +309,14 @@
                     if (prensentableId) {
                         window.QI.fetchPresentable(`${prensentableId}.data`)
                             .then((res) => {
-                                return res.text()
-                            }).then(function (data) {
-                            try {
-                                var result = JSON.parse(data)
-                                self.checkAuthHandler(result.data, result.msg)
-                            } catch (err) {
-                                //json解析不成功默认是成功情况,待优化判断逻辑
-                                var src = url + `${prensentableId}.data`;
-                                importHtml(src)
-                            }
+                                return res.json()
+                            })
+                            .then(function (data) {
+                                self.checkAuthHandler(data.data, result.msg)
+                            }).catch((err) => {
+                            //json解析不成功默认是成功情况,待优化判断逻辑
+                            var src = url + `${prensentableId}.data`;
+                            importHtml(src)
                         })
                     } else {
 

@@ -1,18 +1,18 @@
 export default {
     name: 'tool-bar',
-    data(){
-        return {
-
-        }
+    data() {
+        return {}
     },
-    mounted(){
+    mounted() {
 
     },
     methods: {
-        showAuthDialog(){
-            var event = new CustomEvent('freelogService', {detail: {
-                action: 'showAuthDialog'
-            }});
+        showAuthDialog() {
+            var event = new CustomEvent('freelogService', {
+                detail: {
+                    action: 'showAuthDialog'
+                }
+            });
             window.dispatchEvent(event)
         }
     }
