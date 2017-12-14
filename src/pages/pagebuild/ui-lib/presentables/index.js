@@ -55,8 +55,9 @@ export default {
                 content: 'contract-manager',
                 data: presentable,
                 title: '合同管理',
-                name: 'tab' + (+new Date())
+                name: 'tab' + presentable.presentableId
             }
+
             switch (presentable.contractStatus) {
                 case CONTRACT_STATUS.uncreated:
                     Object.assign(tabConfig, {
