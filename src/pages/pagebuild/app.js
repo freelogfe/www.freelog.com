@@ -1,5 +1,5 @@
 import Vue from '@/layout'
-import AppView from './app.vue'
+import AppView from './app.vue'// 主控制页面
 import PageBuildeParser from './parser'
 
 const DEFAULT_EVENT_NAME = 'freelogSystemService';
@@ -41,9 +41,7 @@ var App = {
     }
 }
 
-window.FreeLogApp = App;
+window.FreeLogApp = App; //在全局注册
 App.main()
 
 export default App
-
-
