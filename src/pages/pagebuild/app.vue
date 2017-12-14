@@ -7,13 +7,13 @@
                 :visible.sync="shouldShowAuthDialog"
                 :fullscreen="false"
                 custom-class="auth-dialog"
-                @close="closeDialogHandler"
+                @close="_closeDialogHandler"
                 width="50%"
                 center>
 
-            <el-tabs v-model="activeTabName" type="border-card" @tab-remove="removeTab">
+            <el-tabs v-model="activeTabName" type="border-card" @tab-remove="_removeTab">
                 <el-tab-pane label="presentable list" name="presentables">
-                    <presentables :data="presentables" @tabChange="tabChange"></presentables>
+                    <presentables :data="presentables" @tabChange="_tabChange"></presentables>
                 </el-tab-pane>
                 <el-tab-pane
                         closable
@@ -35,6 +35,7 @@
     import Contract from './ui-lib/contract/index.vue'
     import Policy from './ui-lib/policy/index.vue'
 
+
     export default {
         data() {
             return {
@@ -48,21 +49,24 @@
             ToolBar,
             ContractState,
             Presentables,
-
             'contract-manager': Contract,
             'policy-manager': Policy
         },
         mounted() {
-            //挂载UI
-            window.FreeLogUI = this
-            this.$on('freelogUIService', this.UIServiceHandler.bind(this))
+            this.$emit('ready', this)
         },
         methods: {
-            tabChange(data) {
-                this.tabs.push(data);
+            _tabChange(data) {
+                var isExisted = this.tabs.some((tab) => {
+                    return tab.name === data.name
+                })
+
+                if (!isExisted) {
+                    this.tabs.push(data);
+                }
                 this.activeTabName = data.name;
             },
-            removeTab(targetName) {
+            _removeTab(targetName) {
                 let activeName = this.activeTabName;
                 if (activeName === targetName) {
                     this.tabs.forEach((tab, index) => {
@@ -82,24 +86,15 @@
                     return t.name !== targetName
                 })
             },
+            _closeDialogHandler() {
+                //todo call callbacks
+                this.$emit('close')
+            },
             showAuthDialog() {
                 this.shouldShowAuthDialog = true;
             },
-            UIServiceHandler(event) {
-                var action = event.action
-
-                if (this[action]) {
-                    this[action](event.detail)
-                } else {
-                    console.error('no ui service support')
-                }
-            },
             appendData(data) {
                 this.presentables.push(data)
-            },
-            closeDialogHandler() {
-                //todo call callbacks
-                this.$emit('close')
             }
         }
     }

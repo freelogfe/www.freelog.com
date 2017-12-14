@@ -50,35 +50,43 @@ var dataloaderHelpers = {
     }
 }
 
-function appendDataToUI(data) {
-    window.FreeLogUI.$emit('freelogUIService', {
-        action: 'appendData',
-        detail: data
-    })
-    window.FreeLogUI.showAuthDialog()
-}
+export default {
+    name: 'errorResponseHandler',
+    handle(data, appUI, callback) {
+        this.appUI = appUI
 
-function errorResponseHandler(data) {
-    if (data && data.errcode) {
-        var errorMsg = data.msg;
-        var resData = data.data && data.data.data
-        switch (data.errcode) {
-            //未激活状态
-            case 70080104:
-                dataloaderHelpers.loadContractDetail(resData).then(appendDataToUI);
-                break;
-            //未签约状态
-            case 70080101:
-                dataloaderHelpers.loadPolicyDetail(resData).then(appendDataToUI);
-                break;
-            //节点与资源之间的合约授权失败
-            case 70080202:
-                console.log(errorMsg, resData)
-                break;
-            default:
-                break;
+        if (typeof callback === 'function') {
+            appUI.$on('close', function () {
+                //todo
+                console.log('error response close')
+            })
         }
+
+        if (data && data.errcode) {
+            var errorMsg = data.msg;
+            var resData = data.data && data.data.data
+            switch (data.errcode) {
+                //未激活状态
+                case 70080104:
+                    dataloaderHelpers.loadContractDetail(resData)
+                        .then(this.appendDataToUI.bind(this));
+                    break;
+                //未签约状态
+                case 70080101:
+                    dataloaderHelpers.loadPolicyDetail(resData)
+                        .then(this.appendDataToUI.bind(this));
+                    break;
+                //节点与资源之间的合约授权失败
+                case 70080202:
+                    console.log(errorMsg, resData)
+                    break;
+                default:
+                    break;
+            }
+        }
+    },
+    appendDataToUI(data) {
+        this.appUI.appendData(data)
+        this.appUI.showAuthDialog()
     }
 }
-
-export default errorResponseHandler

@@ -1,7 +1,7 @@
 //异常对应的handler函数名
-const ExceptionCode = {
+const EventCode = {
     invalidResponse: 'errorResponseHandler'
 }
 
 
-export default ExceptionCode
+export default EventCode
