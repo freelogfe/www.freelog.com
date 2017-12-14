@@ -19,10 +19,11 @@ var App = {
         var data = detail.data
 
         console.log(event)
+
+
     },
     main() {
         window.QI = document.querySelector('.js-lib-qi');
-
         this.initApp()
         PageBuildeParser.start()
     },
@@ -42,7 +43,6 @@ var App = {
 
 window.FreeLogApp = App;
 App.main()
-
 
 export default App
 

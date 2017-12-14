@@ -16,7 +16,6 @@ export default {
         var authErrorData = authInfo.__auth_error_info__
 
         if (!authErrorData) {
-            self.$widgets = self.getWidgets()
             self.loadWidgets()
         } else {
             window.FreeLogApp.trigger(window.FreeLogApp.ExceptionCode.invalidResponse, authErrorData.data || {})
@@ -28,7 +27,6 @@ export default {
         return $widgets
     },
     loadWidgets() {
-        var self = this;
         var $widgets = this.getWidgets()
         var url = `//api.freelog.com/v1/nodes/${window.__auth_info__.__auth_node_id__}/presentables/`
         Array.from($widgets).forEach(function (widget) {

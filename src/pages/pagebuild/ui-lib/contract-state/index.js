@@ -177,7 +177,7 @@ function parseContract(contractData) {
 export default {
     name: 'contract-state',
     props: {
-        contract: {
+        data: {
             type: Object,
             default() {
                 return null
@@ -187,7 +187,6 @@ export default {
     data() {
         var self = this;
         return {
-            data: null,
             popData: {},
             opts: {
                 radius: 12,
@@ -245,7 +244,7 @@ export default {
         },
         activateContractHandler(data) {
             var self = this;
-            var contract = self.contract;
+            var contract = self.data;
             var contractId = contract.contractId
             var source = data.source.data
             var target = data.target.data
@@ -302,17 +301,17 @@ export default {
             }
         },
         draw() {
-            if (!this.contract.contractId) {
+            if (!this.data.contractId) {
                 return
             }
-            var result = parseContract(this.contract)
+            var result = parseContract(this.data)
             setTreeNodePosition(result, this.opts)
             var resolveData = formatNodes(result.nodeList)
             Object.assign(this.opts, resolveData)
             new DirectGraph(this.opts)
         },
         update(data) {
-            this.contract = data;
+            this.data = data;
             this.draw()
         }
     }
