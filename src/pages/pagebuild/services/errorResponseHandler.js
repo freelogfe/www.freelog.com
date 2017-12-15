@@ -54,14 +54,6 @@ export default {
     name: 'errorResponseHandler',
     handle(data, appUI, callback) {
         this.appUI = appUI
-
-        if (typeof callback === 'function') {
-            appUI.$on('close', function () {
-                //todo
-                console.log('error response close')
-            })
-        }
-
         if (data && data.errcode) {
             var errorMsg = data.msg;
             var resData = data.data && data.data.data
@@ -82,6 +74,13 @@ export default {
                     break;
                 default:
                     break;
+            }
+
+            if (typeof callback === 'function') {
+                appUI.$on('close', function () {
+                    //todo
+                    console.log('error response close', resData)
+                })
             }
         }
     },

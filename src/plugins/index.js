@@ -3,9 +3,10 @@
  */
 
 // import axios from './axios'
+import filters from './filters'
 
 export default {
-  install (Vue) {
-    // axios(Vue)
-  }
+    install(Vue) {
+        filters(Vue)
+    }
 }

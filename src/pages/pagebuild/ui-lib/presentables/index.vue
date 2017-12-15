@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-table
-                :data="data"
+                :data="presentables"
                 ref="tableRef"
                 stripe
                 style="width: 100%">
@@ -27,7 +27,7 @@
                     <el-button
                             size="mini"
                             @click="tabActionHandler(scope.row, scope.$index)">
-                        {{CONTRACT_STATUS_ACTION_TIPS[scope.row.contractStatus]}}
+                        {{CONTRACT_STATUS_ACTION_TIPS[scope.row._contractStatus]}}
                     </el-button>
                 </template>
             </el-table-column>
@@ -37,5 +37,6 @@
 
 <script>
     import Presentables from './index.js'
+
     export default Presentables
 </script>
