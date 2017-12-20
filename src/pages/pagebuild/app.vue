@@ -57,6 +57,7 @@
         },
         methods: {
             _tabChange(data) {
+              console.log(data);
                 var isExisted = this.tabs.some((tab) => {
                     return tab.name === data.name
                 })
