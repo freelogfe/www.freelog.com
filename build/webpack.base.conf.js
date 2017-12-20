@@ -11,11 +11,13 @@ const CWD = process.cwd();
 const SrcDir = path.join(CWD, 'src')
 
 const extractCSS = new ExtractTextPlugin({
-    filename: '[name].[chunkhash].css',
+    // filename: '[name].[chunkhash].css',
+    filename: '[name].css',
     allChunks: true
 })
 const extractLESS = new ExtractTextPlugin({
-    filename: '[name].[chunkhash].css',
+    // filename: '[name].[chunkhash].css',
+    filename: '[name].css',
     allChunks: true
 })
 
@@ -44,7 +46,8 @@ var webpackConfig = {
     },
     output: {
         path: path.join(CWD, 'dist'),
-        filename: '[name].[chunkhash].js',
+        filename: '[name].js',
+        // filename: '[name].[chunkhash].js',
         publicPath: process.env.NODE_ENV === 'production'
             ? config.build.assetsPublicPath
             : config.dev.assetsPublicPath
