@@ -1,18 +1,55 @@
 <template>
     <div>
-        <ul>
-            <el-button @click="signPolicyHandler">创建合同</el-button>
-            <li v-for="segment in data.segments" class="segment-row">
-                <span class="segment-detail">合同ID {{segment.detail.segmentId}}</span>
-                <el-radio class="select-btn" v-model="data.selectedSegmentId"
-                          :label="segment.detail.segmentId">选择
-                </el-radio>
-            </li>
-        </ul>
+        <contract-steps></contract-steps>
+
+        <presentable-detail :data="data"></presentable-detail>
+
+        <el-table
+                :data="data.segments"
+                stripe
+                class="segments"
+                style="width: 100%">
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <pre>{{data._formatPolicyText}}</pre>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="用户"
+                    prop="detail._userGroup">
+            </el-table-column>
+            <el-table-column
+                    label="合同ID"
+                    prop="detail.segmentId">
+            </el-table-column>
+            <el-table-column>
+                <template slot-scope="scope">
+                    <el-radio class="select-btn" v-model="data.selectedSegmentId"
+                              :label="scope.row.detail.segmentId">选择
+                    </el-radio>
+                </template>
+            </el-table-column>
+        </el-table>
+        <div class="actions">
+            <el-button @click="signPolicyHandler" :disabled="!data.selectedSegmentId">创建合同</el-button>
+        </div>
     </div>
 </template>
 
 <script>
     import Policy from './index.js'
+
     export default Policy
 </script>
+
+
+<style lang="less" scoped>
+    .segments {
+        margin-top: 15px;
+    }
+
+    .actions {
+        margin-top: 10px;
+        text-align: center;
+    }
+</style>

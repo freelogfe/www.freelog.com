@@ -8,12 +8,11 @@ export default {
     },
     methods: {
         showAuthDialog() {
-            var event = new CustomEvent('freelogService', {
-                detail: {
-                    action: 'showAuthDialog'
+            window.FreeLogApp.trigger(window.FreeLogApp.EventCode.showSystemDialog, {
+                callback: function () {
+                    console.log('close dialog@toolbar')
                 }
-            });
-            window.dispatchEvent(event)
+            })
         }
     }
 }

@@ -216,7 +216,7 @@ export default {
     },
     mounted() {
         var style = getComputedStyle(this.$refs.wrapper)
-
+        this.opts.$tip = this.$el.querySelector('.js-svg-tip')
         this.opts.container = this.$refs.stateTree;
         this.opts.width = parseInt(parseInt(style.width) * .8)
         this.draw()

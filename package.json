@@ -13,6 +13,7 @@
     "axios": "^0.17.1",
     "element-ui": "^2.0.5",
     "font-awesome": "^4.7.0",
+    "freelog_policy_compiler": "0.0.15",
     "store": "^2.0.12",
     "vue": "^2.5.8"
   },

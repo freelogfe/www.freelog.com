@@ -23,7 +23,7 @@ function DirectGraph(opts) {
     $svg.attr('width', width)
         .attr('height', height);
 
-    var $tip = $container.parentNode.querySelector('.js-svg-tip')
+    var $tip = opts.$tip || $container.parentNode.querySelector('.js-svg-tip')
     if (!$tip) {
         $tip = document.createElement('div')
         $tip.classList.add('tip')
@@ -117,7 +117,7 @@ function DirectGraph(opts) {
                 var src = p.source;
                 var target = p.target
                 var pos = d3.mouse(this)
-
+console.log(pos)
                 $tip.style.opacity = 1
                 $tip.style.top = pos[1] + 'px'
                 $tip.style.left = pos[0] + 'px'

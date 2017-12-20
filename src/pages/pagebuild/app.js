@@ -1,47 +1,45 @@
 import Vue from '@/layout'
-import AppView from './app.vue'// 主控制页面
+
+import AppView from './app.vue'
+
 import PageBuildeParser from './parser'
+import EventCode from './event_code'
+import EventDispatcher from './event-dispatcher'
 
-const DEFAULT_EVENT_NAME = 'freelogSystemService';
-
+//对外接口服务
 var App = {
-    initApp() {
-        new Vue({
-            el: '#app',
-            render: h => h(AppView)
-        });
-        this.$app = document.querySelector('#app')
-        this.$app.addEventListener(DEFAULT_EVENT_NAME, this.eventDispatcher.bind(this))
+    isValidResponse(res) {
+        return (res && (res.ret === 0 && res.errcode === 0))
     },
-    eventDispatcher(event) {
-        var detail = event.detail
-        var eventName = detail.eventName
-        var data = detail.data
-
-        console.log(event)
-
-
+    trigger() {
+        EventDispatcher.trigger.apply(EventDispatcher, arguments)
     },
-    main() {
-        window.QI = document.querySelector('.js-lib-qi');
-        this.initApp()
-        PageBuildeParser.start()
-    },
-    isValidResponse(res){
-        return (res.ret === 0 && res.errcode === 0)
-    },
-    trigger(eventName, opts) {
-        var event = new CustomEvent(DEFAULT_EVENT_NAME, {
-            detail: {
-                eventName: eventName,
-                data: opts
-            }
-        })
-        this.$app.dispatchEvent(event)
-    }
+    EventCode
 }
 
-window.FreeLogApp = App; //在全局注册
-App.main()
+function main() {
+    window.QI = document.querySelector('.js-lib-qi');
+
+    //render app view
+    new Vue({
+        el: '#app',
+        template: '<app-view @ready="onReady"/>',
+        components: {'app-view': AppView},
+        methods: {
+            onReady(appUI) {
+                //挂载UI
+                this.appUI = appUI
+                window.FreeLogApp = App;
+                EventDispatcher.init(appUI)
+                PageBuildeParser.start()
+                appUI.$on('close', function () {
+                    console.log('close app ui dialog')
+                })
+            }
+        }
+    });
+}
+
+main()
 
 export default App

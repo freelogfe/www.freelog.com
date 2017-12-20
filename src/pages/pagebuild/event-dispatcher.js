@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Service from './service'
+import Service from './services'
 
 const DEFAULT_EVENT_NAME = 'freelogSystemService';
 
@@ -13,7 +13,7 @@ export default {
     dispatchHandler(event) {
         var detail = event.detail
         var handlerName = detail.eventName
-        var opts = detail.opts
+        var opts = detail.opts || {}
         var Handler
         if ((Handler = Service[handlerName])) {
             Handler.handle(opts.data, this.appUI, opts.callback)

@@ -1,26 +1,13 @@
 <template>
     <div>
-        <ul>
-            <li>
-                资源名称: {{data.resourceDetail.resourceName}}
-            </li>
-            <li>
-                资源类型: {{data.resourceDetail.resourceType}}
-            </li>
-            <li>
-                <el-button
-                        size="mini"
-                        @click="showContractDetailHandler">
-                    查看合同流程
-                </el-button>
-            </li>
-            <li>
-                <h3 class="contract-title">合同流程</h3>
-                <contract-state class="contract-state-chart" :data="data.contractDetail"></contract-state>
-            </li>
+        <contract-steps :step="1" v-show="data._showContractSteps"></contract-steps>
 
+        <presentable-detail class="contract-detail" :data="data"></presentable-detail>
 
-        </ul>
+        <div>
+            <h3 class="contract-title">合同流程</h3>
+            <contract-state class="contract-state-chart" :data="data.contractDetail"></contract-state>
+        </div>
     </div>
 </template>
 
@@ -31,6 +18,10 @@
 </script>
 
 <style scoped lang="less">
+    .contract-detail {
+        margin-top: 15px;
+    }
+
     .contract-title {
         margin-bottom: 6px;
         text-align: center;

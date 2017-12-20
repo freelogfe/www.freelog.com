@@ -3,7 +3,7 @@ import Vue from '@/layout'
 import AppView from '../app.vue'
 
 import PageBuildeParser from '../parser'
-import EventCode from '../exception_code'
+import EventCode from '../event_code'
 import EventDispatcher from '../event-dispatcher'
 
 //对外接口服务

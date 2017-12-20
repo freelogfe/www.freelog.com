@@ -3,15 +3,15 @@
         <tool-bar></tool-bar>
         <el-dialog
                 :close-on-click-modal="false"
-                title="合约管理列表"
+                title="合同管理"
                 :visible.sync="shouldShowAuthDialog"
                 :fullscreen="false"
                 custom-class="auth-dialog"
                 @close="_closeDialogHandler"
                 width="50%"
                 center>
-
-            <el-tabs v-model="activeTabName" type="border-card" @tab-remove="_removeTab">
+            <!--<el-button @click="debug">debugger</el-button>-->
+            <el-tabs v-model="activeTabName" type="card" @tab-remove="_removeTab">
                 <el-tab-pane label="presentable list" name="presentables">
                     <presentables :data="presentables" @tabChange="_tabChange"></presentables>
                 </el-tab-pane>
@@ -28,13 +28,13 @@
     </div>
 </template>
 
+
 <script>
     import ToolBar from '@/components/toolbar/index.vue'
     import ContractState from './ui-lib/contract-state/index.vue'
     import Presentables from './ui-lib/presentables/index.vue'
     import Contract from './ui-lib/contract/index.vue'
     import Policy from './ui-lib/policy/index.vue'
-
 
     export default {
         data() {
@@ -53,9 +53,13 @@
             'policy-manager': Policy
         },
         mounted() {
+            //表示UI框架渲染完成，可调用
             this.$emit('ready', this)
         },
         methods: {
+            debug(){
+              debugger
+            },
             _tabChange(data) {
               console.log(data);
                 var isExisted = this.tabs.some((tab) => {

@@ -3,8 +3,7 @@
         <el-popover
                 ref="popover"
                 popper-class="tip js-svg-tip"
-                placement="top"
-                trigger="click"
+                placement="top-start"
                 width="250">
             <div>
                 <div v-show="popData.type == 'node'">

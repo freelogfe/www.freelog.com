@@ -6,14 +6,15 @@ export default {
 
     data() {
         return {
+            presentables: [],
             CONTRACT_STATUS: CONTRACT_STATUS,
             CONTRACT_STATUS_ACTION_TIPS: {
                 '-1': '去创建合同',
-                1: '去执行', //未开始执行
-                2: '去执行', //执行中
-                3: '生效中',
-                4: '用户终止',
-                5: '系统终止',
+                1: '去执行合同', //未开始执行
+                2: '去执行合同', //执行中
+                3: '合同生效中',
+                4: '用户终止合同',
+                5: '系统终止合同',
                 6: '合同已终止'
             }
         }
@@ -34,21 +35,27 @@ export default {
         data: 'formatPresentableList'
     },
     methods: {
+        //todo 待分页
         formatPresentableList() {
             var self = this;
             var presentables = self.data
             presentables.forEach((presentable) => {
                 self.resovlePresentableStatus(presentable)
             })
+
+            this.presentables =  presentables.slice(0)
+            this.presentables.sort((p1, p2) => {
+                return (p1._contractStatus - p2._contractStatus)
+            })
         },
         resovlePresentableStatus(presentable) {
             if (presentable.contractDetail) {
-                presentable.contractStatus = presentable.contractDetail.status
+                presentable._contractStatus = presentable.contractDetail.status
             } else {
-                presentable.contractStatus = CONTRACT_STATUS.uncreated
+                presentable._contractStatus = CONTRACT_STATUS.uncreated
             }
 
-            presentable.statusTip = CONTRACT_STATUS_TIPS[presentable.contractStatus] || 'n/a'
+            presentable.statusTip = CONTRACT_STATUS_TIPS[presentable._contractStatus] || 'n/a'
         },
         tabActionHandler(presentable) {
             var tabConfig = {
@@ -58,7 +65,7 @@ export default {
                 name: 'tab' + presentable.presentableId
             }
 
-            switch (presentable.contractStatus) {
+            switch (presentable._contractStatus) {
                 case CONTRACT_STATUS.uncreated:
                     Object.assign(tabConfig, {
                         title: '创建合同',
@@ -79,11 +86,15 @@ export default {
                     break;
             }
 
+<<<<<<< HEAD
             this.$emit('tabChange', tabConfig) //自己监听自己，但是处理函数定义在父级元素
             // this.$message.warning('todo')
         },
         showPolicyDetailHandler() {
 
+=======
+            this.$emit('tabChange', tabConfig)
+>>>>>>> dd72ca31933afc3a6ba5c0e250476ddfcda72416
         }
     }
 }
