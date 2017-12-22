@@ -1,25 +1,11 @@
 webpackJsonp([4],{
 
-/***/ "6NG4":
-/***/ (function(module, exports, __webpack_require__) {
-
-// removed by extract-text-webpack-plugin
-    if(false) {
-      // 1513760804501
-      var cssReload = require("../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
-      module.hot.dispose(cssReload);
-      module.hot.accept(undefined, cssReload);
-    }
-  
-
-/***/ }),
-
 /***/ "8qlJ":
 /***/ (function(module, exports, __webpack_require__) {
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513760804489
+      // 1513932001967
       var cssReload = require("../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -37,17 +23,57 @@ webpackJsonp([4],{
 /* harmony default export */ var toolbar = ({
     name: 'tool-bar',
     data: function data() {
-        return {};
+        return {
+            hidden: true
+        };
     },
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        this.initHotKeyEvent();
+    },
 
     methods: {
+        //ctrl+T唤起工具栏
+        initHotKeyEvent: function initHotKeyEvent() {
+            var keyCodes = {
+                ctrl: 17,
+                T: 84
+            };
+            var keydown = {};
+            var self = this;
+            var isCtrlT = function isCtrlT(keyCode) {
+                return keyCodes.ctrl === keyCode || keyCodes.T === keyCode;
+            };
+            window.addEventListener('keydown', function (ev) {
+                if (isCtrlT(ev.keyCode)) {
+                    keydown[ev.keyCode] = true;
+                    if (keydown[keyCodes.ctrl] && keydown[keyCodes.T]) {
+                        self.toggleToolBar();
+                        keydown = {};
+                    }
+                }
+            });
+
+            window.addEventListener('keyup', function (ev) {
+                if (isCtrlT(ev.keyCode)) {
+                    keydown[ev.keyCode] = false;
+                }
+            });
+        },
         showAuthDialog: function showAuthDialog() {
             window.FreeLogApp.trigger(window.FreeLogApp.EventCode.showSystemDialog, {
                 callback: function callback() {
                     console.log('close dialog@toolbar');
                 }
             });
+        },
+        toggleToolBar: function toggleToolBar() {
+            this.hidden = !this.hidden;
+        },
+        show: function show() {
+            this.hidden = false;
+        },
+        hide: function hide() {
+            this.hidden = true;
         }
     }
 });
@@ -62,14 +88,14 @@ webpackJsonp([4],{
 
 
 /* harmony default export */ var components_toolbar = (toolbar);
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-e3ced89c","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/toolbar/index.vue
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('ul',{staticClass:"tool-bar-wrap"},[_vm._m(0,false,false),_vm._v(" "),_c('li',{staticClass:"contract-tab",attrs:{"title":"合同管理"},on:{"click":_vm.showAuthDialog}},[_c('i',{staticClass:"el-icon-document"})])])}
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-1bb67677","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/toolbar/index.vue
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('ul',{directives:[{name:"show",rawName:"v-show",value:(!_vm.hidden),expression:"!hidden"}],staticClass:"tool-bar-wrap",on:{"keyup":function($event){if(!('button' in $event)&&$event.keyCode!==84){ return null; }if(!$event.ctrlKey){ return null; }_vm.toggleToolBar($event)}}},[_vm._m(0,false,false),_vm._v(" "),_c('li',{staticClass:"contract-tab",attrs:{"title":"合同管理"},on:{"click":_vm.showAuthDialog}},[_c('i',{staticClass:"el-icon-document"})])])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('li',{staticClass:"user-tab",attrs:{"title":"个人中心"}},[_c('a',{attrs:{"href":"/pages/user/index.html","target":"_blank"}},[_c('i',{staticClass:"el-icon-fa-user",attrs:{"aria-hidden":"true"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ var selectortype_template_index_0_src_components_toolbar = (esExports);
 // CONCATENATED MODULE: ./src/components/toolbar/index.vue
 function injectStyle (ssrContext) {
-  __webpack_require__("6NG4")
+  __webpack_require__("xRlz")
 }
 var normalizeComponent = __webpack_require__("VU/8")
 /* script */
@@ -81,7 +107,7 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = "data-v-e3ced89c"
+var __vue_scopeId__ = "data-v-1bb67677"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
@@ -95,6 +121,20 @@ var Component = normalizeComponent(
 
 /* harmony default export */ var src_components_toolbar = __webpack_exports__["a"] = (Component.exports);
 
+
+/***/ }),
+
+/***/ "xRlz":
+/***/ (function(module, exports, __webpack_require__) {
+
+// removed by extract-text-webpack-plugin
+    if(false) {
+      // 1513932001982
+      var cssReload = require("../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
+      module.hot.dispose(cssReload);
+      module.hot.accept(undefined, cssReload);
+    }
+  
 
 /***/ }),
 

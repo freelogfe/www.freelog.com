@@ -11,7 +11,7 @@
                 style="width: 100%">
             <el-table-column type="expand">
                 <template slot-scope="props">
-                    <pre>{{data._formatPolicyText}}</pre>
+                    <pre>{{props.row.policyText || data._formatPolicyText}}</pre>
                 </template>
             </el-table-column>
             <el-table-column
@@ -31,7 +31,11 @@
             </el-table-column>
         </el-table>
         <div class="actions">
-            <el-button @click="signPolicyHandler" :disabled="!data.selectedSegmentId">创建合同</el-button>
+            <el-button @click="policyHandler"
+                       v-loading="loading"
+                       :type="btnType"
+                       :disabled="!data.selectedSegmentId">{{btnType?'去执行合同': '创建合同'}}
+            </el-button>
         </div>
     </div>
 </template>

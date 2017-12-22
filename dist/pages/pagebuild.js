@@ -2067,20 +2067,6 @@ exports.LexerActionExecutor = LexerActionExecutor;
 
 /***/ }),
 
-/***/ "0FjP":
-/***/ (function(module, exports, __webpack_require__) {
-
-// removed by extract-text-webpack-plugin
-    if(false) {
-      // 1513760804822
-      var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
-      module.hot.dispose(cssReload);
-      module.hot.accept(undefined, cssReload);
-    }
-  
-
-/***/ }),
-
 /***/ "13lD":
 /***/ (function(module, exports) {
 
@@ -3472,20 +3458,6 @@ RuleContext.prototype.toString = function(ruleNames, stop) {
 
 /***/ }),
 
-/***/ "6NG4":
-/***/ (function(module, exports, __webpack_require__) {
-
-// removed by extract-text-webpack-plugin
-    if(false) {
-      // 1513760804501
-      var cssReload = require("../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
-      module.hot.dispose(cssReload);
-      module.hot.accept(undefined, cssReload);
-    }
-  
-
-/***/ }),
-
 /***/ "7y1Z":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3685,20 +3657,6 @@ exports.ParserRuleContext = __webpack_require__("EesY").ParserRuleContext;
 exports.Interval = __webpack_require__("T+Yw").Interval;
 exports.Utils = __webpack_require__("bz+k");
 
-
-/***/ }),
-
-/***/ "ApA4":
-/***/ (function(module, exports, __webpack_require__) {
-
-// removed by extract-text-webpack-plugin
-    if(false) {
-      // 1513760804509
-      var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
-      module.hot.dispose(cssReload);
-      module.hot.accept(undefined, cssReload);
-    }
-  
 
 /***/ }),
 
@@ -4922,6 +4880,20 @@ exports.BufferedTokenStream = BufferedTokenStream;
 
 /***/ }),
 
+/***/ "FQRy":
+/***/ (function(module, exports, __webpack_require__) {
+
+// removed by extract-text-webpack-plugin
+    if(false) {
+      // 1513932001969
+      var cssReload = require("../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
+      module.hot.dispose(cssReload);
+      module.hot.accept(undefined, cssReload);
+    }
+  
+
+/***/ }),
+
 /***/ "Fzuw":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5646,7 +5618,7 @@ exports.LexerModeAction = LexerModeAction;
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513760805120
+      // 1513932002633
       var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -10438,6 +10410,20 @@ exports.CommonTokenFactory = CommonTokenFactory;
 
 /***/ }),
 
+/***/ "TKW+":
+/***/ (function(module, exports, __webpack_require__) {
+
+// removed by extract-text-webpack-plugin
+    if(false) {
+      // 1513932001988
+      var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
+      module.hot.dispose(cssReload);
+      module.hot.accept(undefined, cssReload);
+    }
+  
+
+/***/ }),
+
 /***/ "VIKC":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13431,7 +13417,7 @@ exports.getCachedPredictionContext = getCachedPredictionContext;
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513760804507
+      // 1513932001985
       var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -13445,7 +13431,7 @@ exports.getCachedPredictionContext = getCachedPredictionContext;
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513760805211
+      // 1513932002707
       var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -13463,17 +13449,57 @@ exports.getCachedPredictionContext = getCachedPredictionContext;
 /* harmony default export */ var toolbar = ({
     name: 'tool-bar',
     data: function data() {
-        return {};
+        return {
+            hidden: true
+        };
     },
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        this.initHotKeyEvent();
+    },
 
     methods: {
+        //ctrl+T唤起工具栏
+        initHotKeyEvent: function initHotKeyEvent() {
+            var keyCodes = {
+                ctrl: 17,
+                T: 84
+            };
+            var keydown = {};
+            var self = this;
+            var isCtrlT = function isCtrlT(keyCode) {
+                return keyCodes.ctrl === keyCode || keyCodes.T === keyCode;
+            };
+            window.addEventListener('keydown', function (ev) {
+                if (isCtrlT(ev.keyCode)) {
+                    keydown[ev.keyCode] = true;
+                    if (keydown[keyCodes.ctrl] && keydown[keyCodes.T]) {
+                        self.toggleToolBar();
+                        keydown = {};
+                    }
+                }
+            });
+
+            window.addEventListener('keyup', function (ev) {
+                if (isCtrlT(ev.keyCode)) {
+                    keydown[ev.keyCode] = false;
+                }
+            });
+        },
         showAuthDialog: function showAuthDialog() {
             window.FreeLogApp.trigger(window.FreeLogApp.EventCode.showSystemDialog, {
                 callback: function callback() {
                     console.log('close dialog@toolbar');
                 }
             });
+        },
+        toggleToolBar: function toggleToolBar() {
+            this.hidden = !this.hidden;
+        },
+        show: function show() {
+            this.hidden = false;
+        },
+        hide: function hide() {
+            this.hidden = true;
         }
     }
 });
@@ -13488,14 +13514,14 @@ exports.getCachedPredictionContext = getCachedPredictionContext;
 
 
 /* harmony default export */ var components_toolbar = (toolbar);
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-e3ced89c","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/toolbar/index.vue
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('ul',{staticClass:"tool-bar-wrap"},[_vm._m(0,false,false),_vm._v(" "),_c('li',{staticClass:"contract-tab",attrs:{"title":"合同管理"},on:{"click":_vm.showAuthDialog}},[_c('i',{staticClass:"el-icon-document"})])])}
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-1bb67677","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/components/toolbar/index.vue
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('ul',{directives:[{name:"show",rawName:"v-show",value:(!_vm.hidden),expression:"!hidden"}],staticClass:"tool-bar-wrap",on:{"keyup":function($event){if(!('button' in $event)&&$event.keyCode!==84){ return null; }if(!$event.ctrlKey){ return null; }_vm.toggleToolBar($event)}}},[_vm._m(0,false,false),_vm._v(" "),_c('li',{staticClass:"contract-tab",attrs:{"title":"合同管理"},on:{"click":_vm.showAuthDialog}},[_c('i',{staticClass:"el-icon-document"})])])}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('li',{staticClass:"user-tab",attrs:{"title":"个人中心"}},[_c('a',{attrs:{"href":"/pages/user/index.html","target":"_blank"}},[_c('i',{staticClass:"el-icon-fa-user",attrs:{"aria-hidden":"true"}})])])}]
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ var selectortype_template_index_0_src_components_toolbar = (esExports);
 // CONCATENATED MODULE: ./src/components/toolbar/index.vue
 function injectStyle (ssrContext) {
-  __webpack_require__("6NG4")
+  __webpack_require__("xRlz")
 }
 var normalizeComponent = __webpack_require__("VU/8")
 /* script */
@@ -13507,7 +13533,7 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = "data-v-e3ced89c"
+var __vue_scopeId__ = "data-v-1bb67677"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
@@ -15815,6 +15841,7 @@ function DirectGraph(opts) {
         $svg = d3.select(opts.container);
     } else {
         $svg = d3.select("body").append("svg");
+        opts.container = $svg;
     }
     $svg.attr('width', width).attr('height', height);
 
@@ -15862,6 +15889,27 @@ function DirectGraph(opts) {
         });
     }
 
+    function autoPlacementTip(pos) {
+        var parentRect = opts.container.parentNode.getBoundingClientRect();
+        var conRect = opts.container.getBoundingClientRect();
+        var diffx = conRect.x - parentRect.x,
+            diffy = conRect.y - parentRect.y;
+        var tipRect = $tip.getBoundingClientRect();
+
+        var posx = diffx + pos.x;
+        var posy = diffy + pos.y;
+
+        if (posx + tipRect.width > conRect.width) {
+            posx -= tipRect.width - 25;
+        }
+
+        if (posy + tipRect.height > conRect.height) {
+            posy -= tipRect.height - 25;
+        }
+        $tip.style.left = posx + 'px';
+        $tip.style.top = posy + 'px';
+    }
+
     //selected变虚线
     function restart() {
         // path (link) group
@@ -15886,16 +15934,13 @@ function DirectGraph(opts) {
             var target = p.target;
             var pos = d3.mouse(this);
             console.log(pos);
+
             $tip.style.opacity = 1;
-            $tip.style.top = pos[1] + 'px';
-            $tip.style.left = pos[0] + 'px';
+            // $tip.style.top = pos[1] + 'px'
+            // $tip.style.left = pos[0] + 'px'
             if (self._opts.overlayHandler) {
                 self._opts.overlayHandler(p, $tip);
-            } else {
-                $tip.innerHTML = JSON.stringify({
-                    source: src.data.state,
-                    target: target.data.state
-                });
+                setTimeout(autoPlacementTip({ x: pos[0], y: pos[1] }));
             }
         });
 
@@ -15919,20 +15964,23 @@ function DirectGraph(opts) {
             return 'node ' + (d.data.stateClass || '');
         }).attr('r', Radius).on('mouseenter', function (d) {
             $tip.style.opacity = 1;
-            $tip.style.top = d.y - Radius + 'px';
-            $tip.style.left = d.x + Radius * 1.5 + 'px';
+            // $tip.style.top = (d.y - Radius) + 'px'
+            // $tip.style.left = (d.x + Radius * 1.5) + 'px'
             if (self._opts.overlayHandler) {
                 self._opts.overlayHandler(d.data, $tip);
-            } else {
-                $tip.innerHTML = JSON.stringify(d.data);
+                setTimeout(autoPlacementTip(d));
             }
         });
 
         // show node IDs
-        g.append('svg:text').attr('x', 0).attr('y', 4).attr('class', 'id').text(function (d) {
-            // return d.data.state
-            return d.id;
-        });
+        // g.append('svg:text')
+        //     .attr('x', 0)
+        //     .attr('y', 4)
+        //     .attr('class', 'id')
+        //     .text(function (d) {
+        //         // return d.data.state
+        //         return d.id;
+        //     });
 
         // remove old nodes
         circle.exit().remove();
@@ -16153,7 +16201,7 @@ function parseContract(contractData) {
                     var popData = Object.assign({}, data);
                     if (data.source) {
                         popData.type = 'path';
-                        popData.disabled = data.target.data.stateClass.indexOf('is-disabled') > -1;
+                        popData.disabled = data.source.data.state !== self.data.fsmState;
                         var triggerEvents = data.source.data.targetEvents.filter(function (event) {
                             return event.nextState === data.target.data.state;
                         });
@@ -16162,11 +16210,8 @@ function parseContract(contractData) {
                         //node
                         popData.type = 'node';
                     }
-
-                    if (!popData.disabled) {
-                        self.popData = popData;
-                        self.$refs.popover.showPopper = true;
-                    }
+                    self.popData = popData;
+                    self.$refs.popover.showPopper = true;
                 }
             }
         };
@@ -16181,8 +16226,14 @@ function parseContract(contractData) {
 
     methods: {
         updateContractState: function updateContractState(state) {
+            var _this = this;
+
             state.isProcess = true;
             state.isActivated = true;
+            this.loadPresentableDetail(this.data.contractId).then(function (data) {
+                Object.assign(_this.data, data);
+                _this.draw();
+            });
         },
         triggerLicense: function triggerLicense(data) {
             return window.QI.fetch('//api.freelog.com/v1/contracts/signingLicenses', {
@@ -16198,6 +16249,21 @@ function parseContract(contractData) {
                 data: data
             }).then(function (res) {
                 return res.json();
+            });
+        },
+        loadPresentableDetail: function loadPresentableDetail(contractId) {
+            return window.QI.fetch('//api.freelog.com/v1/contracts/' + contractId).then(function (res) {
+                if (res.status === 200) {
+                    return res.json();
+                } else {
+                    return Promise.reject(res);
+                }
+            }).then(function (res) {
+                if (res.ret === 0 && res.errcode === 0) {
+                    return res.data;
+                } else {
+                    return Promise.reject(res);
+                }
             });
         },
         activateContractHandler: function activateContractHandler(data) {
@@ -16302,19 +16368,18 @@ function parseContract(contractData) {
 //
 //
 //
-//
 
 
 
 /* harmony default export */ var ui_lib_contract_state = (contract_state);
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-83488f5c","hasScoped":false,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/pages/pagebuild/ui-lib/contract-state/index.vue
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"wrapper",staticClass:"contract-state-wrap",on:{"click":_vm.hidePopover}},[_c('el-popover',{ref:"popover",attrs:{"popper-class":"tip js-svg-tip","placement":"top-start","width":"250"}},[_c('div',[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.popData.type == 'node'),expression:"popData.type == 'node'"}]},[_c('h3',[_vm._v("state:"+_vm._s(_vm.popData.state))]),_vm._v(" "),_c('ul',[_c('li',[_vm._v("isActiveState: "+_vm._s(_vm.popData.isActive))]),_vm._v(" "),_c('li',[_vm._v("isProcess: "+_vm._s(_vm.popData.isProcess))]),_vm._v(" "),_c('li',[_vm._v("isFinish: "+_vm._s((_vm.popData.isFinish === undefined)? 'false': _vm.popData.isFinish))])])]),_vm._v(" "),(_vm.popData.type == 'path'&& _vm.popData.source)?_c('div',[_c('p',[_vm._v("event name: "+_vm._s(_vm.popData.event.eventName))]),_vm._v(" "),_c('p',[_vm._v("from "+_vm._s(_vm.popData.source.data.state)+" to "+_vm._s(_vm.popData.target.data.state))]),_vm._v(" "),_c('el-button',{attrs:{"size":"mini"},on:{"click":function($event){_vm.activateContractHandler(_vm.popData)}}},[_vm._v("trigger")])],1):_vm._e()])]),_vm._v(" "),_c('svg',{ref:"stateTree"})],1)}
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-44617055","hasScoped":false,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/pages/pagebuild/ui-lib/contract-state/index.vue
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"wrapper",staticClass:"contract-state-wrap",on:{"click":_vm.hidePopover}},[_c('el-popover',{ref:"popover",attrs:{"popper-class":"tip js-svg-tip","width":"250"}},[_c('div',[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.popData.type == 'node'),expression:"popData.type == 'node'"}]},[_c('h3',[_vm._v("合同状态:"+_vm._s(_vm.popData.state))]),_vm._v(" "),_c('ul',[_c('li',{directives:[{name:"show",rawName:"v-show",value:(_vm.popData.isActive),expression:"popData.isActive"}]},[_vm._v("当合同状态处于此状态时，合同则有效")]),_vm._v(" "),_c('li',{directives:[{name:"show",rawName:"v-show",value:(_vm.popData.isProcess),expression:"popData.isProcess"}]},[_vm._v("合同处于当前状态")]),_vm._v(" "),_c('li',{directives:[{name:"show",rawName:"v-show",value:(_vm.popData.isFinish),expression:"popData.isFinish"}]},[_vm._v("当前状态已执行过")])])]),_vm._v(" "),(_vm.popData.type == 'path'&& _vm.popData.source)?_c('div',[_c('p',[_vm._v("event name: "+_vm._s(_vm.popData.event.eventName))]),_vm._v(" "),_c('p',[_vm._v("from "+_vm._s(_vm.popData.source.data.state)+" to "+_vm._s(_vm.popData.target.data.state))]),_vm._v(" "),_c('el-button',{attrs:{"size":"mini","disabled":_vm.popData.disabled},on:{"click":function($event){_vm.activateContractHandler(_vm.popData)}}},[_vm._v("trigger")])],1):_vm._e()])]),_vm._v(" "),_c('svg',{ref:"stateTree"})],1)}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ var pagebuild_ui_lib_contract_state = (esExports);
 // CONCATENATED MODULE: ./src/pages/pagebuild/ui-lib/contract-state/index.vue
 function injectStyle (ssrContext) {
-  __webpack_require__("0FjP")
+  __webpack_require__("s8ra")
 }
 var normalizeComponent = __webpack_require__("VU/8")
 /* script */
@@ -16359,6 +16424,16 @@ var CONTRACT_STATUS_TIPS = {
     4: '用户终止',
     5: '系统终止',
     6: '合同已终止'
+};
+
+var CONTRACT_STATUS_COLORS = {
+    '-1': 'warning',
+    1: 'warning',
+    2: '',
+    3: 'success',
+    4: 'info',
+    5: 'info',
+    6: 'info'
 };
 // CONCATENATED MODULE: ./src/pages/pagebuild/ui-lib/presentables/index.js
 
@@ -16407,10 +16482,12 @@ var CONTRACT_STATUS_TIPS = {
                 self.resovlePresentableStatus(presentable);
             });
 
-            this.presentables = presentables.slice(0);
-            this.presentables.sort(function (p1, p2) {
+            presentables = presentables.slice(0);
+            presentables.sort(function (p1, p2) {
                 return p1._contractStatus - p2._contractStatus;
             });
+            console.log(presentables);
+            this.presentables = presentables;
         },
         resovlePresentableStatus: function resovlePresentableStatus(presentable) {
             if (presentable.contractDetail) {
@@ -16419,21 +16496,25 @@ var CONTRACT_STATUS_TIPS = {
                 presentable._contractStatus = CONTRACT_STATUS.uncreated;
             }
 
-            presentable.statusTip = CONTRACT_STATUS_TIPS[presentable._contractStatus] || 'n/a';
+            presentable.statusTip = {
+                text: CONTRACT_STATUS_TIPS[presentable._contractStatus] || 'n/a',
+                type: CONTRACT_STATUS_COLORS[presentable._contractStatus]
+            };
         },
         tabActionHandler: function tabActionHandler(presentable) {
             var tabConfig = {
                 content: 'contract-manager',
                 data: presentable,
                 title: '合同管理',
-                name: 'tab' + presentable.presentableId
+                name: 'tab_' + presentable.presentableId
             };
 
             switch (presentable._contractStatus) {
                 case CONTRACT_STATUS.uncreated:
                     Object.assign(tabConfig, {
                         title: '创建合同',
-                        content: 'policy-manager'
+                        content: 'policy-manager',
+                        name: 'create_' + presentable.presentableId
                     });
                     break;
                 case CONTRACT_STATUS.initial:
@@ -16492,16 +16573,23 @@ var CONTRACT_STATUS_TIPS = {
 //
 //
 //
+//
+//
+//
+//
 
 
 
 /* harmony default export */ var ui_lib_presentables = (presentables);
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-5e064993","hasScoped":false,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/pages/pagebuild/ui-lib/presentables/index.vue
-var presentables_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('el-table',{ref:"tableRef",staticStyle:{"width":"100%"},attrs:{"data":_vm.presentables,"stripe":""}},[_c('el-table-column',{attrs:{"label":"资源名称","prop":"tagInfo.resourceInfo.resourceName"}}),_vm._v(" "),_c('el-table-column',{attrs:{"label":"合同名称","prop":"name"}}),_vm._v(" "),_c('el-table-column',{attrs:{"label":"资源类型","prop":"tagInfo.resourceInfo.resourceType","width":"120px"}}),_vm._v(" "),_c('el-table-column',{attrs:{"label":"状态","prop":"statusTip"}}),_vm._v(" "),_c('el-table-column',{attrs:{"label":"操作","align":"center","width":"120px"},scopedSlots:_vm._u([{key:"default",fn:function(scope){return [_c('el-button',{attrs:{"size":"mini"},on:{"click":function($event){_vm.tabActionHandler(scope.row, scope.$index)}}},[_vm._v("\n                    "+_vm._s(_vm.CONTRACT_STATUS_ACTION_TIPS[scope.row._contractStatus])+"\n                ")])]}}])})],1)],1)}
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-3d4bd7b7","hasScoped":false,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/pages/pagebuild/ui-lib/presentables/index.vue
+var presentables_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticStyle:{"width":"100%"}},[_c('el-table',{attrs:{"data":_vm.presentables,"stripe":"","cell-class-name":"presentable-cell"}},[_c('el-table-column',{attrs:{"label":"资源名称","min-width":"250","prop":"tagInfo.resourceInfo.resourceName"}}),_vm._v(" "),_c('el-table-column',{attrs:{"label":"合同名称","min-width":"250","prop":"name"}}),_vm._v(" "),_c('el-table-column',{attrs:{"label":"资源类型","prop":"tagInfo.resourceInfo.resourceType","width":"120"}}),_vm._v(" "),_c('el-table-column',{attrs:{"min-width":"120","label":"状态"},scopedSlots:_vm._u([{key:"default",fn:function(scope){return [_c('el-tag',{attrs:{"type":scope.row.statusTip.type}},[_vm._v(_vm._s(scope.row.statusTip.text))])]}}])}),_vm._v(" "),_c('el-table-column',{attrs:{"label":"操作","align":"center","width":"120"},scopedSlots:_vm._u([{key:"default",fn:function(scope){return [_c('el-button',{attrs:{"size":"mini"},on:{"click":function($event){_vm.tabActionHandler(scope.row, scope.$index)}}},[_vm._v("\n                    "+_vm._s(_vm.CONTRACT_STATUS_ACTION_TIPS[scope.row._contractStatus])+"\n                ")])]}}])})],1)],1)}
 var presentables_staticRenderFns = []
 var presentables_esExports = { render: presentables_render, staticRenderFns: presentables_staticRenderFns }
 /* harmony default export */ var pagebuild_ui_lib_presentables = (presentables_esExports);
 // CONCATENATED MODULE: ./src/pages/pagebuild/ui-lib/presentables/index.vue
+function presentables_injectStyle (ssrContext) {
+  __webpack_require__("wwvQ")
+}
 var presentables_normalizeComponent = __webpack_require__("VU/8")
 /* script */
 
@@ -16510,7 +16598,7 @@ var presentables_normalizeComponent = __webpack_require__("VU/8")
 /* template functional */
 var presentables___vue_template_functional__ = false
 /* styles */
-var presentables___vue_styles__ = null
+var presentables___vue_styles__ = presentables_injectStyle
 /* scopeId */
 var presentables___vue_scopeId__ = null
 /* moduleIdentifier (server only) */
@@ -16542,10 +16630,7 @@ var presentables_Component = presentables_normalizeComponent(
             }
         }
     },
-    mounted: function mounted() {
-        console.log('mounted');
-        console.log(this.step);
-    },
+    mounted: function mounted() {},
 
     methods: {}
 });
@@ -16812,7 +16897,10 @@ var freelog_policy_compiler_default = /*#__PURE__*/__webpack_require__.n(freelog
     name: 'policy-manager',
 
     data: function data() {
-        return {};
+        return {
+            loading: false,
+            btnType: ''
+        };
     },
 
     props: {
@@ -16821,7 +16909,8 @@ var freelog_policy_compiler_default = /*#__PURE__*/__webpack_require__.n(freelog
             default: function _default() {
                 return null;
             }
-        }
+        },
+        tabName: String
     },
     watch: {
         data: 'formatPolicy'
@@ -16864,6 +16953,26 @@ var freelog_policy_compiler_default = /*#__PURE__*/__webpack_require__.n(freelog
 
             this.$set(this.data, 'segments', segments);
         },
+        policyHandler: function policyHandler() {
+            if (this.btnType) {
+                this.gotoExecuteContract();
+            } else {
+                this.signPolicyHandler();
+            }
+        },
+        gotoExecuteContract: function gotoExecuteContract() {
+            var tabConfig = {
+                content: 'contract-manager',
+                data: this.data,
+                title: '合同管理',
+                name: 'tab_' + this.data.presentableId
+            };
+            this.$emit('tabChange', {
+                action: 'close',
+                tabName: this.tabName
+            });
+            this.$emit('tabChange', tabConfig);
+        },
         signPolicyHandler: function signPolicyHandler() {
             var self = this;
             var policyData = self.data;
@@ -16885,6 +16994,10 @@ var freelog_policy_compiler_default = /*#__PURE__*/__webpack_require__.n(freelog
         },
         createContract: function createContract(policyData) {
             var self = this;
+            if (self.loading) {
+                return;
+            }
+            self.loading = true;
             window.QI.fetch('//api.freelog.com/v1/contracts', {
                 method: 'POST',
                 data: {
@@ -16897,8 +17010,11 @@ var freelog_policy_compiler_default = /*#__PURE__*/__webpack_require__.n(freelog
             }).then(function (res) {
                 return res.json();
             }).then(function (data) {
+                self.loading = false;
                 if (data.ret === 0 && data.errcode === 0) {
+                    self.btnType = 'success';
                     self.$message.success('签约成功');
+                    self.$set(self.data, 'contractDetail', data.data);
                 } else {
                     self.$message.error(data.msg);
                 }
@@ -16945,18 +17061,22 @@ var freelog_policy_compiler_default = /*#__PURE__*/__webpack_require__.n(freelog
 //
 //
 //
+//
+//
+//
+//
 
 
 
 /* harmony default export */ var ui_lib_policy = (policy);
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-5ca22945","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/pages/pagebuild/ui-lib/policy/index.vue
-var policy_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('contract-steps'),_vm._v(" "),_c('presentable-detail',{attrs:{"data":_vm.data}}),_vm._v(" "),_c('el-table',{staticClass:"segments",staticStyle:{"width":"100%"},attrs:{"data":_vm.data.segments,"stripe":""}},[_c('el-table-column',{attrs:{"type":"expand"},scopedSlots:_vm._u([{key:"default",fn:function(props){return [_c('pre',[_vm._v(_vm._s(_vm.data._formatPolicyText))])]}}])}),_vm._v(" "),_c('el-table-column',{attrs:{"label":"用户","prop":"detail._userGroup"}}),_vm._v(" "),_c('el-table-column',{attrs:{"label":"合同ID","prop":"detail.segmentId"}}),_vm._v(" "),_c('el-table-column',{scopedSlots:_vm._u([{key:"default",fn:function(scope){return [_c('el-radio',{staticClass:"select-btn",attrs:{"label":scope.row.detail.segmentId},model:{value:(_vm.data.selectedSegmentId),callback:function ($$v) {_vm.$set(_vm.data, "selectedSegmentId", $$v)},expression:"data.selectedSegmentId"}},[_vm._v("选择\n                ")])]}}])})],1),_vm._v(" "),_c('div',{staticClass:"actions"},[_c('el-button',{attrs:{"disabled":!_vm.data.selectedSegmentId},on:{"click":_vm.signPolicyHandler}},[_vm._v("创建合同")])],1)],1)}
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-9b6660fa","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/pages/pagebuild/ui-lib/policy/index.vue
+var policy_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',[_c('contract-steps'),_vm._v(" "),_c('presentable-detail',{attrs:{"data":_vm.data}}),_vm._v(" "),_c('el-table',{staticClass:"segments",staticStyle:{"width":"100%"},attrs:{"data":_vm.data.segments,"stripe":""}},[_c('el-table-column',{attrs:{"type":"expand"},scopedSlots:_vm._u([{key:"default",fn:function(props){return [_c('pre',[_vm._v(_vm._s(props.row.policyText || _vm.data._formatPolicyText))])]}}])}),_vm._v(" "),_c('el-table-column',{attrs:{"label":"用户","prop":"detail._userGroup"}}),_vm._v(" "),_c('el-table-column',{attrs:{"label":"合同ID","prop":"detail.segmentId"}}),_vm._v(" "),_c('el-table-column',{scopedSlots:_vm._u([{key:"default",fn:function(scope){return [_c('el-radio',{staticClass:"select-btn",attrs:{"label":scope.row.detail.segmentId},model:{value:(_vm.data.selectedSegmentId),callback:function ($$v) {_vm.$set(_vm.data, "selectedSegmentId", $$v)},expression:"data.selectedSegmentId"}},[_vm._v("选择\n                ")])]}}])})],1),_vm._v(" "),_c('div',{staticClass:"actions"},[_c('el-button',{directives:[{name:"loading",rawName:"v-loading",value:(_vm.loading),expression:"loading"}],attrs:{"type":_vm.btnType,"disabled":!_vm.data.selectedSegmentId},on:{"click":_vm.policyHandler}},[_vm._v(_vm._s(_vm.btnType?'去执行合同': '创建合同')+"\n        ")])],1)],1)}
 var policy_staticRenderFns = []
 var policy_esExports = { render: policy_render, staticRenderFns: policy_staticRenderFns }
 /* harmony default export */ var pagebuild_ui_lib_policy = (policy_esExports);
 // CONCATENATED MODULE: ./src/pages/pagebuild/ui-lib/policy/index.vue
 function policy_injectStyle (ssrContext) {
-  __webpack_require__("ApA4")
+  __webpack_require__("TKW+")
 }
 var policy_normalizeComponent = __webpack_require__("VU/8")
 /* script */
@@ -16968,7 +17088,7 @@ var policy___vue_template_functional__ = false
 /* styles */
 var policy___vue_styles__ = policy_injectStyle
 /* scopeId */
-var policy___vue_scopeId__ = "data-v-5ca22945"
+var policy___vue_scopeId__ = "data-v-9b6660fa"
 /* moduleIdentifier (server only) */
 var policy___vue_module_identifier__ = null
 var policy_Component = policy_normalizeComponent(
@@ -17044,18 +17164,20 @@ var policy_Component = policy_normalizeComponent(
     },
 
     methods: {
-        debug: function debug() {
-            debugger;
-        },
         _tabChange: function _tabChange(data) {
-            var isExisted = this.tabs.some(function (tab) {
-                return tab.name === data.name;
-            });
+            //关闭tab
+            if (data.action === 'close') {
+                this._removeTab(data.tabName);
+            } else {
+                var isExisted = this.tabs.some(function (tab) {
+                    return tab.name === data.name;
+                });
 
-            if (!isExisted) {
-                this.tabs.push(data);
+                if (!isExisted) {
+                    this.tabs.push(data);
+                }
+                this.activeTabName = data.name;
             }
-            this.activeTabName = data.name;
         },
         _removeTab: function _removeTab(targetName) {
             var _this = this;
@@ -17088,17 +17210,23 @@ var policy_Component = policy_normalizeComponent(
         },
         appendData: function appendData(data) {
             this.presentables.push(data);
+        },
+        showToolBar: function showToolBar() {
+            this.$refs.toolbar.show();
+        },
+        hideToolBar: function hideToolBar() {
+            this.$refs.toolbar.hide();
         }
     }
 });
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-7f5f2eef","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/pages/pagebuild/app.vue
-var app_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[_c('tool-bar'),_vm._v(" "),_c('el-dialog',{attrs:{"close-on-click-modal":false,"title":"合同管理","visible":_vm.shouldShowAuthDialog,"fullscreen":false,"custom-class":"auth-dialog","width":"50%","center":""},on:{"update:visible":function($event){_vm.shouldShowAuthDialog=$event},"close":_vm._closeDialogHandler}},[_c('el-tabs',{attrs:{"type":"card"},on:{"tab-remove":_vm._removeTab},model:{value:(_vm.activeTabName),callback:function ($$v) {_vm.activeTabName=$$v},expression:"activeTabName"}},[_c('el-tab-pane',{attrs:{"label":"presentable list","name":"presentables"}},[_c('presentables',{attrs:{"data":_vm.presentables},on:{"tabChange":_vm._tabChange}})],1),_vm._v(" "),_vm._l((_vm.tabs),function(item,index){return _c('el-tab-pane',{key:item.name,attrs:{"closable":"","label":item.title,"name":item.name}},[_c(item.content,{tag:"component",attrs:{"data":item.data}})],1)})],2)],1)],1)}
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-3541c136","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/pages/pagebuild/app.vue
+var app_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"app"}},[_c('tool-bar',{ref:"toolbar"}),_vm._v(" "),_c('el-dialog',{attrs:{"close-on-click-modal":false,"title":"合同管理","visible":_vm.shouldShowAuthDialog,"fullscreen":false,"custom-class":"auth-dialog","width":"960px","center":""},on:{"update:visible":function($event){_vm.shouldShowAuthDialog=$event},"close":_vm._closeDialogHandler}},[_c('el-tabs',{attrs:{"type":"card"},on:{"tab-remove":_vm._removeTab},model:{value:(_vm.activeTabName),callback:function ($$v) {_vm.activeTabName=$$v},expression:"activeTabName"}},[_c('el-tab-pane',{attrs:{"label":"presentable list","name":"presentables"}},[_c('presentables',{attrs:{"data":_vm.presentables},on:{"tabChange":_vm._tabChange}})],1),_vm._v(" "),_vm._l((_vm.tabs),function(item,index){return _c('el-tab-pane',{key:item.name,attrs:{"closable":"","label":item.title,"name":item.name}},[_c(item.content,{tag:"component",attrs:{"tab-name":item.name,"data":item.data},on:{"tabChange":_vm._tabChange}})],1)})],2)],1)],1)}
 var app_staticRenderFns = []
 var app_esExports = { render: app_render, staticRenderFns: app_staticRenderFns }
 /* harmony default export */ var pagebuild_app = (app_esExports);
 // CONCATENATED MODULE: ./src/pages/pagebuild/app.vue
 function app_injectStyle (ssrContext) {
-  __webpack_require__("yEtL")
+  __webpack_require__("FQRy")
 }
 var app_normalizeComponent = __webpack_require__("VU/8")
 /* script */
@@ -17110,7 +17238,7 @@ var app___vue_template_functional__ = false
 /* styles */
 var app___vue_styles__ = app_injectStyle
 /* scopeId */
-var app___vue_scopeId__ = "data-v-7f5f2eef"
+var app___vue_scopeId__ = "data-v-3541c136"
 /* moduleIdentifier (server only) */
 var app___vue_module_identifier__ = null
 var app_Component = app_normalizeComponent(
@@ -17134,7 +17262,8 @@ var app_Component = app_normalizeComponent(
 //异常对应的handler函数名
 var EventCode = {
     invalidResponse: 'errorResponseHandler',
-    showSystemDialog: 'showDialogHandler'
+    showSystemDialog: 'showDialogHandler',
+    showToolBar: 'showToolBarHandler'
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (EventCode);
@@ -17358,7 +17487,9 @@ function importHtml(href) {
         if (!authErrorData) {
             self.loadWidgets();
         } else {
-            window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, authErrorData.data || {});
+            window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, {
+                data: authErrorData || {}
+            });
         }
     },
     getWidgets: function getWidgets() {
@@ -17375,7 +17506,7 @@ function importHtml(href) {
                 window.QI.fetchPresentable(prensentableId + '.data').then(function (res) {
                     return res.json();
                 }).then(function (data) {
-                    window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, data);
+                    window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, { data: data });
                 }).catch(function (err) {
                     //json解析不成功默认是成功情况,待优化判断逻辑
                     importHtml('' + url + prensentableId + '.data');
@@ -18945,6 +19076,20 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
 /***/ }),
 
+/***/ "s8ra":
+/***/ (function(module, exports, __webpack_require__) {
+
+// removed by extract-text-webpack-plugin
+    if(false) {
+      // 1513932002312
+      var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
+      module.hot.dispose(cssReload);
+      module.hot.accept(undefined, cssReload);
+    }
+  
+
+/***/ }),
+
 /***/ "ucRY":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20181,6 +20326,34 @@ exports.FileStream = FileStream;
 
 /***/ }),
 
+/***/ "wwvQ":
+/***/ (function(module, exports, __webpack_require__) {
+
+// removed by extract-text-webpack-plugin
+    if(false) {
+      // 1513932001984
+      var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
+      module.hot.dispose(cssReload);
+      module.hot.accept(undefined, cssReload);
+    }
+  
+
+/***/ }),
+
+/***/ "xRlz":
+/***/ (function(module, exports, __webpack_require__) {
+
+// removed by extract-text-webpack-plugin
+    if(false) {
+      // 1513932001982
+      var cssReload = require("../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
+      module.hot.dispose(cssReload);
+      module.hot.accept(undefined, cssReload);
+    }
+  
+
+/***/ }),
+
 /***/ "y2Ps":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20380,20 +20553,6 @@ LexerATNConfig.prototype.checkNonGreedyDecision = function(source, target) {
 
 exports.ATNConfig = ATNConfig;
 exports.LexerATNConfig = LexerATNConfig;
-
-/***/ }),
-
-/***/ "yEtL":
-/***/ (function(module, exports, __webpack_require__) {
-
-// removed by extract-text-webpack-plugin
-    if(false) {
-      // 1513760804494
-      var cssReload = require("../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
-      module.hot.dispose(cssReload);
-      module.hot.accept(undefined, cssReload);
-    }
-  
 
 /***/ })
 

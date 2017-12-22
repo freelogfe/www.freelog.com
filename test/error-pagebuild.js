@@ -1,0 +1,1 @@
+window.__auth_info__ = {"__auth_error_info__":{"ret":0,"errcode":70080101,"msg":"用户与节点之间的合约授权失败","data":{"authResult":{"isAuth":false,"authCode":11,"authErrorCode":70080101},"data":{"presentableId":"5a3a24ebbab6bc0027de9e71","contracts":[]},"errors":["未找到有效的用户合同"]}},"__auth_user_id__":10024,"__auth_node_id__":10013}

@@ -6,7 +6,10 @@ export default {
     name: 'policy-manager',
 
     data() {
-        return {}
+        return {
+            loading: false,
+            btnType: ''
+        }
     },
     props: {
         data: {
@@ -14,7 +17,8 @@ export default {
             default() {
                 return null
             }
-        }
+        },
+        tabName: String
     },
     watch: {
         data: 'formatPolicy'
@@ -56,6 +60,26 @@ export default {
 
             this.$set(this.data, 'segments', segments)
         },
+        policyHandler() {
+            if (this.btnType) {
+                this.gotoExecuteContract()
+            } else {
+                this.signPolicyHandler()
+            }
+        },
+        gotoExecuteContract() {
+            var tabConfig = {
+                content: 'contract-manager',
+                data: this.data,
+                title: '合同管理',
+                name: 'tab_' + this.data.presentableId
+            }
+            this.$emit('tabChange', {
+                action: 'close',
+                tabName: this.tabName
+            })
+            this.$emit('tabChange', tabConfig)
+        },
         signPolicyHandler() {
             var self = this;
             var policyData = self.data
@@ -77,6 +101,10 @@ export default {
         },
         createContract(policyData) {
             var self = this;
+            if (self.loading) {
+                return
+            }
+            self.loading = true
             window.QI.fetch('//api.freelog.com/v1/contracts', {
                 method: 'POST',
                 data: {
@@ -89,8 +117,11 @@ export default {
             }).then((res) => {
                 return res.json()
             }).then((data) => {
+                self.loading = false
                 if (data.ret === 0 && data.errcode === 0) {
+                    self.btnType = 'success'
                     self.$message.success('签约成功')
+                    self.$set(self.data, 'contractDetail', data.data)
                 } else {
                     self.$message.error(data.msg)
                 }
