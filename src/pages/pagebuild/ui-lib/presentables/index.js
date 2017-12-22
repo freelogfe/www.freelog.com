@@ -86,15 +86,7 @@ export default {
                     break;
             }
 
-<<<<<<< HEAD
-            this.$emit('tabChange', tabConfig) //自己监听自己，但是处理函数定义在父级元素
-            // this.$message.warning('todo')
-        },
-        showPolicyDetailHandler() {
-
-=======
             this.$emit('tabChange', tabConfig)
->>>>>>> dd72ca31933afc3a6ba5c0e250476ddfcda72416
         }
     }
 }
