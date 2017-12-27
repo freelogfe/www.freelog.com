@@ -18,3 +18,14 @@ export const CONTRACT_STATUS_TIPS = {
     5: '系统终止',
     6: '合同已终止'
 }
+
+
+export const CONTRACT_STATUS_COLORS = {
+    '-1': 'warning',
+    1: 'warning',
+    2: '',
+    3: 'success',
+    4: 'info',
+    5: 'info',
+    6: 'info'
+}

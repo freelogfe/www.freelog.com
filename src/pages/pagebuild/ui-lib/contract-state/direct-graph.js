@@ -19,6 +19,7 @@ function DirectGraph(opts) {
         $svg = d3.select(opts.container)
     } else {
         $svg = d3.select("body").append("svg")
+        opts.container = $svg
     }
     $svg.attr('width', width)
         .attr('height', height);
@@ -89,6 +90,27 @@ function DirectGraph(opts) {
         });
     }
 
+    function autoPlacementTip(pos) {
+        var parentRect = opts.container.parentNode.getBoundingClientRect()
+        var conRect = opts.container.getBoundingClientRect()
+        var diffx = conRect.x - parentRect.x,
+            diffy = conRect.y - parentRect.y;
+        var tipRect = $tip.getBoundingClientRect()
+
+        var posx = diffx + pos.x
+        var posy = diffy + pos.y
+
+        if (posx + tipRect.width > conRect.width) {
+            posx -= tipRect.width - 25
+        }
+
+        if (posy + tipRect.height > conRect.height) {
+            posy -= tipRect.height - 25
+        }
+        $tip.style.left = posx + 'px'
+        $tip.style.top = posy + 'px'
+    }
+
     //selected变虚线
     function restart() {
         // path (link) group
@@ -117,17 +139,14 @@ function DirectGraph(opts) {
                 var src = p.source;
                 var target = p.target
                 var pos = d3.mouse(this)
-console.log(pos)
+                console.log(pos)
+
                 $tip.style.opacity = 1
-                $tip.style.top = pos[1] + 'px'
-                $tip.style.left = pos[0] + 'px'
+                // $tip.style.top = pos[1] + 'px'
+                // $tip.style.left = pos[0] + 'px'
                 if (self._opts.overlayHandler) {
                     self._opts.overlayHandler(p, $tip)
-                } else {
-                    $tip.innerHTML = JSON.stringify({
-                        source: src.data.state,
-                        target: target.data.state
-                    })
+                    setTimeout(autoPlacementTip({x: pos[0], y: pos[1]}))
                 }
             })
 
@@ -155,24 +174,23 @@ console.log(pos)
             .attr('r', Radius)
             .on('mouseenter', function (d) {
                 $tip.style.opacity = 1
-                $tip.style.top = (d.y - Radius) + 'px'
-                $tip.style.left = (d.x + Radius * 1.5) + 'px'
+                // $tip.style.top = (d.y - Radius) + 'px'
+                // $tip.style.left = (d.x + Radius * 1.5) + 'px'
                 if (self._opts.overlayHandler) {
                     self._opts.overlayHandler(d.data, $tip)
-                } else {
-                    $tip.innerHTML = JSON.stringify(d.data)
+                    setTimeout(autoPlacementTip(d))
                 }
             })
 
         // show node IDs
-        g.append('svg:text')
-            .attr('x', 0)
-            .attr('y', 4)
-            .attr('class', 'id')
-            .text(function (d) {
-                // return d.data.state
-                return d.id;
-            });
+        // g.append('svg:text')
+        //     .attr('x', 0)
+        //     .attr('y', 4)
+        //     .attr('class', 'id')
+        //     .text(function (d) {
+        //         // return d.data.state
+        //         return d.id;
+        //     });
 
         // remove old nodes
         circle.exit().remove();

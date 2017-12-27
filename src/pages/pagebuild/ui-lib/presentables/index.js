@@ -1,4 +1,4 @@
-import {CONTRACT_STATUS, CONTRACT_STATUS_TIPS} from '../config'
+import {CONTRACT_STATUS, CONTRACT_STATUS_TIPS, CONTRACT_STATUS_COLORS} from '../config'
 
 
 export default {
@@ -43,10 +43,12 @@ export default {
                 self.resovlePresentableStatus(presentable)
             })
 
-            this.presentables =  presentables.slice(0)
-            this.presentables.sort((p1, p2) => {
+            presentables = presentables.slice(0)
+            presentables.sort((p1, p2) => {
                 return (p1._contractStatus - p2._contractStatus)
             })
+            console.log(presentables)
+            this.presentables = presentables
         },
         resovlePresentableStatus(presentable) {
             if (presentable.contractDetail) {
@@ -55,21 +57,25 @@ export default {
                 presentable._contractStatus = CONTRACT_STATUS.uncreated
             }
 
-            presentable.statusTip = CONTRACT_STATUS_TIPS[presentable._contractStatus] || 'n/a'
+            presentable.statusTip = {
+                text: CONTRACT_STATUS_TIPS[presentable._contractStatus] || 'n/a',
+                type: CONTRACT_STATUS_COLORS[presentable._contractStatus]
+            }
         },
         tabActionHandler(presentable) {
             var tabConfig = {
                 content: 'contract-manager',
                 data: presentable,
                 title: '合同管理',
-                name: 'tab' + presentable.presentableId
+                name: 'tab_' + presentable.presentableId
             }
 
             switch (presentable._contractStatus) {
                 case CONTRACT_STATUS.uncreated:
                     Object.assign(tabConfig, {
                         title: '创建合同',
-                        content: 'policy-manager'
+                        content: 'policy-manager',
+                        name: 'create_' + presentable.presentableId
                     })
                     break;
                 case CONTRACT_STATUS.initial:

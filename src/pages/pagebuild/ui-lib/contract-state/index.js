@@ -197,7 +197,7 @@ export default {
                     var popData = Object.assign({}, data)
                     if (data.source) {
                         popData.type = 'path'
-                        popData.disabled = data.target.data.stateClass.indexOf('is-disabled') > -1;
+                        popData.disabled = data.source.data.state !== self.data.fsmState;
                         var triggerEvents = data.source.data.targetEvents.filter((event) => {
                             return event.nextState === data.target.data.state
                         });
@@ -205,11 +205,8 @@ export default {
                     } else { //node
                         popData.type = 'node'
                     }
-
-                    if (!popData.disabled) {
-                        self.popData = popData
-                        self.$refs.popover.showPopper = true
-                    }
+                    self.popData = popData
+                    self.$refs.popover.showPopper = true
                 }
             }
         }
@@ -225,6 +222,11 @@ export default {
         updateContractState(state) {
             state.isProcess = true
             state.isActivated = true;
+            this.loadPresentableDetail(this.data.contractId)
+                .then((data) => {
+                    Object.assign(this.data, data)
+                    this.draw()
+                })
         },
         triggerLicense(data) {
             return window.QI.fetch('//api.freelog.com/v1/contracts/signingLicenses', {
@@ -240,6 +242,21 @@ export default {
                 data: data
             }).then((res) => {
                 return res.json()
+            })
+        },
+        loadPresentableDetail(contractId) {
+            return window.QI.fetch(`//api.freelog.com/v1/contracts/${contractId}`).then((res) => {
+                if (res.status === 200) {
+                    return res.json()
+                } else {
+                    return Promise.reject(res)
+                }
+            }).then((res) => {
+                if (res.ret === 0 && res.errcode === 0) {
+                    return res.data
+                } else {
+                    return Promise.reject(res)
+                }
             })
         },
         activateContractHandler(data) {

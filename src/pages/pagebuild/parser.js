@@ -39,7 +39,7 @@ export default {
                         return res.json()
                     })
                     .then(function (data) {
-                        window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, data)
+                        window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, {data})
                     })
                     .catch((err) => {
                         //json解析不成功默认是成功情况,待优化判断逻辑

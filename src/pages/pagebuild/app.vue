@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <tool-bar></tool-bar>
+        <tool-bar ref="toolbar"></tool-bar>
         <el-dialog
                 :close-on-click-modal="false"
                 title="合同管理"
@@ -8,9 +8,8 @@
                 :fullscreen="false"
                 custom-class="auth-dialog"
                 @close="_closeDialogHandler"
-                width="50%"
+                width="960px"
                 center>
-            <!--<el-button @click="debug">debugger</el-button>-->
             <el-tabs v-model="activeTabName" type="card" @tab-remove="_removeTab">
                 <el-tab-pane label="presentable list" name="presentables">
                     <presentables :data="presentables" @tabChange="_tabChange"></presentables>
@@ -21,7 +20,8 @@
                         v-for="(item, index) in tabs"
                         :label="item.title"
                         :name="item.name">
-                    <component :is="item.content" :data="item.data"></component>
+                    <component :is="item.content" :tab-name="item.name" :data="item.data"
+                               @tabChange="_tabChange"></component>
                 </el-tab-pane>
             </el-tabs>
         </el-dialog>
@@ -57,19 +57,27 @@
             this.$emit('ready', this)
         },
         methods: {
-            debug(){
-              debugger
-            },
             _tabChange(data) {
+<<<<<<< HEAD
               console.log(data);
                 var isExisted = this.tabs.some((tab) => {
                     return tab.name === data.name
                 })
+=======
+                //关闭tab
+                if (data.action === 'close') {
+                    this._removeTab(data.tabName)
+                } else {
+                    var isExisted = this.tabs.some((tab) => {
+                        return tab.name === data.name
+                    })
+>>>>>>> 44454623e3519fe7d92619d52a82c212dcdca5fa
 
-                if (!isExisted) {
-                    this.tabs.push(data);
+                    if (!isExisted) {
+                        this.tabs.push(data);
+                    }
+                    this.activeTabName = data.name;
                 }
-                this.activeTabName = data.name;
             },
             _removeTab(targetName) {
                 let activeName = this.activeTabName;
@@ -100,6 +108,12 @@
             },
             appendData(data) {
                 this.presentables.push(data)
+            },
+            showToolBar() {
+                this.$refs.toolbar.show()
+            },
+            hideToolBar() {
+                this.$refs.toolbar.hide()
             }
         }
     }

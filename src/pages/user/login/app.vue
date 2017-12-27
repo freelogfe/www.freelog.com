@@ -58,8 +58,8 @@
 
             return {
                 model: {
-                    loginName: '',
-                    password: '',
+                    loginName: '13480125810',
+                    password: '123456',
                     isRememer: false,
                 },
                 rules: rules,
@@ -68,6 +68,7 @@
             }
         },
         mounted() {
+
         },
 
         methods: {
@@ -81,14 +82,14 @@
                     this.error = null
                     this.loading = true;
 
-
-                    var data = Object.assign({},self.model)
-                    data.isRememer = data.isRememer ? 1: 0
+                    var data = Object.assign({}, self.model)
+                    data.isRememer = data.isRememer ? 1 : 0
                     window.fetch('//api.freelog.com/v1/passport/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
+                        credentials: 'include',
                         body: JSON.stringify(data)
                     }).then((res) => {
                         this.loading = false

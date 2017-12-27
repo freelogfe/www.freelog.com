@@ -13,8 +13,6 @@ export default {
         }
     },
     mounted() {
-        console.log('mounted')
-        console.log(this.step)
     },
     methods: {}
 }
