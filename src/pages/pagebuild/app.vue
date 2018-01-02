@@ -58,12 +58,7 @@
         },
         methods: {
             _tabChange(data) {
-<<<<<<< HEAD
-              console.log(data);
-                var isExisted = this.tabs.some((tab) => {
-                    return tab.name === data.name
-                })
-=======
+
                 //关闭tab
                 if (data.action === 'close') {
                     this._removeTab(data.tabName)
@@ -71,7 +66,6 @@
                     var isExisted = this.tabs.some((tab) => {
                         return tab.name === data.name
                     })
->>>>>>> 44454623e3519fe7d92619d52a82c212dcdca5fa
 
                     if (!isExisted) {
                         this.tabs.push(data);
