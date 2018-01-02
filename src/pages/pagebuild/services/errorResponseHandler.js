@@ -52,6 +52,25 @@ var dataloaderHelpers = {
 
 export default {
     name: 'errorResponseHandler',
+    _unactivatedHandler(data) {
+        dataloaderHelpers.loadContractDetail(data)
+            .then(this.appendDataToUI.bind(this));
+    },
+    _unauthHandler(data) {
+        dataloaderHelpers.loadPolicyDetail(data)
+            .then(this.appendDataToUI.bind(this));
+    },
+    _invalidHandler(data) {
+        dataloaderHelpers.loadResourceDetail(data.contract.resourceId)
+            .then((resourcee) => {
+                var result = {
+                    resourceDetail: resourcee,
+                    nodeContractDetail: data.contract
+                }
+                return result
+            })
+            .then(this.appendDataToUI.bind(this));
+    },
     handle(data, appUI, callback) {
         this.appUI = appUI
         if (data && data.errcode) {
@@ -60,17 +79,16 @@ export default {
             switch (data.errcode) {
                 //未激活状态
                 case 70080104:
-                    dataloaderHelpers.loadContractDetail(resData)
-                        .then(this.appendDataToUI.bind(this));
+                    this._unactivatedHandler(resData)
                     break;
                 //未签约状态
                 case 70080101:
-                    dataloaderHelpers.loadPolicyDetail(resData)
-                        .then(this.appendDataToUI.bind(this));
+                    this._unauthHandler(resData)
                     break;
                 //节点与资源之间的合约授权失败
                 case 70080202:
                     console.log(errorMsg, resData)
+                    this._invalidHandler(resData)
                     break;
                 default:
                     break;

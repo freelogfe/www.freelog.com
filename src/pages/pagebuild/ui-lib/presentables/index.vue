@@ -7,7 +7,7 @@
             <el-table-column
                     label="资源名称"
                     min-width="250"
-                    prop="tagInfo.resourceInfo.resourceName">
+                    prop="resourceDetail.resourceName">
             </el-table-column>
             <el-table-column
                     label="合同名称"
@@ -16,7 +16,7 @@
             </el-table-column>
             <el-table-column
                     label="资源类型"
-                    prop="tagInfo.resourceInfo.resourceType"
+                    prop="resourceDetail.resourceType"
                     width="120">
             </el-table-column>
             <el-table-column

@@ -9,6 +9,7 @@ export default {
             presentables: [],
             CONTRACT_STATUS: CONTRACT_STATUS,
             CONTRACT_STATUS_ACTION_TIPS: {
+                0: '通知节点',
                 '-1': '去创建合同',
                 1: '去执行合同', //未开始执行
                 2: '去执行合同', //执行中
@@ -28,17 +29,20 @@ export default {
         }
     },
     mounted() {
-        this.formatPresentableList()
-        console.log(this.data)
+        this.formatPresentableList(this.data)
     },
     watch: {
-        data: 'formatPresentableList'
+        data: function () {
+            this.formatPresentableList(this.data)
+        }
     },
     methods: {
+        refresh() {
+            this.formatPresentableList(this.presentables)
+        },
         //todo 待分页
-        formatPresentableList() {
+        formatPresentableList(presentables) {
             var self = this;
-            var presentables = self.data
             presentables.forEach((presentable) => {
                 self.resovlePresentableStatus(presentable)
             })
@@ -53,6 +57,9 @@ export default {
         resovlePresentableStatus(presentable) {
             if (presentable.contractDetail) {
                 presentable._contractStatus = presentable.contractDetail.status
+            } else if (presentable.nodeContractDetail) {
+                presentable.name = presentable.resourceDetail.resourceName
+                presentable._contractStatus = CONTRACT_STATUS.invalid
             } else {
                 presentable._contractStatus = CONTRACT_STATUS.uncreated
             }
@@ -61,6 +68,10 @@ export default {
                 text: CONTRACT_STATUS_TIPS[presentable._contractStatus] || 'n/a',
                 type: CONTRACT_STATUS_COLORS[presentable._contractStatus]
             }
+        },
+        notifyNodeUser() {
+            //todo 提示节点执行资源合同（变成生效状态）
+            this.$message.success('已通知')
         },
         tabActionHandler(presentable) {
             var tabConfig = {
@@ -71,28 +82,26 @@ export default {
             }
 
             switch (presentable._contractStatus) {
+                case CONTRACT_STATUS.invalid:
+                    this.notifyNodeUser();
+                    break;
                 case CONTRACT_STATUS.uncreated:
                     Object.assign(tabConfig, {
                         title: '创建合同',
                         content: 'policy-manager',
                         name: 'create_' + presentable.presentableId
                     })
-                    break;
                 case CONTRACT_STATUS.initial:
-                    break;
                 case CONTRACT_STATUS.running:
-                    break;
                 case CONTRACT_STATUS.activated:
-                    break;
                 case CONTRACT_STATUS.userTerminated:
-                    break;
                 case CONTRACT_STATUS.sysTerminated:
-                    break;
                 case CONTRACT_STATUS.terminated:
+                    this.$emit('tabChange', tabConfig)
                     break;
+                default:
+                    this.$message('no action')
             }
-
-            this.$emit('tabChange', tabConfig)
         }
     }
 }

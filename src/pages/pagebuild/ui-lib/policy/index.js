@@ -87,8 +87,8 @@ export default {
                 return this.$message.warning('没有选择策略')
             }
 
-            var tip = `presentable name: ${policyData.name}, resource name: ${policyData.resourceDetail.resourceName}`
-            this.$confirm(`<h3>合同详情</h3><p>${tip}。</p>确定签约合同？`, '提示', {
+            var tip = `<ul><li>presentable name: ${policyData.name}</li><li>resource name: ${policyData.resourceDetail.resourceName}</li></ul>`
+            this.$confirm(`<h3>合同详情</h3><p>${tip}</p>确定签约合同？`, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 dangerouslyUseHTMLString: true,
@@ -98,6 +98,38 @@ export default {
             }).catch(() => {
                 //取消
             });
+        },
+        cancelSegmentSelection() {
+            this.data.selectedSegmentId = ''
+        },
+        loadContractDetail(contractId) {
+            return window.QI.fetch(`//api.freelog.com/v1/contracts/${contractId}`).then((res) => {
+                if (res.status === 200) {
+                    return res.json()
+                } else {
+                    return Promise.reject(res)
+                }
+            }).then((res) => {
+                if (res.ret === 0 && res.errcode === 0) {
+                    return res.data
+                } else {
+                    return Promise.reject(res)
+                }
+            })
+        },
+        updateContractDetail(data) {
+            return new Promise((resolve) => {
+                //创建合同后，后端存在异步初始化的过程，这时合同状态为none
+                if (data.fsmState === 'none') {
+                    return this.loadContractDetail(data.contractId)
+                        .then((detail) => {
+                            Object.assign(data, detail)
+                            resolve(data)
+                        })
+                } else {
+                    resolve(data)
+                }
+            })
         },
         createContract(policyData) {
             var self = this;
@@ -121,7 +153,11 @@ export default {
                 if (data.ret === 0 && data.errcode === 0) {
                     self.btnType = 'success'
                     self.$message.success('签约成功')
-                    self.$set(self.data, 'contractDetail', data.data)
+                    this.updateContractDetail(data.data)
+                        .then((data) => {
+                            self.$set(self.data, 'contractDetail', data)
+                            self.$emit('refresh')
+                        })
                 } else {
                     self.$message.error(data.msg)
                 }

@@ -4885,7 +4885,7 @@ exports.BufferedTokenStream = BufferedTokenStream;
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513932001969
+      // 1514363257799
       var cssReload = require("../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -5618,7 +5618,7 @@ exports.LexerModeAction = LexerModeAction;
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513932002633
+      // 1514363258414
       var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -10415,7 +10415,7 @@ exports.CommonTokenFactory = CommonTokenFactory;
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513932001988
+      // 1514363257813
       var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -13417,7 +13417,7 @@ exports.getCachedPredictionContext = getCachedPredictionContext;
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513932001985
+      // 1514363257814
       var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -13431,7 +13431,7 @@ exports.getCachedPredictionContext = getCachedPredictionContext;
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513932002707
+      // 1514363258495
       var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -17467,17 +17467,6 @@ exports.ProxyErrorListener = ProxyErrorListener;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-function importHtml(href) {
-    return new Promise(function (resolve, reject) {
-        var link = document.createElement('link');
-        link.onload = resolve;
-        link.onerror = reject;
-        link.rel = 'import';
-        link.href = href;
-        document.head.appendChild(link);
-    });
-}
-
 /* harmony default export */ __webpack_exports__["a"] = ({
     start: function start() {
         var self = this;
@@ -17497,19 +17486,48 @@ function importHtml(href) {
         var $widgets = $page.querySelectorAll('.js-wc-widget');
         return $widgets;
     },
+    importHtml: function importHtml(opt) {
+        var htmlFile = new File([opt.content], opt.name, {
+            type: opt.type || 'text/html'
+        });
+        var objectURL = window.URL.createObjectURL(htmlFile);
+        var link = document.createElement('link');
+        link.rel = 'import';
+        link.href = objectURL;
+        document.head.appendChild(link);
+    },
+    parseWidgetPresentable: function parseWidgetPresentable(res) {
+        var _this = this;
+
+        var systemMeta = res.headers.get('freelog-system-meta');
+        systemMeta = JSON.parse(systemMeta);
+        res.text().then(function (content) {
+            _this.importHtml({
+                name: systemMeta.widgetName,
+                content: content,
+                type: systemMeta.mimeType
+            });
+        });
+    },
+    triggerPresentableAuth: function triggerPresentableAuth(res) {
+        res.json().then(function (data) {
+            window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, { data: data });
+        });
+    },
     loadWidgets: function loadWidgets() {
+        var self = this;
         var $widgets = this.getWidgets();
-        var url = '//api.freelog.com/v1/nodes/' + window.__auth_info__.__auth_node_id__ + '/presentables/';
         Array.from($widgets).forEach(function (widget) {
             var prensentableId = widget.getAttribute('data-widget-presentable-id');
             if (prensentableId) {
                 window.QI.fetchPresentable(prensentableId + '.data').then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, { data: data });
+                    if (res.headers.get('freelog-contract-id')) {
+                        self.parseWidgetPresentable(res);
+                    } else {
+                        self.triggerPresentableAuth(res);
+                    }
                 }).catch(function (err) {
-                    //json解析不成功默认是成功情况,待优化判断逻辑
-                    importHtml('' + url + prensentableId + '.data');
+                    console.error(err);
                 });
             } else {
                 //还没授权
@@ -19081,7 +19099,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513932002312
+      // 1514363258078
       var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -20331,7 +20349,7 @@ exports.FileStream = FileStream;
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513932001984
+      // 1514363257811
       var cssReload = require("../../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);
@@ -20345,7 +20363,7 @@ exports.FileStream = FileStream;
 
 // removed by extract-text-webpack-plugin
     if(false) {
-      // 1513932001982
+      // 1514363257806
       var cssReload = require("../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
       module.hot.dispose(cssReload);
       module.hot.accept(undefined, cssReload);

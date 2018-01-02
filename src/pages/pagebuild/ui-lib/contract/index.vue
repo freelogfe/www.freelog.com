@@ -2,12 +2,7 @@
     <div>
         <contract-steps :step="1" v-show="data._showContractSteps"></contract-steps>
 
-        <presentable-detail class="contract-detail" :data="data"></presentable-detail>
-
-        <div>
-            <h3 class="contract-title">合同流程</h3>
-            <contract-state class="contract-state-chart" :data="data.contractDetail"></contract-state>
-        </div>
+        <presentable-detail class="contract-detail" :data="data" collapseName="process"></presentable-detail>
     </div>
 </template>
 
@@ -22,8 +17,4 @@
         margin-top: 15px;
     }
 
-    .contract-title {
-        margin-bottom: 6px;
-        text-align: center;
-    }
 </style>

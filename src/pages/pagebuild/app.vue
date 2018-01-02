@@ -12,7 +12,7 @@
                 center>
             <el-tabs v-model="activeTabName" type="card" @tab-remove="_removeTab">
                 <el-tab-pane label="presentable list" name="presentables">
-                    <presentables :data="presentables" @tabChange="_tabChange"></presentables>
+                    <presentables ref="list" :data="presentables" @tabChange="_tabChange"></presentables>
                 </el-tab-pane>
                 <el-tab-pane
                         closable
@@ -21,7 +21,7 @@
                         :label="item.title"
                         :name="item.name">
                     <component :is="item.content" :tab-name="item.name" :data="item.data"
-                               @tabChange="_tabChange"></component>
+                               @tabChange="_tabChange" @refresh="refreshHandler"></component>
                 </el-tab-pane>
             </el-tabs>
         </el-dialog>
@@ -39,7 +39,7 @@
     export default {
         data() {
             return {
-                shouldShowAuthDialog: true,
+                shouldShowAuthDialog: false,
                 presentables: [],
                 tabs: [],
                 activeTabName: 'presentables'
@@ -57,6 +57,9 @@
             this.$emit('ready', this)
         },
         methods: {
+            refreshHandler(){
+                this.$refs.list.refresh()
+            },
             _tabChange(data) {
                 //关闭tab
                 if (data.action === 'close') {

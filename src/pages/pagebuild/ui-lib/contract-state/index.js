@@ -60,11 +60,14 @@ function resolveStateClass(state) {
         stateCls = 'is-finish'
     } else if (state.isWaiting) {
         stateCls = 'is-wait'
+    } else if (state.isNext) {
+        stateCls = ' is-next'
     }
 
     if (state.isActive) {
         stateCls += ' is-active'
     }
+    console.log(state, stateCls)
     return stateCls
 }
 
@@ -127,10 +130,14 @@ function parseContract(contractData) {
             var nextStateNode = stateMap[nextNode.state]
             nextStateNode.deep = node.deep + 1
 
-            if (node.isProcess || node.isWaiting) {
+            //当前节点还没完成，所以后续节点都是等待进行中
+            if (node.isProcess) {
+                nextStateNode.isNext = true
+            } else {
                 nextStateNode.isWaiting = true
             }
 
+            //子节点进行中，那么上一节点肯定是完成状态
             if (nextStateNode.isProcess) {
                 node.isFinish = true
             }
@@ -144,6 +151,7 @@ function parseContract(contractData) {
             }
             walkTree(nextStateNode)
 
+            //回溯子节点是否已完成
             if (nextStateNode.isFinish) {
                 node.isFinish = true
             }
@@ -211,14 +219,32 @@ export default {
             }
         }
     },
+    watch: {
+        data: 'redraw'
+    },
     mounted() {
-        var style = getComputedStyle(this.$refs.wrapper)
         this.opts.$tip = this.$el.querySelector('.js-svg-tip')
         this.opts.container = this.$refs.stateTree;
-        this.opts.width = parseInt(parseInt(style.width) * .8)
+        this.opts.width = this.getWidth() * .8
         this.draw()
     },
     methods: {
+        getWidth() {
+            var el = this.$el.parentNode
+            var width;
+            let style
+            while (true) {
+                style = getComputedStyle(el)
+                width = parseInt(style.width)
+                if (Number.isInteger(width)) {
+                    break;
+                } else {
+                    el = el.parentNode
+                }
+            }
+
+            return width
+        },
         updateContractState(state) {
             state.isProcess = true
             state.isActivated = true;
@@ -303,6 +329,7 @@ export default {
                 Promise.resolve(promise).then((data) => {
                     if (data.ret === 0 && data.errcode === 0) {
                         self.$message.success('操作成功');
+                        self.$refs.popover.showPopper = false
                         self.updateContractState(contract, nextState)
                     } else {
                         self.$message.error(data.msg)
@@ -325,7 +352,11 @@ export default {
             setTreeNodePosition(result, this.opts)
             var resolveData = formatNodes(result.nodeList)
             Object.assign(this.opts, resolveData)
+            this.$refs.stateTree.childNodes.forEach((node) => node.remove())
             new DirectGraph(this.opts)
+        },
+        redraw() {
+            this.draw()
         },
         update(data) {
             this.data = data;

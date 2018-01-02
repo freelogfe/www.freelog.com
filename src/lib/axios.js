@@ -8,8 +8,8 @@ import axios from 'axios'
 
 const instance = axios.create({
   baseURL: '//api.freelog.com/',
-  timeout: 3000,
-  crossdomain: true,
+  timeout: 3e3,
+  // crossdomain: true,
   // withCredentials: true,
   headers: {
     'X-Requested-With': 'XMLHttpRequest'

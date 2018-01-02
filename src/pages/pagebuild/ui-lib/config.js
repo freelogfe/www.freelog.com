@@ -5,11 +5,13 @@ export const CONTRACT_STATUS = {
     activated: 3,
     userTerminated: 4,
     sysTerminated: 5,
-    terminated: 6
+    terminated: 6,
+    invalid: 0
 };
 
 
 export const CONTRACT_STATUS_TIPS = {
+    0: '资源未生效',
     '-1': '未创建合同',
     1: '未开始执行',
     2: '执行中',
@@ -21,8 +23,9 @@ export const CONTRACT_STATUS_TIPS = {
 
 
 export const CONTRACT_STATUS_COLORS = {
+    0: 'info',
     '-1': 'warning',
-    1: 'warning',
+    1: '',
     2: '',
     3: 'success',
     4: 'info',

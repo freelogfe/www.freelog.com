@@ -1,19 +1,5 @@
 webpackJsonp([3],{
 
-/***/ "2SpW":
-/***/ (function(module, exports, __webpack_require__) {
-
-// removed by extract-text-webpack-plugin
-    if(false) {
-      // 1513932001980
-      var cssReload = require("../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
-      module.hot.dispose(cssReload);
-      module.hot.accept(undefined, cssReload);
-    }
-  
-
-/***/ }),
-
 /***/ "65I7":
 /***/ (function(module, exports) {
 
@@ -37,6 +23,20 @@ function defaultsPlugin() {
 	}
 }
 
+
+/***/ }),
+
+/***/ "IZ4R":
+/***/ (function(module, exports, __webpack_require__) {
+
+// removed by extract-text-webpack-plugin
+    if(false) {
+      // 1514363257809
+      var cssReload = require("../../../../node_modules/css-hot-loader/hotModuleReplacement.js")(module.id, {"fileMap":"{fileName}"});
+      module.hot.dispose(cssReload);
+      module.hot.accept(undefined, cssReload);
+    }
+  
 
 /***/ }),
 
@@ -107,8 +107,8 @@ var storage = __webpack_require__("kEHT");
 
         return {
             model: {
-                loginName: '',
-                password: '',
+                loginName: '13480125810',
+                password: '123456',
                 isRememer: false
             },
             rules: rules,
@@ -139,6 +139,7 @@ var storage = __webpack_require__("kEHT");
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include',
                     body: JSON.stringify(data)
                 }).then(function (res) {
                     _this.loading = false;
@@ -155,14 +156,14 @@ var storage = __webpack_require__("kEHT");
         }
     }
 });
-// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-d5a60b70","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/pages/user/login/app.vue
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/template-compiler?{"id":"data-v-6d6ad40c","hasScoped":true,"buble":{"transforms":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./src/pages/user/login/app.vue
 var app_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('section',{staticClass:"login-section"},[_c('header',{staticClass:"login-header"},[(_vm.error)?_c('el-alert',{attrs:{"title":_vm.error.title,"type":"warning","description":_vm.error.message,"show-icon":""}}):_vm._e()],1),_vm._v(" "),_c('el-form',{ref:"loginForm",staticClass:"login-form",attrs:{"auto-complete":"off","model":_vm.model,"rules":_vm.rules,"label-width":"0"}},[_c('h2',{staticClass:"heading"},[_vm._v("用户登录")]),_vm._v(" "),_c('el-form-item',{attrs:{"prop":"loginName"}},[_c('el-input',{attrs:{"type":"text","placeholder":"请输入用户名"},model:{value:(_vm.model.loginName),callback:function ($$v) {_vm.$set(_vm.model, "loginName", $$v)},expression:"model.loginName"}},[_c('template',{slot:"prepend"},[_c('i',{staticClass:"fa fa-user",attrs:{"aria-hidden":"true"}})])],2)],1),_vm._v(" "),_c('el-form-item',{attrs:{"prop":"password"}},[_c('el-input',{attrs:{"type":"password","placeholder":"请输入密码"},nativeOn:{"keyup":function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"enter",13,$event.key)){ return null; }_vm.submit('loginForm')}},model:{value:(_vm.model.password),callback:function ($$v) {_vm.$set(_vm.model, "password", $$v)},expression:"model.password"}},[_c('template',{slot:"prepend"},[_c('i',{staticClass:"fa fa-unlock-alt",attrs:{"aria-hidden":"true"}})])],2)],1),_vm._v(" "),_c('el-form-item',[_c('el-checkbox',{model:{value:(_vm.model.isRememer),callback:function ($$v) {_vm.$set(_vm.model, "isRememer", $$v)},expression:"model.isRememer"}},[_vm._v("记住我")]),_vm._v(" "),_c('span',{staticClass:"user-ops"},[_c('a',{staticClass:"user-op",attrs:{"href":"/user/reset_pw"}},[_vm._v("忘记密码")]),_vm._v(" | "),_c('a',{staticClass:"user-op",attrs:{"href":"/user/signup"}},[_vm._v("注册新用户")])])],1),_vm._v(" "),_c('el-form-item',{staticClass:"login-btns"},[_c('el-button',{staticStyle:{"width":"100%"},attrs:{"type":"primary","loading":_vm.loading},on:{"click":function($event){_vm.submit('loginForm')}}},[_vm._v(_vm._s(_vm.loading ? '登陆中...' : '登录')+"\n            ")])],1)],1)],1)}
 var staticRenderFns = []
 var esExports = { render: app_render, staticRenderFns: staticRenderFns }
 /* harmony default export */ var login_app = (esExports);
 // CONCATENATED MODULE: ./src/pages/user/login/app.vue
 function injectStyle (ssrContext) {
-  __webpack_require__("2SpW")
+  __webpack_require__("IZ4R")
 }
 var normalizeComponent = __webpack_require__("VU/8")
 /* script */
@@ -174,7 +175,7 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = "data-v-d5a60b70"
+var __vue_scopeId__ = "data-v-6d6ad40c"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(

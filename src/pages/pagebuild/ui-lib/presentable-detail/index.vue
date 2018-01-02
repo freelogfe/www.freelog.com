@@ -36,10 +36,23 @@
                 </li>
                 <li>
                     <label class="info-title">合同当前状态：</label>
-                    <span class="info-content">{{data.contractDetail.fsmState}}</span>
+                    <!--创建合同后，后端存在异步初始化的过程，这时合同状态为none-->
+                    <span class="info-content">
+                        {{data.contractDetail.fsmState==='none'?'正在初始化合同中':data.contractDetail.fsmState}}
+                    </span>
                 </li>
             </template>
         </ul>
+        <div v-if="data.contractDetail">
+            <el-collapse :value="collapseName">
+                <el-collapse-item title="合同内容" name="policy">
+                    <pre>{{data.policyText}}</pre>
+                </el-collapse-item>
+                <el-collapse-item title="合同流程" name="process">
+                    <contract-state class="contract-state-chart" :data="data.contractDetail"></contract-state>
+                </el-collapse-item>
+            </el-collapse>
+        </div>
     </div>
 </template>
 

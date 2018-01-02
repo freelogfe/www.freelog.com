@@ -5,6 +5,7 @@
         <presentable-detail :data="data"></presentable-detail>
 
         <el-table
+                v-show="!data.contractDetail"
                 :data="data.segments"
                 stripe
                 class="segments"
@@ -27,6 +28,12 @@
                     <el-radio class="select-btn" v-model="data.selectedSegmentId"
                               :label="scope.row.detail.segmentId">选择
                     </el-radio>
+
+                    <el-tooltip class="item" effect="dark" content="取消选择" placement="top"
+                                v-show="data.selectedSegmentId===scope.row.detail.segmentId">
+                        <i class="el-icon-circle-close-outline"
+                           @click="cancelSegmentSelection(scope.row)"></i>
+                    </el-tooltip>
                 </template>
             </el-table-column>
         </el-table>

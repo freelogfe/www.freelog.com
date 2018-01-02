@@ -127,7 +127,7 @@ function DirectGraph(opts) {
         // add new links
         path.enter().append('svg:path')
             .attr('class', function (d) {
-                return d.target.data.stateClass + ' link'
+                return d.source.data.stateClass + ' link'
             })
             .style('marker-start', function (d) {
                 return d.left ? 'url(#start-arrow)' : '';
@@ -136,10 +136,7 @@ function DirectGraph(opts) {
                 return d.right ? 'url(#end-arrow)' : '';
             })
             .on('mouseenter', function (p) {
-                var src = p.source;
-                var target = p.target
                 var pos = d3.mouse(this)
-                console.log(pos)
 
                 $tip.style.opacity = 1
                 // $tip.style.top = pos[1] + 'px'
@@ -174,8 +171,6 @@ function DirectGraph(opts) {
             .attr('r', Radius)
             .on('mouseenter', function (d) {
                 $tip.style.opacity = 1
-                // $tip.style.top = (d.y - Radius) + 'px'
-                // $tip.style.left = (d.x + Radius * 1.5) + 'px'
                 if (self._opts.overlayHandler) {
                     self._opts.overlayHandler(d.data, $tip)
                     setTimeout(autoPlacementTip(d))

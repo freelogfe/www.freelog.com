@@ -25,21 +25,14 @@ export default {
         'data': 'formatData'
     },
     mounted() {
-        console.log(this.data)
         this.formatData()
     },
     methods: {
+
         formatData() {
             var data = this.data
 
-            var userGroup = data.contractDetail.policySegment.users.reduce((users, item) => {
-                users = users.concat(item.users)
-                return users
-            }, [])
-
-            console.log(data.contractDetail.status)
             this.$set(this.data, '_showContractSteps', data.contractDetail.status < 3)
-            this.$set(data.contractDetail, '_userGroup', userGroup.join('/'))
         }
     }
 }
