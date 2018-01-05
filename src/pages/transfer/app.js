@@ -1,4 +1,4 @@
-import Vue from '@/layout'
+import Vue from '@/layout/user/index'
 import App from './app.vue'
 
 new Vue({

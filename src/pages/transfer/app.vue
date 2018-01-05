@@ -1,85 +1,182 @@
 <template>
   <div id="app">
+    <el-form :model="transferForm" class="transfer-form" :rules="rules" ref="transferForm" label-width="100px">
+      <el-form-item label="合同号" prop="targetId">
+        <el-input v-model="transferForm.targetId" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="发起账户" prop="fromAccountId">
+        <el-select v-model="transferForm.fromAccountId" placeholder="请选择账户" style="width: 400px">
+          <el-option :label="account.cardNo" :value="account.accountId" :key="account.accountId"
+                     v-for="account in accounts"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="接收账户" prop="toAccountId">
+        <el-input v-model="transferForm.toAccountId" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="转账金额" prop="amount">
+        <el-input v-model="transferForm.amount">
+          <template slot="append">feth</template>
+        </el-input>
+      </el-form-item>
 
-    <h4>收款方： philYoung</h4>
-    <h4>收款以太钱包： 012345665479</h4>
-    <h4>合同号： 0755123456</h4>
-    <h4>商品标的：余亮的markdown</h4>
-
-    转出账户：
-    <el-select v-model="value" placeholder="请选择">
-      <el-option
-        v-for="item in options"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-      </el-option>
-    </el-select>
-
-    <br>
-    <el-button type="primary" round @click="transferDialog()">确认转出</el-button>
-
-
+      <el-form-item>
+        <el-button type="primary" @click="showPayDialogHandler">下一步</el-button>
+      </el-form-item>
+    </el-form>
 
     <el-dialog
-    @close="close"
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="30%">
-      <el-input type="password" v-model="pwd" placeholder="请输入密码"></el-input>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="cancel()">取 消</el-button>
-        <el-button type="primary" @click="confirmTransfer()">确 定</el-button>
-      </span>
+            title="转账确认"
+            :visible.sync="showPayDialog"
+            width="30%">
+      <el-form label-width="100px">
+        <el-form-item label="发起账户" class="form-label">
+          {{transferForm.fromAccountId}}
+        </el-form-item>
+        <el-form-item label="接收账户" class="form-label">
+          {{transferForm.toAccountId}}
+        </el-form-item>
+        <el-form-item label="转账金额" class="form-label">
+          {{transferForm.amount}} feth
+        </el-form-item>
+        <el-form-item label="合同ID" class="form-label">
+          {{transferForm.targetId}}
+        </el-form-item>
+        <el-form-item label="订单类型" class="form-label">
+          支付合同
+        </el-form-item>
+        <el-form-item label="支付密码">
+          <el-input type="password" v-model="transferForm.password" placeholder="请输入密码" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      </ul>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="hidePayDialogHandler">取消支付</el-button>
+        <el-button type="primary" @click="confirmTransfer" :loading="loading">确定支付</el-button>
+      </div>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
-    export default {
-      data() {
-        return {
-          pwd: "",
-          value: "",
-          dialogVisible : false,
-          options: [{
-            value: '选项1',
-            label: 'account1(100.00FC)'
-          }, {
-            value: '选项2',
-            label: 'account2(1020.00FC)'
-          }, {
-            value: '选项3',
-            label: 'account3(1200.00FC)'
-          }, {
-            value: '选项4',
-            label: 'account4(1400.00FC)'
-          }, {
-            value: '选项5',
-            label: 'account5(1500.00FC)'
-          }],
-          value: ''
-        }
-      },
-      methods: {
-        transferDialog () {
-          this.dialogVisible = true;
-        },
-        close () {
-          this.dialogVisible = false;
-          this.pwd  = "";
-        },
-        confirmTransfer () {
-          //send password
-          console.log(this.value);
-          this.dialogVisible = false;
+  //http://doc.freelog.com/pay/%E5%8E%BB%E6%94%AF%E4%BB%98.html
+  import querystring from 'querystring'
 
+  export default {
+    data() {
+      var validateAmount = (rule, value, callback) => {
+        var isNum = !isNaN(parseFloat(value))
+        if (value === '') {
+          callback(new Error('请输入转账金额'));
+        } else if (!isNum) {
+          callback(new Error('转账金额输入不合法'));
+        } else if (value <= 0) {
+          callback(new Error('转账金额不能为0'));
+        } else {
+          callback();
+        }
+      };
+
+      return {
+        showPayDialog: false,
+        rules: {
+          targetId: [{required: true, message: '请输入targetId', trigger: 'blur'}],
+          fromAccountId: [{required: true, message: '请输入发起账户', trigger: 'blur'}],
+          toAccountId: [{required: true, message: '请输入接收账户', trigger: 'blur'}],
+          amount: [{required: true, message: '请输入转账金额', trigger: 'blur'},
+            {validator: validateAmount, trigger: 'blur'},
+          ]
+        },
+        loading: false,
+        accounts: [],
+        transferForm: {
+          targetId: '',
+          fromAccountId: '',
+          toAccountId: '',
+          amount: 0,
+          password: '',
+          orderType: 1 //支付订单类型
         }
       }
+    },
+    mounted() {
+      this.queryAccounts()
+      this.autoFillForm()
+    },
+    methods: {
+      autoFillForm() {
+        var qs = querystring.parse(location.search.slice(1))
+
+        Object.keys(this.transferForm).forEach((key) => {
+          if (qs[key]) {
+            this.transferForm[key] = qs[key]
+          }
+        })
+      },
+      showPayDialogHandler() {
+        this.$refs.transferForm.validate((valid, err) => {
+          if (valid) {
+            this.showPayDialog = true;
+          } else {
+            console.log(err)
+          }
+        })
+      },
+      hidePayDialogHandler() {
+        this.showPayDialog = false;
+      },
+      queryAccounts() {
+        this.$axios.get('//api.freelog.com/v1/pay/accounts')
+          .then((res) => {
+            this.accounts = res.data.data
+            console.log(this.accounts)
+          })
+      },
+      confirmTransfer() {
+        if (this.loading) {
+          return
+        }
+        this.loading = true
+        var data = Object.assign({}, this.transferForm)
+        data.amount = data.amount / 1e3;
+        this.$axios.post('//api.freelog.com/v1/pay', {
+          data: data
+        }).then((res) => {
+          var data = res.data
+          this.showPayDialog = false;
+          this.loading = false
+          if (data.ret === 0 && data.errcode === 0) {
+            this.renderPayResult(data)
+          } else {
+            this.$message.error(data.msg)
+          }
+        }).catch(() => {
+          this.loading = false
+          this.showPayDialog = false;
+        })
+      },
+      renderPayResult() {
+
+      }
     }
+  }
 </script>
 
-<style lang="postcss" scoped>
+<style lang="less" scoped>
+  #app {
+    width: 990px;
+    margin: auto;
+  }
 
+  .form-label {
+    margin-bottom: 0;
+  }
+
+  .transfer-form {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .el-dialog__body {
+    padding: 0;
+  }
 </style>

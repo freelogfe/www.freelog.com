@@ -1,4 +1,4 @@
-import Vue from '@/layout'
+import Vue from '@/layout/index'
 
 import AppView from '../app.vue'
 

@@ -60,7 +60,7 @@ export default {
     data(){
         return {
           tableData: [],
-          shouldShowAuthDialog: true,
+          shouldShowAuthDialog: false,
         }
     },
     components:{UserNavBar},
@@ -87,6 +87,7 @@ export default {
         console.log(row.address);
       },
       handleContract () {
+        this.shouldShowAuthDialog = true;
         console.log('管理合同');
       }
     }

@@ -2,7 +2,7 @@ var routeMap = {
   "1" : "/pages/user/index.html",
   "3" : "/pages/favorites.html",
   "4" : "/pages/userResource.html",
-  "5" : "/pages/accountManagement.html",
+  "5" : "/pages/account.html",
 };
 export default {
     name: 'user-nav-bar',
