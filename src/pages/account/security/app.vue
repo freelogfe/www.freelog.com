@@ -49,7 +49,7 @@
         if (value === '') {
           callback(new Error('请输入密码'));
         } else {
-          if (this.passwordForm.newPassword !== '') {
+          if (this.passwordForm.checkNewPassword !== '') {
             this.$refs.passwordForm.validateField('checkNewPassword');
           }
           callback();
@@ -69,10 +69,10 @@
         shouldShowPasswordDialog: false,
         passwordRules: {
           newPassword: [
-            {validator: validatePass, trigger: 'blur'}
+            {validator: validatePass, trigger: 'change'}
           ],
           checkNewPassword: [
-            {validator: validatePass2, trigger: 'blur'}
+            {validator: validatePass2, trigger: 'change'}
           ],
         },
         passwordForm: {
@@ -110,15 +110,21 @@
         location.href = path
       },
       confirmHandler() {
-        var fnName = this.passwordForm.type;
-        this[fnName]()
-          .then(() => {
-            this.shouldShowPasswordDialog = false
-          })
-          .catch((err) => {
-            var msg = (err && err.message) || err || '出错啦！'
-            this.$message.error(msg)
-          })
+        this.$refs.passwordForm.validate((valid)=>{
+          if (valid) {
+            let fnName = this.passwordForm.type;
+            this[fnName]()
+              .then(() => {
+                this.shouldShowPasswordDialog = false
+              })
+              .catch((err) => {
+                var msg = (err && err.message) || err || '出错啦！'
+                this.$message.error(msg)
+              })
+          } else {
+            this.$message.error('输入校验有误')
+          }
+        })
       },
       resetLoginPassword() {
         var user = store.get('userInfo')
@@ -129,9 +135,7 @@
           loginName: user.loginName,
           password: this.passwordForm.newPassword
         };
-        return this.$axios.post(`//api.freelog.com/v1/userinfos/resetPassword`, {
-          data: data
-        }).then((res) => {
+        return this.$axios.post(`//api.freelog.com/v1/userinfos/resetPassword`, data).then((res) => {
           var result = res.data
           if (result.ret === 0 && result.errcode === 0) {
             this.$message.success('设置成功')
@@ -144,9 +148,7 @@
         var data = {
           password: this.passwordForm.newPassword
         };
-        return this.$axios.post(`//api.freelog.com/v1/pay/password`, {
-          data: data
-        }).then((res) => {
+        return this.$axios.post(`//api.freelog.com/v1/pay/password`, data).then((res) => {
           var result = res.data
           if (result.ret === 0 && result.errcode === 0) {
             this.$message.success('设置成功')
@@ -165,9 +167,7 @@
           oldPassword: this.passwordForm.oldPassword,
           newPassword: this.passwordForm.newPassword,
         };
-        return this.$axios.put(`//api.freelog.com/v1/pay/password/${user.userId}`, {
-          data: data
-        }).then((res) => {
+        return this.$axios.put(`//api.freelog.com/v1/pay/password/${user.userId}`, data).then((res) => {
           var result = res.data
           if (result.ret === 0 && result.errcode === 0) {
             this.$message.success('重置成功')

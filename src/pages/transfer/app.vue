@@ -45,7 +45,17 @@
           支付合同
         </el-form-item>
         <el-form-item label="支付密码">
-          <el-input type="password" v-model="transferForm.password" placeholder="请输入密码" clearable></el-input>
+          <el-input type="password" style="width: 90%"
+                    v-model="transferForm.password"
+                    placeholder="请输入密码"
+                    clearable></el-input>
+          <el-tooltip placement="left">
+            <div slot="content" class="pay-pw-tips">
+              <p><a href="/pages/account/security.html">忘记支付密码？去重置 ></a></p>
+              <p><a href="/pages/account/security.html">没有创建支付密码？去创建 ></a></p>
+            </div>
+            <i class="el-icon-question"></i>
+          </el-tooltip>
         </el-form-item>
       </el-form>
       </ul>
@@ -92,7 +102,7 @@
           targetId: '',
           fromAccountId: '',
           toAccountId: '',
-          amount: 0,
+          amount: '',
           password: '',
           orderType: 1 //支付订单类型
         }
@@ -162,21 +172,5 @@
 </script>
 
 <style lang="less" scoped>
-  #app {
-    width: 990px;
-    margin: auto;
-  }
-
-  .form-label {
-    margin-bottom: 0;
-  }
-
-  .transfer-form {
-    width: 100%;
-    padding: 10px;
-  }
-
-  .el-dialog__body {
-    padding: 0;
-  }
+  @import "index.less";
 </style>

@@ -15,6 +15,7 @@
 
 <script>
     import UserNavBar from './index.js'
+
     export default UserNavBar
 </script>
 

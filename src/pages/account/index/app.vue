@@ -14,7 +14,7 @@
       </li>
       <li>
         <span class="setting-title"><label>用户角色</label></span>
-        <span class="setting-desc">{{user.userRole}}</span>
+        <span class="setting-desc">{{userRoles}}</span>
       </li>
     </ul>
   </div>
@@ -32,6 +32,23 @@
       }
     },
     mounted() {
+    },
+    computed: {
+      userRoles: function () {
+        var userRoleByte = this.user.userRole;
+        var roles = [
+          {val: 1, name: '普通用户'},
+          {val: 2, name: '节点商'},
+          {val: 4, name: '资源商'}
+        ].reduce((roles, item) => {
+          if ((item.val & userRoleByte) === item.val) {
+            roles.push(item.name)
+          }
+          return roles
+        }, [])
+
+        return roles.join('|')
+      }
     },
     methods: {}
   }

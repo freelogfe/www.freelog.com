@@ -1,30 +1,30 @@
 <template>
-    <div class="nav-top-wrapper">
-        <div class="nav-top-container" v-if="user">
-            <ul class="nav-top-right">
-                <li class="nav-top-item">
-                    <el-dropdown @command="handleNavTopCommand">
+  <div class="nav-top-wrapper">
+    <div class="nav-top-container" v-if="user">
+      <ul class="nav-top-right">
+        <li class="nav-top-item">
+          <el-dropdown @command="handleNavTopCommand">
                       <span class="el-dropdown-link">
                         {{user.nickname}}<i class="el-icon-arrow-down el-icon--right"></i>
                       </span>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="gotoAccountSetting">账户设置</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
-                </li>
-                <li class="nav-top-item" @click="logoutHandler">退出</li>
-                <li class="nav-top-item">我的feth</li>
-            </ul>
-        </div>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="gotoAccountSetting">账户设置</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </li>
+        <li class="nav-top-item" @click="logoutHandler">退出</li>
+        <li class="nav-top-item"><a href="/pages/user/index.html">我的feth</a></li>
+      </ul>
     </div>
+  </div>
 </template>
 
 <script>
-    import NavTopBar from './index'
+  import NavTopBar from './index'
 
-    export default NavTopBar
+  export default NavTopBar
 </script>
 
 <style lang="less" scoped>
-    @import "index.less";
+  @import "index.less";
 </style>

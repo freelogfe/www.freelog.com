@@ -3,7 +3,7 @@
     <nav-top-bar></nav-top-bar>
     <el-container class="app-container">
       <el-header>
-        header
+        <!--header-->
       </el-header>
       <el-container>
         <el-aside>
@@ -16,7 +16,7 @@
           </el-menu>
         </el-aside>
         <el-main style="background: white;">
-          <div id="app"></div>
+          <div id="main-app"></div>
         </el-main>
       </el-container>
     </el-container>

@@ -22,7 +22,7 @@
         </div>
       </el-header>
       <el-main style="background: white;">
-        <div id="app"></div>
+        <div id="main-app"></div>
       </el-main>
     </el-container>
   </div>

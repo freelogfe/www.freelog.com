@@ -2,7 +2,7 @@ import Vue from '../index'
 import App from './index.vue'
 
 new Vue({
-  el: '#app-container',
+  el: '#app',
   render: h => h(App)
 })
 

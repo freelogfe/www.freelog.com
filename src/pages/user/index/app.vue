@@ -1,241 +1,56 @@
 <template>
-    <div id="app">
+  <div id="app">
+    <div class="main-content">
+      <el-main>
+        <account-list></account-list>
         <div class="main-content">
-            <el-main>
-                <div class="assets-wrap">
-                    <el-row>
-                        <el-col :span="6" v-for="(account, index) in accounts" :key="index">
-                            <el-card class="account-card" :body-style="cardStyle">
-                                <p class="account-card-info">币种：{{account.showDetail.name}}</p>
-                                <p class="account-card-info">
-                                    <label>账户地址：</label>
-                                    <el-tooltip class="item" effect="dark" content="点击复制" placement="top"
-                                                v-if="account.cardNo">
-                                        <clip-board v-model="account.cardNo"
-                                                    @copyDone="copyDoneHandler">
-                                            <a href="javascript:;">
-                                                <i class="el-icon-fa-clipboard"></i>
-                                            </a>
-                                        </clip-board>
-                                    </el-tooltip>
-                                    <span v-else>账户不存在</span>
-                                </p>
-                                <p class="account-card-info">账户余额: <span>{{account.balance}}</span></p>
-                                <p class="account-card-info" v-if="account.status===1">
-                                    <el-dropdown @command="handleCommand">
-                                          <span class="el-dropdown-link">
-                                            账户操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                          </span>
-                                        <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item :command="{type: 'pay',data:account}">
-                                                去转账
-                                            </el-dropdown-item>
-                                                <el-dropdown-item :command="{type: 'download',data:account}">下载keystore
-                                            </el-dropdown-item>
-                                            <el-dropdown-item :command="{type: 'clear',data:account}">清除下载keystore
-                                            </el-dropdown-item>
-                                        </el-dropdown-menu>
-                                    </el-dropdown>
-                                </p>
-                            </el-card>
-                        </el-col>
-                        <el-col :span="6">
-                            <el-card class="account-card" :body-style="cardStyle">
-                                <a href="/pages/account/create.html" class="add-account-btn">
-                                    <p><i class="el-icon-plus"></i></p>
-                                    <p>添加账户</p>
-                                </a>
-                            </el-card>
-                        </el-col>
-                    </el-row>
-                </div>
-                <div class="main-content" hidden>
-                    <user-nav-bar index="1"></user-nav-bar>
-                    <div class="contentBody">
-                        <el-table
-                                :data="tableData"
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="date"
-                                    label="日期"
-                                    width="180">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="name"
-                                    label="姓名"
-                                    width="180">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="address"
-                                    label="地址">
-                                <template slot-scope="scope">
-                                    <a>{{ scope.row.address }}</a>
-                                    <el-button
-                                            size="mini"
-                                            @click="handleEdit(scope.$index, scope.row)">查看
-                                    </el-button>
-                                    <el-button
-                                            size="mini"
-                                            @click="handleContract(scope.$index, scope.row)">管理合同
-                                    </el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
-                </div>
-            </el-main>
+          <el-menu default-active="1" mode="horizontal">
+            <el-menu-item index="1">已购买资源</el-menu-item>
+          </el-menu>
+          <div class="contentBody">
+            <contract-list></contract-list>
+          </div>
         </div>
+      </el-main>
     </div>
+  </div>
 </template>
 
 <script>
-    import ClipBoard from '@/components/clipboard/index.vue'
-    import UserNavBar from '@/pages/userCenterNavBar/index.vue';
-    import AccountTypes from '@/config/account-types'
-    import NavTopBar from '@/components/nav-top/index.vue'
+  import UserNavBar from '@/pages/userCenterNavBar/index.vue';
+  import NavTopBar from '@/components/nav-top/index.vue'
+  import AccountList from './accounts/index.vue'
+  import ContractList from './contracts/index.vue'
 
-    export default {
-        data() {
-            return {
-                cardStyle: {
-                    padding: '5px',
-                    'min-height': '150px',
-                    display: 'flex',
-                    'justify-content': 'center',
-                    'align-items': 'center',
-                    'flex-wrap': 'wrap',
-                },
-                accounts: [],
-                tableData: [{
-                    date: '2016-05-02',
-                    name: 'philyoung',
-                    address: 'http://api.freelog.com/node/home/philyoung'
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: 'http://api.freelog.com/node/home/philyoung'
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: 'http://api.freelog.com/node/home/philyoung'
-                }, {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: 'http://api.freelog.com/node/home/philyoung'
-                }]
-            }
-        },
-        mounted() {
-            this.loadAssets()
-                .then(this.formatAssets.bind(this))
-                .then((accounts) => {
-                    this.accounts = accounts;
-                })
-        },
-        components: {
-            UserNavBar,
-            ClipBoard,
-            NavTopBar
-        },
-        methods: {
-            handleCommand(command) {
-                switch (command.type) {
-                    case 'download':
-                        this.downloadKeyStore(command.data.cardNo)
-                        break;
-                    case 'clear':
-                        this.clearKeyStore(command.data.cardNo)
-                        break;
-                    case 'pay':
-                        this.gotoPayHandler(command.data)
-                        break;
-                }
-            },
-            gotoPayHandler(account){
-                location.href = `/pages/transfer.html?fromAccountId=${account.accountId}`
-            },
-            downloadFile(filename, content) {
-                var $a = document.createElement('a')
-                var blob = new Blob([content])
-                $a.download = filename
-                $a.href = URL.createObjectURL(blob)
-                document.body.appendChild($a)
-                $a.click()
-                $a.remove()
-            },
-            downloadKeyStore(address) {
-                return this.$axios.get('//api.freelog.com/v1/pay/accounts/downLoadKeyStore', {
-                    params: {
-                        address: address
-                    }
-                }).then((res) => {
-                    try {
-                        var content = new Blob([JSON.stringify(res.data, null, 2)], {type: 'application/json'})
-                        this.downloadFile(address, content)
-                    } catch (err) {
-                        this.$message.error(err)
-                    }
-                }).catch((err) => {
-                    console.log(err);
-                })
-            },
-            clearKeyStore(address) {
-                this.$confirm('确定清除服务器上的keystore文件？')
-                    .then((_) => {
-                        return this.$axios.get('//api.freelog.com/v1/pay/accounts/clearKeyStore', {
-                            params: {
-                                address: address
-                            }
-                        }).then((res) => {
-                            console.log(res.data)
-                            var result = res.data
-                            if (result.ret === 0 && result.errcode === 0) {
-                                this.$message.success('成功清除')
-                            } else {
-                                this.$message.error(result.msg)
-                            }
-                        }).catch((err) => {
-                            console.log(err);
-                        })
-                    }).catch((_) => {
-                })
-            },
-            formatAssets(accounts) {
-                console.log(accounts)
-                accounts.forEach((account) => {
-                    account.showDetail = AccountTypes[account.accountType]
-                })
+  export default {
+    data() {
+      return {
+      }
+    },
+    mounted() {
 
-                return accounts
-            },
-            copyDoneHandler(ret) {
-                ret ? this.$message.success('复制成功') : this.$message.error('复制失败')
-            },
-            loadAssets() {
-                return this.$axios.get('//api.freelog.com/v1/pay/accounts').then((res) => {
-                    console.log(res.data)
-                    return res.data.data;
-                }).catch((err) => {
-                    console.log(err);
-                })
-            },
-            loadUserInfo() {
-                var self = this;
-                window.fetch('//api.freelog.com/v1/userinfos/10024', {
-                    credentials: 'same-origin'
-                }).then(function (res) {
-                    return res.json()
-                }).then(function (data) {
-                    self.user = data.data;
-                })
-            },
-            handleEdit(index, row) {
-                window.location.assign(row.address)
-            }
-        }
+    },
+    components: {
+      UserNavBar,
+      NavTopBar,
+      AccountList,
+      ContractList
+    },
+    methods: {
+      loadUserInfo() {
+        var self = this;
+        window.fetch('//api.freelog.com/v1/userinfos/10024', {
+          credentials: 'same-origin'
+        }).then(function (res) {
+          return res.json()
+        }).then(function (data) {
+          self.user = data.data;
+        })
+      }
     }
+  }
 </script>
 
 <style lang="less" scoped>
-    @import "app.less";
+  @import "app.less";
 </style>
