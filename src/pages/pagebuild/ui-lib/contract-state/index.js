@@ -1,4 +1,5 @@
-import DirectGraph from './direct-graph'
+import DirectGraph from './direct-graph';
+import LicenseEvent from '../events-popup-window/license/index.vue'
 
 var lastNodeId = -1;
 
@@ -195,6 +196,11 @@ export default {
     data() {
         var self = this;
         return {
+
+          params: {},
+          component:'',
+          showDialog: false,
+
             popData: {},
             opts: {
                 radius: 12,
@@ -219,6 +225,9 @@ export default {
             }
         }
     },
+    components: {
+      LicenseEvent
+    },
     watch: {
         data: 'redraw'
     },
@@ -226,7 +235,17 @@ export default {
         this.opts.$tip = this.$el.querySelector('.js-svg-tip')
         this.opts.container = this.$refs.stateTree;
         this.opts.width = this.getWidth() * .8
-        this.draw()
+        this.draw();
+
+        this.$on('test', function (data) {
+              if (data.ret === 0 && data.errcode === 0) {
+                  this.$message.success('操作成功');
+                  this.$refs.popover.showPopper = false
+                  this.updateContractState(contract, nextState)
+              } else {
+                  this.$message.error(data.msg)
+              }
+        }.bind(this))
     },
     methods: {
         getWidth() {
@@ -254,22 +273,22 @@ export default {
                     this.draw()
                 })
         },
-        triggerLicense(data) {
-            return window.QI.fetch('//api.freelog.com/v1/contracts/signingLicenses', {
-                method: 'POST',
-                data: data
-            }).then((res) => {
-                return res.json()
-            })
-        },
-        triggerContractState(data) {
-            return window.QI.fetch('//api.freelog.com/v1/contracts/test', {
-                method: 'POST',
-                data: data
-            }).then((res) => {
-                return res.json()
-            })
-        },
+        // triggerLicense(data) {
+        //     return window.QI.fetch('//api.freelog.com/v1/contracts/signingLicenses', {
+        //         method: 'POST',
+        //         data: data
+        //     }).then((res) => {
+        //         return res.json()
+        //     })
+        // },
+        // triggerContractState(data) {
+        //     return window.QI.fetch('//api.freelog.com/v1/contracts/test', {
+        //         method: 'POST',
+        //         data: data
+        //     }).then((res) => {
+        //         return res.json()
+        //     })
+        // },
         loadPresentableDetail(contractId) {
             return window.QI.fetch(`//api.freelog.com/v1/contracts/${contractId}`).then((res) => {
                 if (res.status === 200) {
@@ -288,6 +307,9 @@ export default {
         activateContractHandler(data) {
             var self = this;
             var contract = self.data;
+            //把contract的信息通过params往子组件传递
+            self.params = Object.assign(self.popData.event, { contractId: contract.contractId});
+
             var contractId = contract.contractId
             var source = data.source.data
             var target = data.target.data
@@ -312,29 +334,41 @@ export default {
             }
 
             function triggerHandler(event) {
-                var promise;
-                if (event.type === 'signing') {
-                    promise = self.triggerLicense({
-                        contractId: contractId,
-                        eventId: event.eventId,
-                        licenseIds: event.params
-                    })
-                } else {
-                    promise = self.triggerContractState({
-                        contractId: contractId,
-                        eventId: event.eventId
-                    })
-                }
 
-                Promise.resolve(promise).then((data) => {
-                    if (data.ret === 0 && data.errcode === 0) {
-                        self.$message.success('操作成功');
-                        self.$refs.popover.showPopper = false
-                        self.updateContractState(contract, nextState)
-                    } else {
-                        self.$message.error(data.msg)
-                    }
-                })
+              self.showDialog = false;
+              setTimeout(function() {
+                self.showDialog = true;
+                document.querySelector('.v-modal').style.zIndex  = 0;
+              }.bind(this), 0)
+
+
+              if(event.type =='signing') {
+                self.component = 'license-event';
+              }
+
+                // var promise;
+                // if (event.type === 'signing') {
+                //     promise = self.triggerLicense({
+                //         contractId: contractId,
+                //         eventId: event.eventId,
+                //         licenseIds: event.params
+                //     })
+                // } else {
+                //     promise = self.triggerContractState({
+                //         contractId: contractId,
+                //         eventId: event.eventId
+                //     })
+                // }
+                //
+                // Promise.resolve(promise).then((data) => {
+                //     if (data.ret === 0 && data.errcode === 0) {
+                //         self.$message.success('操作成功');
+                //         self.$refs.popover.showPopper = false
+                //         self.updateContractState(contract, nextState)
+                //     } else {
+                //         self.$message.error(data.msg)
+                //     }
+                // })
             }
         },
         hidePopover(event) {

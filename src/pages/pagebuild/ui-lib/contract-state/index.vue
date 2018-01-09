@@ -1,5 +1,8 @@
 <template>
     <div class="contract-state-wrap" ref="wrapper" @click="hidePopover">
+
+        <component :is="component" :params="params" :showDialog="showDialog" ></component>
+
         <el-popover
                 ref="popover"
                 popper-class="tip js-svg-tip"
