@@ -13,7 +13,7 @@
     "axios": "^0.17.1",
     "element-ui": "^2.0.9",
     "font-awesome": "^4.7.0",
-    "freelog_policy_compiler": "0.0.17",
+    "freelog_policy_compiler": "^0.0.20",
     "querystring": "^0.2.0",
     "store": "^2.0.12",
     "vue": "^2.5.13"

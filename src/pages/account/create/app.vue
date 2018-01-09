@@ -1,4 +1,4 @@
-<template id="accountManagement">
+<template>
   <div id="main-app">
     <div class="create-account-container">
       <div>
@@ -113,7 +113,7 @@
             {min: 6, message: '最少6个字符', trigger: 'blur'}
           ],
           checkPass: [
-            {validator: validatePass2, trigger: 'blur'},
+            {validator: validatePass2, trigger: 'change'},
             {min: 6, message: '最少6个字符', trigger: 'blur'}
           ]
         },
@@ -182,7 +182,7 @@
               .then((res) => {
                 var result = res.data
                 if (result.ret === 0 && result.errcode === 0) {
-                  this.$message.success('操作成功')
+                  this.$message.success('创建成功')
                 } else {
                   this.$message.error(result.msg || '操作失败')
                 }

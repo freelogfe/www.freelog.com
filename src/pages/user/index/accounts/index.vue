@@ -8,9 +8,9 @@
             {{account.showDetail.name}}</p>
           <p class="account-card-info">
             <label>账户地址</label>
-            <el-tooltip class="item" effect="dark" :content="account.cardNo" placement="top"
-                        v-if="account.cardNo">
-              <clip-board v-model="account.cardNo"
+            <el-tooltip class="item" effect="dark" :content="account.accountId" placement="top"
+                        v-if="account.accountId">
+              <clip-board v-model="account.accountId"
                           @copyDone="copyDoneHandler">
                 <a href="javascript:;">
                   <i class="el-icon-fa-clipboard"></i>
@@ -28,6 +28,9 @@
                                             账户操作<i class="el-icon-arrow-down el-icon--right"></i>
                                           </span>
               <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item :command="{type: 'detail',data:account}">
+                  详情
+                </el-dropdown-item>
                 <el-dropdown-item :command="{type: 'pay',data:account}">
                   去转账
                 </el-dropdown-item>
@@ -85,6 +88,9 @@
     methods: {
       handleCommand(command) {
         switch (command.type) {
+          case 'detail':
+            this.viewAccountDetail(command.data)
+            break;
           case 'download':
             this.downloadKeyStore(command.data.cardNo)
             break;
@@ -95,6 +101,9 @@
             this.gotoPayHandler(command.data)
             break;
         }
+      },
+      viewAccountDetail(account){
+        location.href = `/pages/account/detail.html?accountId=${account.accountId}`
       },
       gotoPayHandler(account) {
         location.href = `/pages/transfer.html?fromAccountId=${account.accountId}`

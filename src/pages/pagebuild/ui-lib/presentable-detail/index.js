@@ -1,4 +1,4 @@
-import {CONTRACT_STATUS_TIPS} from '../config'
+import {CONTRACT_STATUS_TIPS} from '@/config/contract'
 import ContractState from '@/pages/pagebuild/ui-lib/contract-state/index.vue'
 
 export default {

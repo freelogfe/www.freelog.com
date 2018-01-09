@@ -1,5 +1,8 @@
 import DirectGraph from './direct-graph'
 
+
+require('../../../../lib/d3.v3.min')
+
 var lastNodeId = -1;
 
 function createNode(props, data) {

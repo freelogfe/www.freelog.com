@@ -4,20 +4,27 @@
             :data="contracts"
             style="width: 100%">
       <el-table-column
-              prop="date"
               label="日期"
               width="180">
+        <template slot-scope="scope">
+          <a>{{ scope.row.createDate |fmtDate}}</a>
+        </template>
       </el-table-column>
       <el-table-column
-              prop="name"
+              prop="resourceDetail.resourceName"
               label="资源名"
               width="180">
       </el-table-column>
       <el-table-column
+              prop="resourceDetail.resourceType"
+              label="资源类型"
+              width="180">
+      </el-table-column>
+      <el-table-column
               prop="address"
-              label="费用">
+              label="合同状态">
         <template slot-scope="scope">
-          <a>{{ scope.row.address }}</a>
+          <el-tag :type="scope.row._status.type">{{scope.row._status.text}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column>
@@ -25,11 +32,9 @@
           <el-dropdown split-button type="primary" @click="viewDetailHandler">
             详情
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>黄金糕</el-dropdown-item>
-              <el-dropdown-item>狮子头</el-dropdown-item>
-              <el-dropdown-item>螺蛳粉</el-dropdown-item>
-              <el-dropdown-item>双皮奶</el-dropdown-item>
-              <el-dropdown-item>蚵仔煎</el-dropdown-item>
+              <el-dropdown-item>操作1</el-dropdown-item>
+              <el-dropdown-item>操作2</el-dropdown-item>
+              <el-dropdown-item>操作3</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -40,6 +45,7 @@
 
 <script>
   import store from '@/lib/storage';
+  import {CONTRACT_STATUS_TIPS, CONTRACT_STATUS_COLORS} from '@/config/contract'
 
   export default {
     name: 'contract-list',
@@ -51,31 +57,74 @@
     },
     mounted() {
       this.loadContracts()
+        .then(this.loadResourcesDetail.bind(this))
         .then(this.format.bind(this))
         .then((contracts) => {
           this.contracts = contracts;
         })
     },
     methods: {
-      format(data) {
-        var contracts = (data && data.dataList) || []
+      format(contracts) {
+        var result = []
         contracts.forEach((contract) => {
+          if (contract.resourceDetail) {
+            contract._status = {
+              type: CONTRACT_STATUS_COLORS[contract.status],
+              text: CONTRACT_STATUS_TIPS[contract.status]
+            }
+            result.push(contract)
+          }
         })
-
-        return contracts
+        return result
       },
       viewDetailHandler() {
+        this.$message.info('开发中')
+      },
+      loadResource(resourceId) {
+        return new Promise((resolve) => {
+          this.$axios.get(`/v1/resources/${resourceId}`).then((res) => {
+            if (res.data.errcode === 0) {
+              resolve(res.data.data)
+            } else {
+              resolve(null)
+            }
+          }).catch(() => {
+            resolve(null)
+          })
+        })
+      },
+      loadResourcesDetail(contracts) {
+        var promises = []
+        contracts.forEach((contract) => {
+          promises.push(this.loadResource(contract.resourceId))
+        })
 
+        return Promise.all(promises).then((resources) => {
+          var srcMap = {}
+          resources.forEach((r) => {
+            if (r) {
+              srcMap[r.resourceId] = r
+            }
+          })
+
+          contracts.forEach((contract) => {
+            contract.resourceDetail = srcMap[contract.resourceId] || null
+          })
+
+          return contracts
+        })
       },
       loadContracts() {
         var user = store.get('userInfo')
-        return this.$axios.get('/v1/presentables', {
+        return this.$axios.get('/v1/contracts', {
           params: {
+            contractType: 3,
             partyTwo: user.userId
           }
         }).then((res) => {
           if (res.data.errcode === 0) {
-            return res.data.data;
+            var data = res.data.data
+            return (data && data.dataList) || [];
           } else {
             throw new Error(res.data.msg)
           }

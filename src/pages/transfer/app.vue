@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h3>转账</h3>
     <el-form :model="transferForm" class="transfer-form" :rules="rules" ref="transferForm" label-width="100px">
       <el-form-item label="合同号" prop="targetId">
         <el-input v-model="transferForm.targetId" clearable></el-input>
@@ -14,7 +15,7 @@
         <el-input v-model="transferForm.toAccountId" clearable></el-input>
       </el-form-item>
       <el-form-item label="转账金额" prop="amount">
-        <el-input v-model="transferForm.amount">
+        <el-input v-model="transferForm.amount" style="width: 250px">
           <template slot="append">feth</template>
         </el-input>
       </el-form-item>
@@ -23,7 +24,6 @@
         <el-button type="primary" @click="showPayDialogHandler">下一步</el-button>
       </el-form-item>
     </el-form>
-
     <el-dialog
             title="转账确认"
             :visible.sync="showPayDialog"
