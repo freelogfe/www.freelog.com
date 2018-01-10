@@ -1,6 +1,9 @@
 import DirectGraph from './direct-graph';
 import LicenseEvent from '../events-popup-window/license/index.vue'
 
+
+require('../../../../lib/d3.v3.min')
+
 var lastNodeId = -1;
 
 function createNode(props, data) {

@@ -2,7 +2,7 @@ import ContractSteps from '../contract-steps/index.vue'
 import ContractState from '@/pages/pagebuild/ui-lib/contract-state/index.vue'
 import PresentableDetail from '../presentable-detail/index.vue'
 
-import {CONTRACT_STATUS_TIPS} from '../config'
+import {CONTRACT_STATUS_TIPS} from '@/config/contract'
 
 export default {
     name: 'contract-manager',

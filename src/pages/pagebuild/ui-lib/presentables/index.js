@@ -1,4 +1,4 @@
-import {CONTRACT_STATUS, CONTRACT_STATUS_TIPS, CONTRACT_STATUS_COLORS} from '../config'
+import {CONTRACT_STATUS, CONTRACT_STATUS_TIPS, CONTRACT_STATUS_COLORS} from '@/config/contract'
 
 
 export default {
