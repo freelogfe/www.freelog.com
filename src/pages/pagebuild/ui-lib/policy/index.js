@@ -38,7 +38,6 @@ export default {
                 this.$message.error(formatContractDetail.errorMsg)
             }
 
-            console.log(this.data)
             this.parsePolicy(this.data)
         },
         parsePolicy(data) {

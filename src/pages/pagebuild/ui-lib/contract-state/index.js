@@ -1,11 +1,15 @@
 import DirectGraph from './direct-graph';
 import LicenseEvent from '../events-popup-window/license/index.vue'
+import TransactionEvent from '../events-popup-window/transaction/index.vue'
 
 
 require('../../../../lib/d3.v3.min')
 
 var lastNodeId = -1;
-
+var componentMap = {
+  signing : 'license-event',
+  transaction: 'transaction-event'
+};
 function createNode(props, data) {
     var node = {id: ++lastNodeId, reflexive: false, data: data};
     Object.assign(node, props)
@@ -229,7 +233,8 @@ export default {
         }
     },
     components: {
-      LicenseEvent
+      LicenseEvent,
+      TransactionEvent
     },
     watch: {
         data: 'redraw'
@@ -240,7 +245,8 @@ export default {
         this.opts.width = this.getWidth() * .8
         this.draw();
 
-        this.$on('test', function (data) {
+        this.$on('finish', function (data) {
+          console.log('passed');
               if (data.ret === 0 && data.errcode === 0) {
                   this.$message.success('操作成功');
                   this.$refs.popover.showPopper = false
@@ -343,11 +349,9 @@ export default {
                 self.showDialog = true;
                 document.querySelector('.v-modal').style.zIndex  = 0;
               }.bind(this), 0)
+              console.log(componentMap);
+              self.component = componentMap[event.type];
 
-
-              if(event.type =='signing') {
-                self.component = 'license-event';
-              }
 
                 // var promise;
                 // if (event.type === 'signing') {

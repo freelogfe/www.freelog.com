@@ -1,5 +1,5 @@
 export default {
-  name: 'license-event',
+  name: 'transaction-event',
   data() {
     return {
       dialogVisible: true,

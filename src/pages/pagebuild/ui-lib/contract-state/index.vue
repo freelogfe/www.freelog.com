@@ -19,7 +19,7 @@
                 <div v-if="popData.type == 'path'&& popData.source">
                     <p>event name: {{popData.event.eventName}}</p>
                     <p>from {{popData.source.data.state}} to {{popData.target.data.state}}</p>
-                    <el-button size="mini" @click="activateContractHandler(popData)" :disabled="popData.disabled">trigger</el-button>
+                    <el-button size="mini" @click="activateContractHandler(popData)" :disabled="popData.disabled">triggerr1</el-button>
                 </div>
             </div>
         </el-popover>
