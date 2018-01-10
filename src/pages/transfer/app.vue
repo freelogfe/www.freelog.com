@@ -16,7 +16,7 @@
       </el-form-item>
       <el-form-item label="转账金额" prop="amount">
         <el-input v-model="transferForm.amount" style="width: 250px">
-          <template slot="append">feth</template>
+          <template slot="append">{{selectedAccount._info.abbr}}</template>
         </el-input>
       </el-form-item>
 
@@ -70,6 +70,7 @@
 <script>
   //http://doc.freelog.com/pay/%E5%8E%BB%E6%94%AF%E4%BB%98.html
   import querystring from 'querystring'
+  import AccountTypes from '@/config/account-types'
 
   export default {
     data() {
@@ -89,7 +90,7 @@
       return {
         showPayDialog: false,
         rules: {
-          targetId: [{required: true, message: '请输入targetId', trigger: 'blur'}],
+          targetId: [{required: true, message: '请输入合同ID', trigger: 'blur'}],
           fromAccountId: [{required: true, message: '请输入发起账户', trigger: 'blur'}],
           toAccountId: [{required: true, message: '请输入接收账户', trigger: 'blur'}],
           amount: [{required: true, message: '请输入转账金额', trigger: 'blur'},
@@ -108,8 +109,26 @@
         }
       }
     },
+    computed: {
+      selectedAccount: function () {
+        var accounts = this.accounts
+        for (let i = 0, len = accounts.length; i < len; i++) {
+          if (accounts[i].accountId === this.transferForm.fromAccountId) {
+            return accounts[i]
+          }
+        }
+
+        return {
+          _info: {}
+        }
+      }
+    },
     mounted() {
       this.queryAccounts()
+        .then(this.formatAccounts.bind(this))
+        .then((accounts) => {
+          this.accounts = accounts
+        })
       this.autoFillForm()
     },
     methods: {
@@ -121,6 +140,13 @@
             this.transferForm[key] = qs[key]
           }
         })
+      },
+      formatAccounts(accounts) {
+        accounts.forEach((account) => {
+          account._info = AccountTypes[account.accountType]
+        })
+
+        return accounts
       },
       showPayDialogHandler() {
         this.$refs.transferForm.validate((valid, err) => {
@@ -135,10 +161,13 @@
         this.showPayDialog = false;
       },
       queryAccounts() {
-        this.$axios.get('//api.freelog.com/v1/pay/accounts')
+        return this.$axios.get('//api.freelog.com/v1/pay/accounts')
           .then((res) => {
-            this.accounts = res.data.data
-            console.log(this.accounts)
+            if (res.data.errcode === 0) {
+              return res.data.data
+            } else {
+              this.$message.error(res.data.msg)
+            }
           })
       },
       confirmTransfer() {
@@ -147,7 +176,7 @@
         }
         this.loading = true
         var data = Object.assign({}, this.transferForm)
-        data.amount = data.amount / 1e3;
+        data.amount = data.amount * 1e3; //feather单位是borb，1feth=1000 borb 后续需要根据不同的支付手段兑换不同的度量单位
         this.$axios.post('//api.freelog.com/v1/pay', {
           data: data
         }).then((res) => {

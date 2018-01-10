@@ -20,7 +20,7 @@
             <span v-else>账户不存在</span>
           </p>
           <p class="account-card-info">
-            <label>账户余额</label><span>{{account.balance}}</span>
+            <label>账户余额</label><span>{{account.balance|humanizeCurrency}} {{account.showDetail.abbr}}</span>
           </p>
           <p class="account-card-info" v-if="account.status===1">
             <el-dropdown @command="handleCommand">
