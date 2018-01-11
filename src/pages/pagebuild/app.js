@@ -33,7 +33,6 @@ function main() {
                 EventDispatcher.init(appUI)
                 PageBuildeParser.start()
                 appUI.$on('close', function () {
-                    console.log('close app ui dialog')
                 })
             }
         }

@@ -6,7 +6,6 @@ const DEFAULT_EVENT_NAME = 'freelogSystemService';
 export default {
   init(appUI) {
     this.appUI = appUI
-    console.log('Service', Service)
     this.bus = new Vue()
     //统一监听服务，根据action进行分发执行器
     this.bus.$on(DEFAULT_EVENT_NAME, this.dispatchHandler.bind(this))
@@ -22,8 +21,8 @@ export default {
     var detail = event.detail
     var handlerName = detail.eventName
     var opts = detail.opts || {}
-    var Handler
-    if ((Handler = Service[handlerName])) {
+    var Handler = Service[handlerName]
+    if (Handler) {
       try {
         Handler.handle(opts.data, this.appUI, opts.callback)
       } catch (err) {

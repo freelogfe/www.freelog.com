@@ -183,6 +183,9 @@
                 var result = res.data
                 if (result.ret === 0 && result.errcode === 0) {
                   this.$message.success('创建成功')
+                  setTimeout(() => {
+                    location.href = `/pages/account/detail.html?accountId=${result.data.accountId}`
+                  }, 5e2)
                 } else {
                   this.$message.error(result.msg || '操作失败')
                 }

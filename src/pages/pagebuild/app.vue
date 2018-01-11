@@ -61,7 +61,6 @@
                 this.$refs.list.refresh()
             },
             _tabChange(data) {
-
                 //关闭tab
                 if (data.action === 'close') {
                     this._removeTab(data.tabName)
