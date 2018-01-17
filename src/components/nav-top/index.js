@@ -8,7 +8,7 @@ export default {
     }
   },
   mounted() {
-    this.checkLoginStatus()
+    // this.checkLoginStatus() //待优化
   },
   methods: {
     checkLoginStatus() {

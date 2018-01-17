@@ -4,12 +4,14 @@
       <el-main>
         <account-list></account-list>
         <div class="main-content">
-          <el-menu default-active="1" mode="horizontal">
-            <el-menu-item index="1">已购买资源</el-menu-item>
-          </el-menu>
-          <div class="contentBody">
-            <contract-list></contract-list>
-          </div>
+          <el-tabs v-model="activeTabName">
+            <el-tab-pane label="已购买资源" name="trade">
+              <contract-list></contract-list>
+            </el-tab-pane>
+            <el-tab-pane label="支付订单" name="orders">
+              <user-order-list></user-order-list>
+            </el-tab-pane>
+          </el-tabs>
         </div>
       </el-main>
     </div>
@@ -21,20 +23,22 @@
   import NavTopBar from '@/components/nav-top/index.vue'
   import AccountList from './accounts/index.vue'
   import ContractList from './contracts/index.vue'
+  import UserOrderList from './orders/index.vue'
 
   export default {
     data() {
       return {
+        activeTabName: 'trade'
       }
     },
     mounted() {
-
     },
     components: {
       UserNavBar,
       NavTopBar,
       AccountList,
-      ContractList
+      ContractList,
+      UserOrderList
     },
     methods: {
       loadUserInfo() {

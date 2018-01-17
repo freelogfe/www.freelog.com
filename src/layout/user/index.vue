@@ -16,8 +16,6 @@
           </div>
           <div class="banner-main-detail">
             <div class="user-account inline"><label>账户： </label>{{user.mobile||user.email}}</div>
-            <i class="split-line">|</i>
-            <div class="update-date inline">{{user.updateDate|fmtDate}}</div>
           </div>
         </div>
       </el-header>
@@ -47,7 +45,7 @@
     methods: {}
   }
 </script>
-<style lang="less">
+<style lang="less" scoped>
   @import "index.less";
 
   .app-container {

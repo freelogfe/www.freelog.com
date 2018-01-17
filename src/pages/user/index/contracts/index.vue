@@ -4,21 +4,18 @@
             :data="contracts"
             style="width: 100%">
       <el-table-column
-              label="日期"
-              width="180">
+              label="日期">
         <template slot-scope="scope">
           <a>{{ scope.row.createDate |fmtDate}}</a>
         </template>
       </el-table-column>
       <el-table-column
               prop="resourceDetail.resourceName"
-              label="资源名"
-              width="180">
+              label="资源名">
       </el-table-column>
       <el-table-column
               prop="resourceDetail.resourceType"
-              label="资源类型"
-              width="180">
+              label="资源类型">
       </el-table-column>
       <el-table-column
               prop="address"
@@ -29,7 +26,7 @@
       </el-table-column>
       <el-table-column>
         <template slot-scope="scope">
-          <el-dropdown split-button type="primary" @click="viewDetailHandler">
+          <el-dropdown split-button type="primary" @click="viewDetailHandler(scope.row)">
             详情
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>操作1</el-dropdown-item>
@@ -77,8 +74,8 @@
         })
         return result
       },
-      viewDetailHandler() {
-        this.$message.info('开发中')
+      viewDetailHandler(data) {
+        location.href = `/pages/trade/detail.html?contractId=${data.contractId}`
       },
       loadResource(resourceId) {
         return new Promise((resolve) => {

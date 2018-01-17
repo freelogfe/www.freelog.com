@@ -94,9 +94,6 @@ import ToolBar from '../../components/toolbar/index.vue'
 </script>
 
 <style lang="postcss" scoped>
-    #app {
-      font-family:"Helvetica","Heiti SC Thin",Georgia,Serif;
-    }
     .accountList {
       margin-bottom: 40px;
     }

@@ -31,6 +31,12 @@
                   :value="item.accountId">
           </el-option>
         </el-select>
+        <el-tooltip placement="top">
+          <div slot="content">
+            <p><a style="color: white" href="/pages/account/create.html" target="_blank">没有账号？去添加一个</a></p>
+          </div>
+          <i class="el-icon-question"></i>
+        </el-tooltip>
       </el-form-item>
       <el-form-item label="支付密码">
         <el-input type="password" size="small" style="max-width: 300px;" v-model="password"

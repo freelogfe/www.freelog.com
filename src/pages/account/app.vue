@@ -2,10 +2,7 @@
     <el-row>
         <el-col :span="12" :offset="6">
             <div class="mainContent">
-                <user-nav-bar index="5"></user-nav-bar>
                 <div class="contentBody">
-
-
                     <div class="account-container">
                         <div v-for="item in accounts" class="account-wrap">
                             <div style="height:25px;" v-html="SvgIconMap[item.accountType]"></div>
@@ -52,10 +49,7 @@
 
 
 <script>
-    import UserNavBar from '@/pages/userCenterNavBar/index.vue';
-
     export default {
-        components: {UserNavBar},
         data() {
             var accountNumber = (rule, value, callback) => {
                 if (this.ruleForm2.accountType === 1 && value === '') {

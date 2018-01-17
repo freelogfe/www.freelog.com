@@ -20,4 +20,9 @@ export default (Vue, options) => {
     //123456789->12,3456,789
     return values[0].replace(/(\d)(?=(?:\d{3})+$)/g, '$1,') + (values[1] === undefined ? '' : `.${values[1]}`)
   })
+
+  Vue.filter('currencyUnit', function (value) {
+    value = value || 'feth'
+    return value.substr(0, 4)
+  })
 }
