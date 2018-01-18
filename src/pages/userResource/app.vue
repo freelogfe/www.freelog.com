@@ -71,7 +71,7 @@ export default {
     methods: {
       loadPolicyDetail(authData) {
           var self = this
-          var url = 'http://api.freelog.com/v1/contracts?contractType=3';
+          var url = '/api/v1/contracts?contractType=3';
           // window.QI.fetch(url).then(function (res) {
           //     return res.json();
           // }).then(function (data) {

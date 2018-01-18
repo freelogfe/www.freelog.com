@@ -23,28 +23,33 @@ var webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': env
     }),
-      new webpack.DefinePlugin({
-          'process.env': {
-              NODE_ENV: '"production"'
-          }
-      }),
-      new webpack.optimize.UglifyJsPlugin({
-          compress: {
-              warnings: false
-          },
-          sourceMap: true
-      }),
-      // extract css into its own file
-      // new ExtractTextPlugin({
-      //     filename: utils.assetsPath('css/[name].[contenthash].css')
-      // }),
-      // Compress extracted CSS. We are using this plugin so that possible
-      // duplicated CSS from different components can be deduped.
-      new OptimizeCSSPlugin({
-          cssProcessorOptions: {
-              safe: true
-          }
-      }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"production"'
+      }
+    }),
+    new ParallelUglifyPlugin({
+      cacheDir: '.cache/',
+      uglifyJS: {
+        output: {
+          comments: false
+        },
+        compress: {
+          warnings: false
+        }
+      }
+    }),
+    // extract css into its own file
+    // new ExtractTextPlugin({
+    //     filename: utils.assetsPath('css/[name].[contenthash].css')
+    // }),
+    // Compress extracted CSS. We are using this plugin so that possible
+    // duplicated CSS from different components can be deduped.
+    new OptimizeCSSPlugin({
+      cssProcessorOptions: {
+        safe: true
+      }
+    }),
     // keep module.id stable when vender modules does not change
     new webpack.HashedModuleIdsPlugin(),
     // split vendor js into its own file

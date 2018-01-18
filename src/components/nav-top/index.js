@@ -17,7 +17,7 @@ export default {
       }
     },
     logoutHandler() {
-      this.$axios.get('//api.freelog.com/v1/passport/logout').then(function (res) {
+      this.$axios.get('/v1/passport/logout').then(function (res) {
         store.remove('userInfo')
         location.replace('/pages/user/login.html')
       })

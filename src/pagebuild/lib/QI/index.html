@@ -5,48 +5,49 @@
 
 
 <template>
-    <middleware-stack id="js-mw-stack">
-        <middleware-auth></middleware-auth>
-        <middleware-fetch></middleware-fetch>
-        <middleware-jwt></middleware-jwt>
-    </middleware-stack>
+  <middleware-stack id="js-mw-stack">
+    <middleware-auth></middleware-auth>
+    <middleware-fetch></middleware-fetch>
+    <middleware-jwt></middleware-jwt>
+  </middleware-stack>
 </template>
 
 <script>
-    ;(function () {
-        var template = document.currentScript.parentNode.querySelector('template');
+  ;(function () {
+    var template = document.currentScript.parentNode.querySelector('template');
 
-        class QI extends HTMLElement {
-            constructor() {
-                super()
-                let shadowRoot = this.attachShadow({mode: 'closed'});
-                const instance = template.content.cloneNode(true);
-                shadowRoot.appendChild(instance);
-                this.$QI = shadowRoot.querySelector('#js-mw-stack')
-            }
+    class QI extends HTMLElement {
+      constructor() {
+        super()
+        let shadowRoot = this.attachShadow({mode: 'closed'});
+        const instance = template.content.cloneNode(true);
+        shadowRoot.appendChild(instance);
+        this.$QI = shadowRoot.querySelector('#js-mw-stack')
+      }
 
-            static get observedAttributes() {
-                return ['src'];
-            }
+      static get observedAttributes() {
+        return ['src'];
+      }
 
-            get QI() {
-                return this.$QI
-            }
+      get QI() {
+        return this.$QI
+      }
 
-            fetch(target, req) {
-                return this.$QI.fetch(target, req)
-            }
+      fetch(target, req) {
+        target = '/api' + target
+        return this.$QI.fetch(target, req)
+      }
 
-            fetchResource(rid, param){
-                return this.fetchPresentable(rid, {needAuth: true})
-            }
+      fetchResource(rid, param) {
+        return this.fetchPresentable(rid, {needAuth: true})
+      }
 
-            fetchPresentable(pid, param) {
-                var url = `//api.freelog.com/v1/nodes/${window.__auth_info__.__auth_node_id__}/presentables/${pid}`
-                return this.$QI.fetch(url, param)
-            }
-        }
+      fetchPresentable(pid, param) {
+        var url = `/v1/nodes/${window.__auth_info__.__auth_node_id__}/presentables/${pid}`
+        return this.fetch(url, param)
+      }
+    }
 
-        customElements.define('freelog-lib-qi', QI);
-    })();
+    customElements.define('freelog-lib-qi', QI);
+  })();
 </script>

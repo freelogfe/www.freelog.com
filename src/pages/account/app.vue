@@ -118,7 +118,7 @@
                                 accountType: this.ruleForm2.accountType
                             };
                         }
-                        this.$axios.post('http://api.freelog.com/v1/pay/accounts', data).then(() => {
+                        this.$axios.post('/v1/pay/accounts', data).then(() => {
                             console.log('in rendering');
                             this.renderAccounts()
                         })
@@ -129,7 +129,7 @@
                 });
             },
             renderAccounts() {
-                this.$axios.get('http://api.freelog.com/v1/pay/accounts').then((res) => {
+                this.$axios.get('/v1/pay/accounts').then((res) => {
                     var accounts = res.data.data;
                     this.accounts = accounts;
                 }).catch((err) => {

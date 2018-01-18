@@ -161,7 +161,7 @@
         this.showPayDialog = false;
       },
       queryAccounts() {
-        return this.$axios.get('//api.freelog.com/v1/pay/accounts')
+        return this.$axios.get('/v1/pay/accounts')
           .then((res) => {
             if (res.data.errcode === 0) {
               return res.data.data
@@ -177,7 +177,7 @@
         this.loading = true
         var data = Object.assign({}, this.transferForm)
         data.amount = data.amount * 1e3; //feather单位是borb，1feth=1000 borb 后续需要根据不同的支付手段兑换不同的度量单位
-        this.$axios.post('//api.freelog.com/v1/pay', {
+        this.$axios.post('/v1/pay', {
           data: data
         }).then((res) => {
           var data = res.data

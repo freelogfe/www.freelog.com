@@ -290,7 +290,7 @@ export default {
     //     })
     // },
     loadPresentableDetail(contractId) {
-      return window.QI.fetch(`//api.freelog.com/v1/contracts/${contractId}`).then((res) => {
+      return window.QI.fetch(`/v1/contracts/${contractId}`).then((res) => {
         if (res.status === 200) {
           return res.json()
         } else {

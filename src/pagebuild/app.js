@@ -45,7 +45,7 @@
         var windowAuth = window.__auth_info__;
         //未激活状态
         if (windowAuth.__auth_error_info__.errcode == 70080104) {
-            window.QI.fetch('http://api.freelog.com/v1/contracts/test', {
+            window.QI.fetch('/v1/contracts/test', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -58,7 +58,7 @@
         } else {
             //未签约状态
             var presentableId = windowAuth.__auth_error_info__.data.data.presentableId;
-            var url = 'http://api.freelog.com/v1/presentables/' + presentableId;
+            var url = '/v1/presentables/' + presentableId;
             window.QI.fetch(url).then(function (res) {
                 return res.json();
             }).then(function (data) {
@@ -91,7 +91,7 @@
             str += '<button id="submit">签约</button>'
             $(document).on('click', '#submit', function () {
                 console.log(allData);
-                window.QI.fetch('http://api.freelog.com/v1/contracts', {
+                window.QI.fetch('/v1/contracts', {
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json"
@@ -134,7 +134,7 @@
         }
 
 
-        var url = `//api.freelog.com/v1/nodes/${window.__auth_info__.__auth_node_id__}/presentables/`
+        var url = `/v1/nodes/${window.__auth_info__.__auth_node_id__}/presentables/`
         Array.from($widgets).forEach(function (widget) {
             var prensentableId = widget.getAttribute('data-widget-presentable-id');
 

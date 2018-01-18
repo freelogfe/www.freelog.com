@@ -43,7 +43,7 @@
     methods: {
       loadUserInfo() {
         var self = this;
-        window.fetch('//api.freelog.com/v1/userinfos/10024', {
+        window.fetch('/api/v1/userinfos/10024', {
           credentials: 'same-origin'
         }).then(function (res) {
           return res.json()

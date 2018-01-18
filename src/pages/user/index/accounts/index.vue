@@ -118,7 +118,7 @@
         $a.remove()
       },
       downloadKeyStore(address) {
-        return this.$axios.get('//api.freelog.com/v1/pay/accounts/downLoadKeyStore', {
+        return this.$axios.get('/v1/pay/accounts/downLoadKeyStore', {
           params: {
             address: address
           }
@@ -136,7 +136,7 @@
       clearKeyStore(address) {
         this.$confirm('确定清除服务器上的keystore文件？')
           .then((_) => {
-            return this.$axios.get('//api.freelog.com/v1/pay/accounts/clearKeyStore', {
+            return this.$axios.get('/v1/pay/accounts/clearKeyStore', {
               params: {
                 address: address
               }
@@ -166,7 +166,7 @@
         ret ? this.$message.success('复制成功') : this.$message.error('复制失败')
       },
       loadAssets() {
-        return this.$axios.get('//api.freelog.com/v1/pay/accounts').then((res) => {
+        return this.$axios.get('/v1/pay/accounts').then((res) => {
           return res.data.data;
         }).catch((err) => {
           console.log(err);

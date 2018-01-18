@@ -157,7 +157,7 @@
       createEthAccount() {
         this.$refs['createEthForm'].validate((valid) => {
           if (valid) {
-            this.$axios.post('//api.freelog.com/v1/pay/accounts/createEthAccount', {
+            this.$axios.post('/v1/pay/accounts/createEthAccount', {
               password: this.createEthForm.pass
             }).then((res) => {
               var result = res.data
@@ -178,7 +178,7 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             console.log(valid);
-            this.$axios.post('//api.freelog.com/v1/pay/accounts', this.accountForm)
+            this.$axios.post('/v1/pay/accounts', this.accountForm)
               .then((res) => {
                 var result = res.data
                 if (result.ret === 0 && result.errcode === 0) {

@@ -2,7 +2,7 @@
 
 var dataloaderHelpers = {
   loadResourceDetail(resourceId) {
-    return window.QI.fetch(`//api.freelog.com/v1/resources/${resourceId}`).then((res) => {
+    return window.QI.fetch(`/v1/resources/${resourceId}`).then((res) => {
       if (res.status === 200) {
         return res.json()
       } else {
@@ -17,7 +17,7 @@ var dataloaderHelpers = {
     })
   },
   loadPresentableDetail(presentableId) {
-    return window.QI.fetch(`//api.freelog.com/v1/presentables/${presentableId}`).then((res) => {
+    return window.QI.fetch(`/v1/presentables/${presentableId}`).then((res) => {
       if (res.status === 200) {
         return res.json()
       } else {

@@ -88,7 +88,7 @@
 
           var data = Object.assign({}, self.model)
           data.isRememer = data.isRememer ? 1 : 0
-          window.fetch('//api.freelog.com/v1/passport/login', {
+          window.fetch('/api/v1/passport/login', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

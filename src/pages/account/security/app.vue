@@ -135,7 +135,7 @@
           loginName: user.loginName,
           password: this.passwordForm.newPassword
         };
-        return this.$axios.post(`//api.freelog.com/v1/userinfos/resetPassword`, data).then((res) => {
+        return this.$axios.post(`/v1/userinfos/resetPassword`, data).then((res) => {
           var result = res.data
           if (result.ret === 0 && result.errcode === 0) {
             this.$message.success('设置成功')
@@ -148,7 +148,7 @@
         var data = {
           password: this.passwordForm.newPassword
         };
-        return this.$axios.post(`//api.freelog.com/v1/pay/password`, data).then((res) => {
+        return this.$axios.post(`/v1/pay/password`, data).then((res) => {
           var result = res.data
           if (result.ret === 0 && result.errcode === 0) {
             this.$message.success('设置成功')
@@ -167,7 +167,7 @@
           oldPassword: this.passwordForm.oldPassword,
           newPassword: this.passwordForm.newPassword,
         };
-        return this.$axios.put(`//api.freelog.com/v1/pay/password/${user.userId}`, data).then((res) => {
+        return this.$axios.put(`/v1/pay/password/${user.userId}`, data).then((res) => {
           var result = res.data
           if (result.ret === 0 && result.errcode === 0) {
             this.$message.success('重置成功')
