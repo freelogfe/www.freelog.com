@@ -44,6 +44,7 @@
 
 <script>
   import store from '@/lib/storage';
+  import querystring from 'querystring'
 
   export default {
     name: 'login',
@@ -72,7 +73,6 @@
       }
     },
     mounted() {
-
     },
 
     methods: {
@@ -100,8 +100,9 @@
             return res.json()
           }).then((data) => {
             if (data.ret === 0 && data.errcode === 0) {
+              var qs = querystring.parse(location.search.slice(1))
               store.set('userInfo', data.data);
-              location.href = '/pages/user/index.html'
+              location.href = qs.redirect || '/pages/user/index.html'
             } else {
               this.error = {message: data.msg}
             }

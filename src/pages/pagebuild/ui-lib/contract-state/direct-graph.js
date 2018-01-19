@@ -64,8 +64,9 @@ function DirectGraph(opts) {
     .attr('fill', '#000');
 
   // handles to link and node element groups
-  var path = $svg.append('svg:g').selectAll('path'),
+  var path = $svg.append('svg:g').attr('class', 'state-link').selectAll('path'),
     circle = $svg.append('svg:g').selectAll('g');
+  var actions = $svg.append("svg:g").attr('class', 'state-step').selectAll("g")
 
 // update force layout (called automatically each iteration)
   function tick() {
@@ -84,6 +85,10 @@ function DirectGraph(opts) {
         targetY = d.target.y - (targetPadding * normY);
       return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
     });
+    actions.attr("transform", function (d) {
+      return "translate(" + ((d.target.x + d.source.x) / 2) + "," +
+        ((d.target.y + d.source.y)) / 2 + ")";
+    })
 
     circle.attr('transform', function (d) {
       return 'translate(' + d.x + ',' + d.y + ')';
@@ -111,8 +116,8 @@ function DirectGraph(opts) {
     $tip.style.top = posy + 'px'
   }
 
-  //selected变虚线
-  function restart() {
+
+  function drawPath() {
     // path (link) group
     path = path.data(links);
 
@@ -149,6 +154,49 @@ function DirectGraph(opts) {
 
     // remove old links
     path.exit().remove();
+  }
+
+  function drawMiddleSteps() {
+    actions = actions.data(links);
+    var fo = actions.enter().append("foreignObject")
+      .attr({
+        'x': -20,
+        'y': -10,
+        'width': 30,
+        height: 30,
+        // 'class': 'step-tip-wrap'
+      })
+    var $div = fo.append("xhtml:div").append('div')
+      .attr('class', 'step-tip-wrap')
+      .on('mouseenter', function (p) {
+        var pos = d3.mouse(this)
+        this.classList.add('hover')
+        console.log(pos)
+      })
+      .on('mouseout', function (p) {
+        this.classList.remove('hover')
+      })
+
+    $div.append('div')
+      .attr({
+        'class': 'tooltip'
+      }).html('<i class="el-icon-info"></i>')
+      .attr('class', function (d) {
+        console.log(d)
+        return 'action-btn'
+      })
+    $div.append('div')
+      .attr('class', 'tip-content')
+      .html(`<p>hello</p>`)
+
+    actions.exit().remove();
+  }
+
+  //selected变虚线
+  function restart() {
+
+    drawMiddleSteps()
+    drawPath();
 
     // circle (node) group
     // NB: the function arg is crucial here! nodes are known by id, not by index!

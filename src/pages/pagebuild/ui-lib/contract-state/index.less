@@ -1,6 +1,29 @@
 .contract-state-wrap {
   position: relative;
   text-align: center;
+  .state-step {
+    z-index: 999;
+    position: relative;
+  }
+
+  .state-link {
+    position: relative;
+  }
+
+  .tip-content {
+    display: none;
+  }
+  .step-tip-wrap.hover {
+    .tip-content {
+      display: block;
+    }
+  }
+  .action-btn {
+    i {
+      background-color: white;
+      font-size: 18px;
+    }
+  }
   .links line {
     stroke: #999;
     stroke-opacity: 0.6;

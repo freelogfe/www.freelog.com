@@ -19,7 +19,6 @@
 </template>
 
 <script>
-  import UserNavBar from '@/pages/userCenterNavBar/index.vue';
   import NavTopBar from '@/components/nav-top/index.vue'
   import AccountList from './accounts/index.vue'
   import ContractList from './contracts/index.vue'
@@ -34,7 +33,6 @@
     mounted() {
     },
     components: {
-      UserNavBar,
       NavTopBar,
       AccountList,
       ContractList,
