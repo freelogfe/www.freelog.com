@@ -41,7 +41,7 @@
     methods: {
       loadUserInfo() {
         var self = this;
-        window.fetch('/api/v1/userinfos/10024', {
+        window.fetch('/v1/userinfos/current', {
           credentials: 'same-origin'
         }).then(function (res) {
           return res.json()

@@ -53,7 +53,9 @@
       }
     },
     mounted() {
-      this.loadContracts()
+      var user = store.get('userInfo')
+      if (!user || !user.userId){return}
+      this.loadContracts(user.userId)
         .then(this.loadResourcesDetail.bind(this))
         .then(this.format.bind(this))
         .then((contracts) => {
@@ -111,12 +113,11 @@
           return contracts
         })
       },
-      loadContracts() {
-        var user = store.get('userInfo')
+      loadContracts(userId) {
         return this.$axios.get('/v1/contracts', {
           params: {
             contractType: 3,
-            partyTwo: user.userId
+            partyTwo: userId
           }
         }).then((res) => {
           if (res.data.errcode === 0) {

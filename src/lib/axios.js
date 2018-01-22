@@ -25,7 +25,20 @@ instance.interceptors.request.use(config => {
 
 
 instance.interceptors.response.use(response => {
-    return response
+    var loginPath = '/pages/user/login.html'
+
+    var data = response.data
+    if (data.errcode === 28 && location.pathname !== loginPath) {
+      location.replace(loginPath)
+      //replace执行存在延迟
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(response)
+        }, 5e2)
+      })
+    } else {
+      return response
+    }
   },
   err => {
     err.response = err.response || {}
