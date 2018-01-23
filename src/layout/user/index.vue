@@ -38,11 +38,22 @@
       }
     },
     mounted() {
+      if (!this.user || !this.user.userId) {
+        this.loadUserInfo().then((user) => {
+          this.user = user
+        })
+      }
     },
     components: {
       NavTopBar
     },
-    methods: {}
+    methods: {
+      loadUserInfo() {
+        return this.$axios.get('/v1/userinfos/current').then(function (res) {
+          return res.data.data;
+        })
+      }
+    }
   }
 </script>
 <style lang="less" scoped>
