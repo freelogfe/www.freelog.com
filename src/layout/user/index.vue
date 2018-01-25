@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav-top-bar></nav-top-bar>
-    <el-container class="app-container">
+    <el-container class="app-container is-vertical">
       <el-header class="header" v-if="user">
         <div class="banner-portrait inline">
           <a href="/pages/user/index.html">
@@ -37,9 +37,7 @@
     },
     mounted() {
       if (!this.user || !this.user.userId) {
-        this.$vuex.dispatch('checkUserSession').then((user) => {
-          this.user = user
-        })
+        this.$vuex.dispatch('checkUserSession').then((user) => {})
       }
     },
     computed: mapGetters({

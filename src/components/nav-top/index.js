@@ -3,21 +3,19 @@ import {mapGetters} from 'vuex'
 export default {
   name: 'nav-top-bar',
   data() {
-    return {
-    }
+    return {}
   },
   computed: mapGetters({
-    user: 'session'
+    userInfo: 'session'
   }),
   mounted() {
-    this.checkLoginStatus() //待优化
+    this.checkLoginStatus()
   },
   methods: {
     checkLoginStatus() {
       if (!this.user || !this.user.userId) {
         this.$vuex.dispatch('checkUserSession')
           .then((userInfo) => {
-            this.user = userInfo
           })
       }
     },

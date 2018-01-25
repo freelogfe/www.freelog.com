@@ -5,8 +5,10 @@ const types = {
   CHANGE_SESSION: 'changeSession',
   USER_LOGIN: 'userLogin',
   CHECK_USER_SESSION: 'checkUserSession',
+  DELETE_USER_SESSION: 'deleteUserSession',
   LOGOUT: 'logout'
 }
+
 
 const user = {
   state: {
@@ -18,11 +20,12 @@ const user = {
       state.session = data
       storage.set('user_session', state.session);
     },
-    [types.LOGOUT]() {
+    [types.LOGOUT](state) {
+      state.session = null
       storage.remove('user_session');
-      setTimeout(()=>{
+      setTimeout(() => {
         location.replace('/pages/user/login.html')
-      },10)
+      }, 10)
     }
   },
 
@@ -44,16 +47,26 @@ const user = {
     [types.CHANGE_SESSION]({commit}, data) {
       commit(types.CHANGE_SESSION, data);
     },
+    [types.DELETE_USER_SESSION]({commit}) {
+      commit(types.CHANGE_SESSION, null);
+    },
     [types.LOGOUT]({commit}) {
       commit(types.LOGOUT)
     },
     [types.CHECK_USER_SESSION]({commit}) {
       return new Promise((resolve, reject) => {
+        var loginPath = '/pages/user/login.html'
         var userInfo = this.state.user.session
         if (userInfo) {
           resolve(userInfo)
         } else {
-          this.dispatch('getCurrentUser').then((userInfo) => {
+          this.dispatch(types.GET_CURRENT_USER).then((userInfo) => {
+            if (!userInfo) {
+              this.dispatch(types.DELETE_USER_SESSION)
+              if (location.pathname !== loginPath) {
+                location.href = `${loginPath}?redirect=` + encodeURIComponent(location.href)
+              }
+            }
             resolve(userInfo)
           })
         }

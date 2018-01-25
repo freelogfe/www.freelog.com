@@ -1,11 +1,11 @@
 <template>
   <div class="nav-top-wrapper">
-    <div class="nav-top-container" v-if="user">
+    <div class="nav-top-container" v-if="userInfo">
       <ul class="nav-top-right">
         <li class="nav-top-item">
           <el-dropdown @command="handleNavTopCommand">
                       <span class="el-dropdown-link">
-                        {{user.nickname}}<i class="el-icon-arrow-down el-icon--right"></i>
+                        {{userInfo.nickname}}<i class="el-icon-arrow-down el-icon--right"></i>
                       </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="gotoAccountSetting">账户设置</el-dropdown-item>

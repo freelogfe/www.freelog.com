@@ -73,11 +73,15 @@ export default {
       })
       .then(this.appendDataToUI.bind(this));
   },
+  _gotoLoginHandler() {
+    location.href = `//www.freelog.com/pages/user/login.html?redirect=` + encodeURIComponent(location.href)
+  },
   handle(data, appUI, callback) {
     this.appUI = appUI
     if (data && data.errcode) {
       var errorMsg = data.msg;
       var resData = data.data && data.data.data
+      
       switch (data.errcode) {
         //未激活状态
         case 70080104:
@@ -90,6 +94,10 @@ export default {
         //节点与资源之间的合约授权失败
         case 70080202:
           this._invalidHandler(resData)
+          break;
+        case 28:
+        case 30:
+          this._gotoLoginHandler()
           break;
         default:
           throw new Error(errorMsg)
