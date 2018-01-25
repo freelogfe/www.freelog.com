@@ -1,4 +1,4 @@
-import compiler from 'freelog_policy_compiler'
+import compiler from 'presentable_policy_compiler'
 import ContractSteps from '../contract-steps/index.vue'
 import ContractInfoDetail from '../contract-info-detail/index.vue'
 //创建合同
