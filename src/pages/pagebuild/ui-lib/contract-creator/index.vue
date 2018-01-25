@@ -2,7 +2,7 @@
     <div>
         <contract-steps></contract-steps>
 
-        <presentable-detail :data="data"></presentable-detail>
+        <contract-info-detail :data="data"></contract-info-detail>
 
         <el-table
                 v-show="!data.contractDetail"

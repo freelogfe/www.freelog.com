@@ -22,18 +22,16 @@
 
 
 <script>
-  import store from '@/lib/storage'
+  import {mapGetters} from 'vuex'
 
   export default {
     data() {
 
-      return {
-        user: store.get('userInfo') || {}
-      }
+      return {}
     },
     mounted() {
     },
-    computed: {
+    computed: Object.assign({
       userRoles: function () {
         var userRoleByte = this.user.userRole;
         var roles = [
@@ -49,7 +47,9 @@
 
         return roles.join('|')
       }
-    },
+    }, mapGetters({
+      user: 'session'
+    })),
     methods: {}
   }
 </script>

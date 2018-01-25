@@ -1,0 +1,40 @@
+.el-icon-refresh {
+  margin-left: 5px;
+  color: #409EFF;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+@keyframes loading-rotate {
+  from {
+    transform: rotate(0);
+    transform-origin: center;
+  }
+
+  to {
+    transform-origin: center;
+    transform: rotate(360deg);
+  }
+}
+
+.presentable-detail {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  padding-left: 20px;
+
+  .loading {
+    animation: loading-rotate 1s linear infinite;
+  }
+}
+
+.presentable-info {
+  display: flex;
+  flex-wrap: wrap;
+  .info-row {
+    display: flex;
+    flex-basis: 50%;
+    margin-right: 0;
+    box-sizing: border-box;
+  }
+}

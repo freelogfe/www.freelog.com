@@ -5,14 +5,7 @@ import '@/static/css/reset.css';
 import '@/static/css/global.less';
 import '@/static/css/element-ui.less';
 import plugins from '../plugins';
-import store from '@/lib/storage';
-import Axios from '@/lib/axios'
-
-function loadUserInfo() {
-  return Axios.get('/v1/userinfos/current').then(function (res) {
-    return res.data;
-  })
-}
+import store from '../store'
 
 function shouldGotoIndex() {
   var loginPath = '/pages/user/login.html'
@@ -22,12 +15,10 @@ function shouldGotoIndex() {
 }
 
 function checkLoginStatus() {
-  var user = store.get('userInfo') || {}
+  var user = store.getters.session || {}
   if (!user || !user.userId) {
-    loadUserInfo().then((res) => {
-      var data = res.data
-      if (res.errcode === 0) {
-        store.set('userInfo', data)
+    store.dispatch('checkUserSession').then((valid) => {
+      if (valid) {
         shouldGotoIndex()
       }
     })

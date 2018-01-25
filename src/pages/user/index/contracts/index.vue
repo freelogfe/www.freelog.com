@@ -21,7 +21,7 @@
               prop="address"
               label="合同状态">
         <template slot-scope="scope">
-          <el-tag :type="scope.row._status.type">{{scope.row._status.text}}</el-tag>
+          <el-tag :type="scope.row._statusInfo.type">{{scope.row._statusInfo.desc}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column>
@@ -41,8 +41,8 @@
 </template>
 
 <script>
-  import store from '@/lib/storage';
   import {CONTRACT_STATUS_TIPS, CONTRACT_STATUS_COLORS} from '@/config/contract'
+  import {mapGetters} from 'vuex'
 
   export default {
     name: 'contract-list',
@@ -53,7 +53,7 @@
       }
     },
     mounted() {
-      var user = store.get('userInfo')
+      var user = this.user
       if (!user || !user.userId){return}
       this.loadContracts(user.userId)
         .then(this.loadResourcesDetail.bind(this))
@@ -62,15 +62,15 @@
           this.contracts = contracts;
         })
     },
+    computed: mapGetters({
+      user: 'session'
+    }),
     methods: {
       format(contracts) {
         var result = []
         contracts.forEach((contract) => {
           if (contract.resourceDetail) {
-            contract._status = {
-              type: CONTRACT_STATUS_COLORS[contract.status],
-              text: CONTRACT_STATUS_TIPS[contract.status]
-            }
+            contract._statusInfo = CONTRACT_STATUS_COLORS[contract.status]
             result.push(contract)
           }
         })

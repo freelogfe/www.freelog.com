@@ -1,18 +1,18 @@
 import ContractSteps from '../contract-steps/index.vue'
 import ContractState from '@/pages/pagebuild/ui-lib/contract-state/index.vue'
-import PresentableDetail from '../presentable-detail/index.vue'
-
-import {CONTRACT_STATUS_TIPS} from '@/config/contract'
+import ContractInfoDetail from '../contract-info-detail/index.vue'
 
 export default {
-  name: 'contract-manager',
+  name: 'contract-detail',
 
   data() {
-    return {
-      CONTRACT_STATUS_TIPS: CONTRACT_STATUS_TIPS
-    }
+    return {}
   },
-  components: {ContractState, ContractSteps, PresentableDetail},
+  components: {
+    ContractState,
+    ContractSteps,
+    ContractInfoDetail
+  },
   props: {
     data: {
       type: Object,

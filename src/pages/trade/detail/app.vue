@@ -75,10 +75,7 @@
     },
     methods: {
       format(data) {
-        data._statusInfo = {
-          type: CONTRACT_STATUS_COLORS[data.contract.status],
-          desc: CONTRACT_STATUS_TIPS[data.contract.status]
-        }
+        data._statusInfo = CONTRACT_STATUS_COLORS[data.contract.status]
         return data
       },
       loadResourcesDetail(resourceId) {

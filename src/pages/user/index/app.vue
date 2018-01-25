@@ -39,16 +39,6 @@
       UserOrderList
     },
     methods: {
-      loadUserInfo() {
-        var self = this;
-        window.fetch('/v1/userinfos/current', {
-          credentials: 'same-origin'
-        }).then(function (res) {
-          return res.json()
-        }).then(function (data) {
-          self.user = data.data;
-        })
-      }
     }
   }
 </script>

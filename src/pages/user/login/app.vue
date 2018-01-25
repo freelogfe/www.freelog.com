@@ -63,8 +63,8 @@
 
       return {
         model: {
-          loginName: '13480125810',
-          password: '123456',
+          loginName: '',
+          password: '',
           isRememer: false,
         },
         rules: rules,
@@ -88,25 +88,16 @@
 
           var data = Object.assign({}, self.model)
           data.isRememer = data.isRememer ? 1 : 0
-          window.fetch('/api/v1/passport/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify(data)
-          }).then((res) => {
-            this.loading = false
-            return res.json()
-          }).then((data) => {
-            if (data.ret === 0 && data.errcode === 0) {
+          this.$vuex.dispatch('userLogin', data)
+            .then(() => {
+              this.loading = false
               var qs = querystring.parse(location.search.slice(1))
-              store.set('userInfo', data.data);
               location.href = qs.redirect || '/pages/user/index.html'
-            } else {
-              this.error = {message: data.msg}
-            }
-          })
+            })
+            .catch((msg) => {
+              this.loading = false
+              this.error = {message: msg}
+            })
         })
       }
     }

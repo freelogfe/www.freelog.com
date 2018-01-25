@@ -41,7 +41,7 @@
 
 
 <script>
-  import store from '@/lib/storage'
+  import {mapGetters} from 'vuex'
 
   export default {
     data() {
@@ -86,6 +86,9 @@
     },
     mounted() {
     },
+    computed: mapGetters({
+      user: 'session'
+    }),
     methods: {
       resetPayPasswordHandler() {
         this.shouldShowPasswordDialog = true
@@ -127,7 +130,7 @@
         })
       },
       resetLoginPassword() {
-        var user = store.get('userInfo')
+        var user = this.user
         if (!user || !user.userId) {
           return this.$message.error('not login')
         }
@@ -158,7 +161,7 @@
         })
       },
       resetPayPassword() {
-        var user = store.get('userInfo')
+        var user = this.user
         if (!user || !user.userId) {
           return this.$message.error('not login')
         }

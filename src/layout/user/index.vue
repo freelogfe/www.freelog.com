@@ -29,31 +29,26 @@
 
 <script>
   import NavTopBar from '@/components/nav-top/index.vue'
-  import store from '@/lib/storage';
+  import {mapGetters} from 'vuex'
 
   export default {
     data() {
-      return {
-        user: store.get('userInfo') || {},
-      }
+      return {}
     },
     mounted() {
       if (!this.user || !this.user.userId) {
-        this.loadUserInfo().then((user) => {
+        this.$vuex.dispatch('checkUserSession').then((user) => {
           this.user = user
         })
       }
     },
+    computed: mapGetters({
+      user: 'session'
+    }),
     components: {
       NavTopBar
     },
-    methods: {
-      loadUserInfo() {
-        return this.$axios.get('/v1/userinfos/current').then(function (res) {
-          return res.data.data;
-        })
-      }
-    }
+    methods: {}
   }
 </script>
 <style lang="less" scoped>

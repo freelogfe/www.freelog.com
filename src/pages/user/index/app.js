@@ -1,7 +1,8 @@
-import Vue from '@/layout/user/index'
+import Vue from '@/layout/default/main'
 import App from './app.vue'
 
-new Vue({
-    el: '#main-app',
-    render: h => h(App)
+Vue({
+  // el: '#main-app',
+  render: h => h(App)
 })
+

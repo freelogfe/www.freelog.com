@@ -1,3 +1,5 @@
+import OrderStatus from '@/config/order'
+
 export default {
   name: 'transaction-event',
   data() {
@@ -7,14 +9,20 @@ export default {
       fromAccountId: ''
     }
   },
-  props: ['data'],
+  props: {
+    data: {
+      type: Object,
+      default(){
+        return null
+      }
+    }
+  },
   computed: {
     unitType() {
       return this.data.event.params[0].substr(0, 4)
     }
   },
   mounted() {
-    console.log(this.data)
     this.$axios.get('/v1/pay/accounts').then((res) => {
       this.accounts = res.data.data;
     })
@@ -24,19 +32,10 @@ export default {
       this.$emit('close', {shouldUpdate})
     },
     payResultHandler(result) {
-      switch (result.status) {
-        case 1:
-          this.$message.success('支付进行中，稍后查询支付结果')
-          break;
-        case 2:
-          this.$message.success('支付成功')
-          break;
-        case 3:
-          this.$message.success('支付失败')
-          break;
-        default:
-          this.$message.info('未知的支付状态')
-      }
+      var statusInfo = OrderStatus[result.status]
+      var msg = (statusInfo && statusInfo.desc) || '未知的支付状态';
+      (result.status === 1) && (msg = (`${msg}，稍后查询支付结果`))
+      this.$message.success(msg)
     },
     pay() {
       var self = this;
@@ -52,7 +51,7 @@ export default {
         if (data.errcode === 0) {
           this.$message.success('操作成功')
           this.payResultHandler(data.data)
-          this.doneHandler(true)
+          this.doneHandler({shouldUpdate: data.status === 2, payResult: data})
         } else {
           this.$message.error(data.msg)
         }

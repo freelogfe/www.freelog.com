@@ -95,22 +95,25 @@ function DirectGraph(opts) {
     });
   }
 
-  function autoPlacementTip(pos) {
+  function autoPlacementTip(pos, diff) {
     var parentRect = opts.container.parentNode.getBoundingClientRect()
     var conRect = opts.container.getBoundingClientRect()
     var diffx = conRect.x - parentRect.x,
       diffy = conRect.y - parentRect.y;
     var tipRect = $tip.getBoundingClientRect()
-
+    diff = diff || {
+      x: 0,
+      y: 0
+    }
     var posx = diffx + pos.x
     var posy = diffy + pos.y
 
     if (posx + tipRect.width > conRect.width) {
-      posx -= tipRect.width - 25
+      posx -= tipRect.width + diff.x
     }
 
     if (posy + tipRect.height > conRect.height) {
-      posy -= tipRect.height - 25
+      posy -= tipRect.height + diff.y
     }
     $tip.style.left = posx + 'px'
     $tip.style.top = posy + 'px'
@@ -140,17 +143,6 @@ function DirectGraph(opts) {
       .style('marker-end', function (d) {
         return d.right ? 'url(#end-arrow)' : '';
       })
-      .on('mouseenter', function (p) {
-        var pos = d3.mouse(this)
-
-        $tip.style.opacity = 1
-        // $tip.style.top = pos[1] + 'px'
-        // $tip.style.left = pos[0] + 'px'
-        if (self._opts.overlayHandler) {
-          self._opts.overlayHandler(p, $tip)
-          setTimeout(autoPlacementTip({x: pos[0], y: pos[1]}))
-        }
-      })
 
     // remove old links
     path.exit().remove();
@@ -166,37 +158,38 @@ function DirectGraph(opts) {
         height: 30,
         // 'class': 'step-tip-wrap'
       })
-    var $div = fo.append("xhtml:div").append('div')
+    var $div = fo.append("xhtml:div")
       .attr('class', 'step-tip-wrap')
       .on('mouseenter', function (p) {
-        var pos = d3.mouse(this)
-        this.classList.add('hover')
-        console.log(pos)
+        var pos = d3.transform(d3.select(this.parentNode).attr("transform")).translate// d3.mouse(this)
+
+        $tip.style.opacity = 1
+        if (self._opts.overlayHandler) {
+          self._opts.overlayHandler(p, $tip)
+          setTimeout(autoPlacementTip({x: pos[0] + 30, y: pos[1]}, {
+            x: 30
+          }), 20)
+        }
       })
-      .on('mouseout', function (p) {
-        this.classList.remove('hover')
-      })
+    // .on('mouseout', function (p) {
+    //   $tip.style.opacity = 0
+    // })
 
     $div.append('div')
       .attr({
         'class': 'tooltip'
       }).html('<i class="el-icon-info"></i>')
       .attr('class', function (d) {
-        console.log(d)
         return 'action-btn'
       })
-    $div.append('div')
-      .attr('class', 'tip-content')
-      .html(`<p>hello</p>`)
+    // $div.append('div')
+    //   .attr('class', 'tip-content')
+    //   .html(`<p>hello</p>`)
 
     actions.exit().remove();
   }
 
-  //selected变虚线
-  function restart() {
-
-    drawMiddleSteps()
-    drawPath();
+  function drawCircles() {
 
     // circle (node) group
     // NB: the function arg is crucial here! nodes are known by id, not by index!
@@ -219,9 +212,11 @@ function DirectGraph(opts) {
       .attr('r', Radius)
       .on('mouseenter', function (d) {
         $tip.style.opacity = 1
+        var pos = d3.transform(d3.select(this.parentNode).attr("transform")).translate// d3.mouse(this)
+
         if (self._opts.overlayHandler) {
           self._opts.overlayHandler(d.data, $tip)
-          setTimeout(autoPlacementTip(d))
+          setTimeout(autoPlacementTip({x: pos[0] + 40, y: pos[1]}, {x: 40}), 20)
         }
       })
 
@@ -237,7 +232,14 @@ function DirectGraph(opts) {
 
     // remove old nodes
     circle.exit().remove();
+  }
 
+  //selected变虚线
+  function restart() {
+
+    drawMiddleSteps()
+    drawPath();
+    drawCircles()
     // set the graph in motion
     force.start();
   }

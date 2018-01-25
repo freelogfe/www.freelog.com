@@ -13,7 +13,7 @@
 
     <el-popover
             ref="popover"
-            popper-class="tip js-svg-tip"
+            popper-class="contract-step-tip js-svg-tip"
             width="250">
       <div>
         <div v-show="popData.type == 'node'">

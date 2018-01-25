@@ -36,7 +36,8 @@
 <script>
   import querystring from 'querystring'
   import OrderConfig from '@/config/order'
-
+  import {mapGetters} from 'vuex'
+  import {CONTRACT_STATUS_COLORS} from '@/config/contract'
   export default {
     data() {
       return {
@@ -52,15 +53,15 @@
           this.contracts = contracts;
         })
     },
+    computed: mapGetters({
+      user: 'session'
+    }),
     methods: {
       format(contracts) {
         var result = []
         contracts.forEach((contract) => {
           if (contract.resourceDetail) {
-            contract._status = {
-              type: CONTRACT_STATUS_COLORS[contract.status],
-              text: CONTRACT_STATUS_TIPS[contract.status]
-            }
+            contract._statusInfo = CONTRACT_STATUS_COLORS[contract.status]
             result.push(contract)
           }
         })
@@ -105,7 +106,7 @@
         })
       },
       loadContracts() {
-        var user = store.get('userInfo')
+        var user = this.user
         return this.$axios.get('/v1/contracts', {
           params: {
             contractType: 3,

@@ -1,4 +1,4 @@
-import {CONTRACT_STATUS, CONTRACT_STATUS_TIPS, CONTRACT_STATUS_COLORS} from '@/config/contract'
+import {CONTRACT_STATUS, CONTRACT_STATUS_COLORS} from '@/config/contract'
 
 
 export default {
@@ -7,7 +7,6 @@ export default {
   data() {
     return {
       presentables: [],
-      CONTRACT_STATUS: CONTRACT_STATUS,
       CONTRACT_STATUS_ACTION_TIPS: {
         0: '通知节点',
         '-1': '去创建合同',
@@ -30,7 +29,7 @@ export default {
   },
   mounted() {
     this.formatPresentableList(this.data)
-    this.$eventBus.$on('update', this.refresh.bind(this))
+    this.$eventBus.$on('updateList', this.refresh.bind(this))
   },
   watch: {
     data: function () {
@@ -44,7 +43,7 @@ export default {
         if (detail.update.contract) {
           this.presentables.forEach((p) => {
             if (p.contractId === contract.contractId) {
-              Object.assign(p, contract)
+              Object.assign(p.contractDetail, contract)
             }
           })
         }
@@ -74,10 +73,7 @@ export default {
         presentable._contractStatus = CONTRACT_STATUS.uncreated
       }
 
-      presentable.statusTip = {
-        text: CONTRACT_STATUS_TIPS[presentable._contractStatus] || 'n/a',
-        type: CONTRACT_STATUS_COLORS[presentable._contractStatus]
-      }
+      presentable._statusInfo = CONTRACT_STATUS_COLORS[presentable._contractStatus]
     },
     notifyNodeUser() {
       //todo 提示节点执行资源合同（变成生效状态）
@@ -85,7 +81,7 @@ export default {
     },
     tabActionHandler(presentable) {
       var tabConfig = {
-        content: 'contract-manager',
+        content: 'contract-detail',
         data: presentable,
         title: '合同管理',
         name: 'tab_' + presentable.presentableId
@@ -98,7 +94,7 @@ export default {
         case CONTRACT_STATUS.uncreated:
           Object.assign(tabConfig, {
             title: '创建合同',
-            content: 'policy-manager',
+            content: 'contract-creator',
             name: 'create_' + presentable.presentableId
           })
         case CONTRACT_STATUS.initial:

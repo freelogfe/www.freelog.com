@@ -1,9 +1,9 @@
 import compiler from 'freelog_policy_compiler'
 import ContractSteps from '../contract-steps/index.vue'
-import PresentableDetail from '../presentable-detail/index.vue'
+import ContractInfoDetail from '../contract-info-detail/index.vue'
 //创建合同
 export default {
-  name: 'policy-manager',
+  name: 'contract-creator',
 
   data() {
     return {
@@ -24,7 +24,7 @@ export default {
     data: 'formatPolicy'
   },
 
-  components: {ContractSteps, PresentableDetail},
+  components: {ContractSteps, ContractInfoDetail},
   mounted() {
     this.formatPolicy()
   },
@@ -68,7 +68,7 @@ export default {
     },
     gotoExecuteContract() {
       var tabConfig = {
-        content: 'contract-manager',
+        content: 'contract-detail',
         data: this.data,
         title: '合同管理',
         name: 'tab_' + this.data.presentableId
@@ -155,7 +155,7 @@ export default {
           this.updateContractDetail(data.data)
             .then((data) => {
               self.$set(self.data, 'contractDetail', data)
-              self.$eventBus.$emit('update')
+              self.$eventBus.$emit('updateList')
             })
         } else {
           self.$message.error(data.msg)

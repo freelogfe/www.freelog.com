@@ -11,7 +11,8 @@
         <label>accountType</label> <span>{{accountDetail._accountTypeInfo.name}}</span>
       </li>
       <li>
-        <label>balance</label> <span>{{accountDetail.balance|humanizeCurrency}} {{accountDetail._accountTypeInfo.abbr}}</span>
+        <label>balance</label>
+        <span>{{accountDetail.balance|humanizeCurrency}} {{accountDetail._accountTypeInfo.abbr}}</span>
       </li>
       <li>
         <label>cardNo</label> <span>{{accountDetail.cardNo}}</span>
@@ -57,6 +58,7 @@
         return this.$axios.get(`/v1/pay/accounts/officaialTap?accountId=${accountId}`).then((res) => {
           var data = res.data
           if (data.errcode === 0) {
+            this.accountDetail.balance = data.balance
             this.$message.success('执行成功')
           } else {
             this.$message.error(data.msg)

@@ -2,7 +2,7 @@
     <div>
         <contract-steps :step="1" v-show="data._showContractSteps"></contract-steps>
 
-        <presentable-detail class="contract-detail" :data="data" collapseName="process"></presentable-detail>
+        <contract-info-detail class="contract-detail" :data="data" collapseName="process"></contract-info-detail>
     </div>
 </template>
 

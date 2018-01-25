@@ -2,7 +2,6 @@ import DirectGraph from './direct-graph';
 import LicenseEvent from '../contract-events/license/index.vue'
 import TransactionEvent from '../contract-events/transaction/index.vue'
 
-
 require('../../../../lib/d3.v3.min')
 
 var lastNodeId = -1;
@@ -267,29 +266,13 @@ export default {
       return width
     },
     updateContractState() {
-      return this.loadPresentableDetail(this.data.contractId)
+      return this.loadContractDetail(this.data.contractId)
         .then((data) => {
           Object.assign(this.data, data)
           return {contract: data}
         })
     },
-    // triggerLicense(data) {
-    //     return window.QI.fetch('//api.freelog.com/v1/contracts/signingLicenses', {
-    //         method: 'POST',
-    //         data: data
-    //     }).then((res) => {
-    //         return res.json()
-    //     })
-    // },
-    // triggerContractState(data) {
-    //     return window.QI.fetch('//api.freelog.com/v1/contracts/test', {
-    //         method: 'POST',
-    //         data: data
-    //     }).then((res) => {
-    //         return res.json()
-    //     })
-    // },
-    loadPresentableDetail(contractId) {
+    loadContractDetail(contractId) {
       return window.QI.fetch(`/v1/contracts/${contractId}`).then((res) => {
         if (res.status === 200) {
           return res.json()
@@ -333,10 +316,6 @@ export default {
       }
 
       function triggerHandler(event) {
-        // console.log('activate...')
-        // console.log(data)
-        // console.log(event)
-        // console.log(contract)
         var compOpt = Object.assign({}, componentMap[event.type])
         compOpt.data = {
           contract: contract,
@@ -344,29 +323,6 @@ export default {
         }
         self.showEventDialog = true;
         self.eventComponentOpt = compOpt;
-        // var promise;
-        // if (event.type === 'signing') {
-        //     promise = self.triggerLicense({
-        //         contractId: contractId,
-        //         eventId: event.eventId,
-        //         licenseIds: event.params
-        //     })
-        // } else {
-        //     promise = self.triggerContractState({
-        //         contractId: contractId,
-        //         eventId: event.eventId
-        //     })
-        // }
-        //
-        // Promise.resolve(promise).then((data) => {
-        //     if (data.ret === 0 && data.errcode === 0) {
-        //         self.$message.success('操作成功');
-        //         self.$refs.popover.showPopper = false
-        //         self.updateContractState(contract, nextState)
-        //     } else {
-        //         self.$message.error(data.msg)
-        //     }
-        // })
       }
     },
     hideDialogHandler(done) {
@@ -376,11 +332,13 @@ export default {
     closeDialogHandler(detail) {
       if (detail && detail.shouldUpdate) {
         this.$refs.popover.showPopper = false
-        this.updateContractState()
-          .then((data) => {
-            this.$eventBus.$emit('update',{update: data})
-            this.draw()
-          })
+        setTimeout(()=>{
+          this.updateContractState()
+            .then((data) => {
+              this.$eventBus.$emit('updateList', {update: data})
+              this.draw()
+            })
+        },5e2) //等待后端更新数据，待优化，从UI上进行友好展示
       }
       this.$refs.eventDialog.hide()
       this.eventComponentOpt = {}

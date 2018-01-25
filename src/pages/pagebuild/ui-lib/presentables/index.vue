@@ -23,7 +23,7 @@
                     min-width="120"
                     label="状态">
                 <template slot-scope="scope">
-                    <el-tag :type="scope.row.statusTip.type">{{scope.row.statusTip.text}}</el-tag>
+                    <el-tag :type="scope.row._statusInfo.type">{{scope.row._statusInfo.desc}}</el-tag>
                 </template>
             </el-table-column>
             <el-table-column label="操作" align="center" width="120">

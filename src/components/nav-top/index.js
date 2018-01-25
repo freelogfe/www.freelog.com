@@ -1,38 +1,29 @@
-import store from '@/lib/storage';
+import {mapGetters} from 'vuex'
 
 export default {
   name: 'nav-top-bar',
   data() {
     return {
-      user: store.get('userInfo') || {},
     }
   },
+  computed: mapGetters({
+    user: 'session'
+  }),
   mounted() {
     this.checkLoginStatus() //待优化
   },
   methods: {
     checkLoginStatus() {
       if (!this.user || !this.user.userId) {
-        this.loadUserInfo().then((res) => {
-          var data = res.data
-          if (res.errcode === 0) {
-            store.set('userInfo', data)
-            return data
-          } else {
-            this.$message.error(res.msg)
-          }
-        })
+        this.$vuex.dispatch('checkUserSession')
+          .then((userInfo) => {
+            this.user = userInfo
+          })
       }
     },
-    loadUserInfo() {
-      return this.$axios.get('/v1/userinfos/current').then(function (res) {
-        return res.data;
-      })
-    },
     logoutHandler() {
-      this.$axios.get('/v1/passport/logout').then(function (res) {
-        store.remove('userInfo')
-        location.replace('/pages/user/login.html')
+      this.$axios.get('/v1/passport/logout').then(() => {
+        this.$vuex.dispatch('logout')
       })
     },
     handleNavTopCommand(command) {
