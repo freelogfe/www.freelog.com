@@ -55,18 +55,11 @@ const user = {
     },
     [types.CHECK_USER_SESSION]({commit}) {
       return new Promise((resolve, reject) => {
-        var loginPath = '/pages/user/login.html'
         var userInfo = this.state.user.session
         if (userInfo) {
           resolve(userInfo)
         } else {
           this.dispatch(types.GET_CURRENT_USER).then((userInfo) => {
-            if (!userInfo) {
-              this.dispatch(types.DELETE_USER_SESSION)
-              if (location.pathname !== loginPath) {
-                location.href = `${loginPath}?redirect=` + encodeURIComponent(location.href)
-              }
-            }
             resolve(userInfo)
           })
         }

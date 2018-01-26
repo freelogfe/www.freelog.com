@@ -81,7 +81,7 @@ export default {
     if (data && data.errcode) {
       var errorMsg = data.msg;
       var resData = data.data && data.data.data
-      
+
       switch (data.errcode) {
         //未激活状态
         case 70080104:

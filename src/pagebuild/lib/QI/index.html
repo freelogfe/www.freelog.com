@@ -43,7 +43,7 @@
       }
 
       fetchPresentable(pid, param) {
-        var url = `/v1/nodes/${window.__auth_info__.__auth_node_id__}/presentables/${pid}`
+        var url = `/v1/presentables/resource/${pid}?nodeId=${window.__auth_info__.__auth_node_id__}`
         return this.fetch(url, param)
       }
     }

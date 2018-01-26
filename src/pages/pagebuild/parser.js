@@ -2,7 +2,7 @@ export default {
     start() {
         var self = this
         var authInfo = window.__auth_info__;
-        var authErrorData = authInfo.__auth_error_info__
+        var authErrorData = authInfo && authInfo.__auth_error_info__
 
         if (!authErrorData) {
             self.loadWidgets()
