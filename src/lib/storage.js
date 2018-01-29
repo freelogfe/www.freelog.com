@@ -14,21 +14,20 @@
  var store = require('store').createStore(storage)
  */
 
+import store from 'store'
 import engine from 'store/src/store-engine'
-import localStorage from 'store/storages/localStorage'
-import sessionStorage from 'store/storages/sessionStorage'
+import cookieStorage from 'store/storages/cookieStorage'
 import defaultPlugins from 'store/plugins/defaults'
 import expire from 'store/plugins/expire'
 
 var storages = [
-    sessionStorage,
-    localStorage
+  cookieStorage
 ]
-
 var plugins = [
-    defaultPlugins,
-    expire
-]
-var store = engine.createStore(storages, plugins)
+  defaultPlugins,
+  expire
+];
+
+export const cookieStore = engine.createStore(storages, plugins)
 
 export default store

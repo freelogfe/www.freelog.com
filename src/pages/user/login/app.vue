@@ -27,7 +27,7 @@
           <el-checkbox v-model="model.isRememer">记住我</el-checkbox>
           <span class="user-ops">
           <a class="user-op" href="//console.freelog.com/user/reset_pw">忘记密码</a> | <a class="user-op"
-                                                                                      href="//console.freelog.com/user/signup?redirect=%2F%2Fapi.freelog.com%2Fpages%2Fuser%2Findex.html">注册新用户</a>
+                                                                                      href="//console.freelog.com/user/signup?redirect=%2F%2Fwww.freelog.com%2Fpages%2Fuser%2Findex.html">注册新用户</a>
         </span>
         </el-form-item>
         <el-form-item class="login-btns">
@@ -88,7 +88,7 @@
 
           var data = Object.assign({}, self.model)
           data.isRememer = data.isRememer ? 1 : 0
-          this.$vuex.dispatch('userLogin', data)
+          this.$store.dispatch('userLogin', data)
             .then(() => {
               this.loading = false
               var qs = querystring.parse(location.search.slice(1))

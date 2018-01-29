@@ -1,4 +1,5 @@
 import {storage, axios} from '@/lib/index'
+import {cookieStore} from '@/lib/storage'
 
 const types = {
   GET_CURRENT_USER: 'getCurrentUser',
@@ -6,7 +7,7 @@ const types = {
   USER_LOGIN: 'userLogin',
   CHECK_USER_SESSION: 'checkUserSession',
   DELETE_USER_SESSION: 'deleteUserSession',
-  LOGOUT: 'logout'
+  LOGOUT: 'userLogout'
 }
 
 
@@ -23,9 +24,6 @@ const user = {
     [types.LOGOUT](state) {
       state.session = null
       storage.remove('user_session');
-      setTimeout(() => {
-        location.replace('/pages/user/login.html')
-      }, 10)
     }
   },
 
@@ -53,15 +51,21 @@ const user = {
     [types.LOGOUT]({commit}) {
       commit(types.LOGOUT)
     },
-    [types.CHECK_USER_SESSION]({commit}) {
-      return new Promise((resolve, reject) => {
-        var userInfo = this.state.user.session
-        if (userInfo) {
-          resolve(userInfo)
+    [types.CHECK_USER_SESSION]({commit, getters}) {
+      var authInfo = cookieStore.get('authInfo')
+      return new Promise((resolve) => {
+        if (!authInfo) {
+          resolve(false)
         } else {
-          this.dispatch(types.GET_CURRENT_USER).then((userInfo) => {
-            resolve(userInfo)
-          })
+          var jwt = authInfo.split('.')
+          var userInfo = atob(jwt[1])
+          try {
+            userInfo = JSON.parse(userInfo)
+          } catch (err) {
+            console.error(err)
+            userInfo = {}
+          }
+          resolve(!(!getters.session || getters.session.userId !== userInfo.userId))
         }
       })
     },

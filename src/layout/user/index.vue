@@ -37,7 +37,7 @@
     },
     mounted() {
       if (!this.user || !this.user.userId) {
-        this.$vuex.dispatch('checkUserSession').then((user) => {})
+//        this.$vuex.dispatch('checkUserSession').then((user) => {})
       }
     },
     computed: mapGetters({
