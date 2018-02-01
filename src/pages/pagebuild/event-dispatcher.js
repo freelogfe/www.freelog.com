@@ -1,5 +1,5 @@
 import Vue from 'vue'
-// import Service from './services'
+import Service from './services'
 import {Message} from 'element-ui'
 
 const DEFAULT_EVENT_NAME = 'freelogSystemService';
