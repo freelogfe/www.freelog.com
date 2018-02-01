@@ -46,6 +46,7 @@
             :visible.sync="showEventExecDialog"
             :before-close="handleCloseDialog"
             append-to-body
+            :center=true
             width="40%">
       <component :is="eventComponent"
                  @close="closeDialogHandler"
