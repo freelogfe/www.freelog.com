@@ -18,6 +18,7 @@ export default {
     })
   },
   dispatchHandler(event) {
+    debugger
     var detail = event.detail
     var handlerName = detail.eventName
     var opts = detail.opts || {}
