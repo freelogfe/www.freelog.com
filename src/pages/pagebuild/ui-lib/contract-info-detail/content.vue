@@ -6,8 +6,6 @@
 </template>
 
 <script>
-  import compiler from 'freelog_policy_compiler'
-
   let contractEventsMap = {
     transaction() {
       return '支付事件'

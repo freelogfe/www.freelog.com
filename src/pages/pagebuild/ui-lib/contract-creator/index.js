@@ -1,6 +1,7 @@
 import compiler from 'presentable_policy_compiler'
 import ContractSteps from '../contract-steps/index.vue'
 import ContractInfoDetail from '../contract-info-detail/index.vue'
+
 //创建合同
 export default {
   name: 'contract-creator',
@@ -130,37 +131,55 @@ export default {
         }
       })
     },
+    loadPartyTwo() {
+      return new Promise((resolve) => {
+        if (window.__auth_info__.__auth_user_id__) {
+          resolve(window.__auth_info__.__auth_user_id__)
+        } else {
+          this.$store.dispatch('getCurrentUserInfo').then((userInfo) => {
+            resolve(userInfo.userId)
+          })
+        }
+      })
+    },
     createContract(policyData) {
       var self = this;
       if (self.loading) {
         return
       }
       self.loading = true
-      window.QI.fetch('/v1/contracts', {
-        method: 'POST',
-        data: {
-          contractType: 3,
-          targetId: policyData.presentableId,
-          segmentId: policyData.selectedSegmentId,
-          serialNumber: policyData.serialNumber,
-          partyTwo: window.__auth_info__.__auth_user_id__
-        }
-      }).then((res) => {
-        return res.json()
-      }).then((data) => {
-        self.loading = false
-        if (data.ret === 0 && data.errcode === 0) {
-          self.btnType = 'success'
-          self.$message.success('签约成功')
-          this.updateContractDetail(data.data)
-            .then((data) => {
-              self.$set(self.data, 'contractDetail', data)
-              self.$eventBus.$emit('updateList')
-            })
-        } else {
-          self.$message.error(data.msg)
-        }
-      })
+
+      this.loadPartyTwo()
+        .then((userId) => {
+          if (!userId) {
+            return this.$message.error('获取不到用户ID')
+          }
+          window.QI.fetch('/v1/contracts', {
+            method: 'POST',
+            data: {
+              contractType: 3,
+              targetId: policyData.presentableId,
+              segmentId: policyData.selectedSegmentId,
+              serialNumber: policyData.serialNumber,
+              partyTwo: userId
+            }
+          }).then((res) => {
+            return res.json()
+          }).then((data) => {
+            self.loading = false
+            if (data.ret === 0 && data.errcode === 0) {
+              self.btnType = 'success'
+              self.$message.success('签约成功')
+              this.updateContractDetail(data.data)
+                .then((data) => {
+                  self.$set(self.data, 'contractDetail', data)
+                  self.$eventBus.$emit('updateList')
+                })
+            } else {
+              self.$message.error(data.msg)
+            }
+          })
+        })
     }
   }
 }

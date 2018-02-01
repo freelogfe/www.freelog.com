@@ -34,7 +34,9 @@
       }
 
       fetch(target, req) {
-        target = '/api' + target
+        if (!/^(https?:)?\/\//.test(target)) {
+          target = '/api' + target
+        }
         return this.$QI.fetch(target, req)
       }
 

@@ -91,10 +91,19 @@ export default {
         case 70080101:
           this._unauthHandler(resData)
           break;
-        //节点与资源之间的合约授权失败
+        //节点与资源之间的合约未生效
         case 70080202:
           this._invalidHandler(resData)
           break;
+        //   //不在授权范围内
+        // case 70080307:
+        //   break;
+        //   //用户合同授权异常
+        // case 70080105:
+        //   break;
+
+        //未登录
+        case 70080301:
         case 28:
         case 30:
           this._gotoLoginHandler()
@@ -105,9 +114,16 @@ export default {
       }
 
       if (typeof callback === 'function') {
-        appUI.$on('close', function () {
-          //todo
-          console.log('error response close', resData)
+        appUI.$on('close', function (detail) {
+          console.log(detail)
+          var presentable = null
+          detail.presentables.forEach((p) => {
+            if (resData.presentableId === p.presentableId || resData.contractId === p.contractId) {
+              presentable = p
+            }
+          })
+
+          callback(presentable)
         })
       }
     }

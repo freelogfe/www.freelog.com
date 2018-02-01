@@ -2,7 +2,8 @@ import {storage, axios} from '@/lib/index'
 import {cookieStore} from '@/lib/storage'
 
 const types = {
-  GET_CURRENT_USER: 'getCurrentUser',
+  LOAD_CURRENT_USER: 'loadCurrentUserInfo',
+  GET_CURRENT_USER_INFO: 'getCurrentUserInfo',
   CHANGE_SESSION: 'changeSession',
   USER_LOGIN: 'userLogin',
   CHECK_USER_SESSION: 'checkUserSession',
@@ -28,7 +29,7 @@ const user = {
   },
 
   actions: {
-    [types.GET_CURRENT_USER]({commit}, userId) {
+    [types.LOAD_CURRENT_USER]({commit}, userId) {
       var promise
       if (userId) {
         promise = axios.get(`/v1/userinfos/${userId}`)
@@ -40,6 +41,17 @@ const user = {
           commit(types.CHANGE_SESSION, res.data.data);
         }
         return res.data.data
+      })
+    },
+    [types.GET_CURRENT_USER_INFO]({commit, getters}) {
+      return new Promise((resolve) => {
+        if (getters.session) {
+          resolve(getters.session)
+        } else {
+          return this.dispatch(types.LOAD_CURRENT_USER).then((userInfo) => {
+            resolve(userInfo)
+          })
+        }
       })
     },
     [types.CHANGE_SESSION]({commit}, data) {

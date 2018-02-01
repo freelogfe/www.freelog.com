@@ -53,7 +53,7 @@ export default {
       this.$store.dispatch('checkUserSession')
         .then((valid) => {
           if (!valid) {
-            this.$store.dispatch('getCurrentUser').then(() => {
+            this.$store.dispatch('loadCurrentUserInfo').then(() => {
               location.reload()
             })
           }

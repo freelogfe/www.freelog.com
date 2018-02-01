@@ -96,14 +96,20 @@
         })
       },
       _closeDialogHandler() {
-        //todo call callbacks
-        this.$emit('close')
+        this.$emit('close', {
+          presentables: this.presentables
+        })
       },
       showAuthDialog() {
         this.shouldShowAuthDialog = true;
       },
       appendData(data) {
-        this.presentables.push(data)
+        var existed = this.presentables.some((presentable) => {
+          return presentable.presentableId === data.presentableId
+        })
+        if (!existed) {
+          this.presentables.push(data)
+        }
       },
       showToolBar() {
         this.$refs.toolbar.show()

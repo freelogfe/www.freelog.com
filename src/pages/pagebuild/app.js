@@ -3,9 +3,9 @@ import Vue from '@/layout/default/index'
 import AppView from './app.vue'
 
 import PageBuildeParser from './parser'
-import EventCode from './event_code'
+import EventCode from './event-code'
 import EventDispatcher from './event-dispatcher'
-
+import ExceptionCode from './exception-code'
 //对外接口服务
 var App = {
   isValidResponse(res) {
@@ -14,7 +14,8 @@ var App = {
   trigger() {
     EventDispatcher.trigger.apply(EventDispatcher, arguments)
   },
-  EventCode
+  EventCode,
+  ExceptionCode
 }
 
 function main() {

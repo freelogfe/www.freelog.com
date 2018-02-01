@@ -55,13 +55,13 @@ var webpackConfig = merge(baseWebpackConfig, {
     new webpack.HashedModuleIdsPlugin(),
     // split vendor js into its own file
     // copy custom static assets
-    // new CopyWebpackPlugin([
-    //   {
-    //     from: path.resolve(__dirname, '../src/static'),
-    //     to: config.build.assetsSubDirectory,
-    //     ignore: ['.*']
-    //   }
-    // ])
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../src/static'),
+        to: config.build.assetsSubDirectory,
+        ignore: ['.*']
+      }
+    ])
   ]
 })
 
