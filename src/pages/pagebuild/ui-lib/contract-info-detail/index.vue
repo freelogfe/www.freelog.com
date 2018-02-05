@@ -27,10 +27,12 @@
           <i class="el-icon-refresh" :class="{loading: refreshing}" @click="refreshHandler" v-if="data.contractDetail.status < 3"></i>
         </el-form-item>
         <el-form-item label="甲方" class="info-row">
-          {{data.contractDetail.partyOne}}
+          <span v-if="data.contractDetail.partyOneInfo">{{ data.contractDetail.partyOneInfo.nodeName }}</span>
+          <span v-else>{{ data.contractDetail.partyOne }}</span>
         </el-form-item>
         <el-form-item label="乙方" class="info-row">
-          {{data.contractDetail.partyTwo}}
+          <span v-if="data.contractDetail.partyTwoInfo">{{ data.contractDetail.partyTwoInfo.nickname }}</span>
+          <span v-else>{{ data.contractDetail.partyTwo }}</span>
         </el-form-item>
         </el-form-item>
         <el-form-item label="合同目标用户" class="info-row">
@@ -38,7 +40,6 @@
         </el-form-item>
       </template>
     </el-form>
-
 
     <el-dialog
             :title="dialogTitle"

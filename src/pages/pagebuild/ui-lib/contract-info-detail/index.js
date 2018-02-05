@@ -3,6 +3,7 @@ import ContractState from '@/pages/pagebuild/ui-lib/contract-state/index.vue'
 import ContractContent from './content.vue'
 import LicenseEvent from '../contract-events/license/index.vue'
 import TransactionEvent from '../contract-events/transaction/index.vue'
+import {storage} from '@/lib'
 
 let eventComponentMap = {
   transaction: {
@@ -88,7 +89,31 @@ export default {
         var _statusInfo = CONTRACT_STATUS_COLORS[data.contractDetail.status]
         this.$set(data.contractDetail, '_statusInfo', _statusInfo)
         this.$set(data.contractDetail, '_userGroup', userGroup.join('/'))
+
+        this.$store.dispatch('getCurrentUserInfo')
+          .then((userInfo) => {
+            this.$set(data.contractDetail, 'partyTwoInfo', userInfo)
+          })
+
+        this.loadNodeInfo().then((nodeInfo) => {
+          this.$set(data.contractDetail, 'partyOneInfo', nodeInfo)
+        })
       }
+    },
+    loadNodeInfo() {
+      var nodeId = window.__auth_info__.__auth_node_id__
+      return new Promise((resolve) => {
+        var nodesInfo = storage.get('nodesInfo') || {}
+        if (nodesInfo[nodeId]) {
+          resolve(nodesInfo[nodeId])
+        } else {
+          this.$axios.get(`/v1/nodes/${nodeId}`).then((res) => {
+            nodesInfo[nodeId] = res.data.data
+            storage.set('nodesInfo', nodesInfo)
+            resolve(res.data.data)
+          })
+        }
+      })
     },
     handleCloseDialog(done) {
       this.closeDialogHandler()
