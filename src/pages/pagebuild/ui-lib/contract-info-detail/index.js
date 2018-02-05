@@ -63,12 +63,12 @@ export default {
     },
     refreshHandler() {
       if (this.refreshing) return
-
       this.refreshing = true
-      this.loadContractDetail(this.data.contractDetail.contractId)
+      this.updateContract()
         .then((data) => {
           this.refreshing = false
-          this.$set(this.data, 'contractDetail', data)
+          this.$eventBus.$emit('updateList', {update: data})
+          this.formatData()
         })
         .catch(() => {
           this.refreshing = false
@@ -97,7 +97,7 @@ export default {
     updateContract() {
       return this.loadContractDetail(this.data.contractDetail.contractId)
         .then((data) => {
-          Object.assign(this.data.contractDetail, data)
+          this.$set(this.data, 'contractDetail', data)
           return {contract: data}
         })
     },

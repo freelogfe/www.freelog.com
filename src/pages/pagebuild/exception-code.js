@@ -22,15 +22,18 @@ const ExceptionCode = {
   },
   70080201: {
     desc: '未找到节点与资源的合同信息',
-    tip: '去通知节点'
+    tip: '去通知节点',
+    action: 'notifyNodeHandler'
   },
   70080202: {
     desc: '节点的合同未激活',
-    tip: '去通知节点'
+    tip: '去通知节点',
+    action: 'notifyNodeHandler'
   },
   70080203: {
     desc: '节点合同授权异常',
-    tip: '去通知节点'
+    tip: '去通知节点',
+    action: 'notifyNodeHandler'
   },
   70080301: {
     desc: '未登陆用户',
@@ -39,7 +42,7 @@ const ExceptionCode = {
   },
   70080302: {
     desc: '个人身份授权不通过',
-    tip: '去通知节点'
+    tip: '查看详情'
   },
   70080303: {
     desc: '用户分组策认证不通过',
@@ -47,7 +50,8 @@ const ExceptionCode = {
   },
   70080304: {
     desc: '未找到节点信息',
-    tip: ''
+    action: 'reportHandler',
+    tip: '我要上报'
   },
   70080305: {
     desc: '资源策略拒绝',

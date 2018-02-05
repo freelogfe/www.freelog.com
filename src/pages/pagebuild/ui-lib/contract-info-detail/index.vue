@@ -55,9 +55,6 @@
 
     <div v-if="data.contractDetail" style="margin-top: 15px;">
       <el-collapse :value="collapseName">
-        <!--<el-collapse-item title="合同内容" name="policy">-->
-          <!--<pre>{{data.policyText}}</pre>-->
-        <!--</el-collapse-item>-->
         <el-collapse-item title="合同流程" name="process">
           <contract-content style="padding-left:20px"
                             :data="data.contractDetail" @execute="executeContractHandler"></contract-content>

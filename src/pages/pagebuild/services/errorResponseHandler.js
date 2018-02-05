@@ -87,6 +87,11 @@ export default {
         case 70080104:
           this._unactivatedHandler(resData)
           break;
+
+        case 70080302: //todo 个人身份授权不通过
+        case 70080303: //todo 用户分组策认证不通过
+        case 70080305: //todo 资源策略拒绝
+        case 70080306: //too presentable策略拒绝
         //未签约状态
         case 70080101:
           this._unauthHandler(resData)
@@ -95,12 +100,6 @@ export default {
         case 70080202:
           this._invalidHandler(resData)
           break;
-        //   //不在授权范围内
-        // case 70080307:
-        //   break;
-        //   //用户合同授权异常
-        // case 70080105:
-        //   break;
 
         //未登录
         case 70080301:

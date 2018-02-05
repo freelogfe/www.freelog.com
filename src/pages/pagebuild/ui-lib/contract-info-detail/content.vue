@@ -75,7 +75,7 @@
         })
 
         var pushEvent = (event) => {
-          var eventFn = contractEventsMap[event.type]
+          var eventFn = contractEventsMap[event.type] //好像没什么用？
           if (eventFn) {
             events.push({
               desc: eventFn(event.type),

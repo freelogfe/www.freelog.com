@@ -180,6 +180,10 @@ export default {
             }
           })
         })
+        .catch((err)=>{
+          self.loading = false
+          self.$error.showErrorMessage(err)
+        })
     }
   }
 }

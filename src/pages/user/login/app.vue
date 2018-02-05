@@ -4,7 +4,6 @@
       <header class="login-header">
         <el-alert v-if="error" :title="error.title" type="warning" :description="error.message" show-icon/>
       </header>
-
       <el-form class="login-form" auto-complete="off" :model="model" :rules="rules" ref="loginForm"
                label-width="0">
         <h2 class="heading">用户登录</h2>

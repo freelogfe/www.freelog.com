@@ -8,7 +8,12 @@ export default {
       self.loadWidgets()
     } else {
       window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, {
-        data: authErrorData || {}
+        data: authErrorData || {},
+        callback(presentable) {
+          if (presentable._contractStatus === 3) {
+            location.reload()
+          }
+        }
       })
     }
   },
@@ -40,7 +45,14 @@ export default {
   },
   triggerPresentableAuth(res) {
     res.json().then(function (data) {
-      window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, {data})
+      window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, {
+        data: data,
+        callback(presentable) {
+          if (presentable._contractStatus === 3) {
+            location.reload()
+          }
+        }
+      })
     })
   },
   loadWidgets() {
