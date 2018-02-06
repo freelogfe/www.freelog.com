@@ -49,10 +49,24 @@
     name: 'login',
 
     data() {
+      var validateLoginName = (rule, value, callback) => {
+        if (value) {
+          const EMAIL_REG = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/
+          const PHONE_REG = /^1[34578]\d{9}$/
+          if (!EMAIL_REG.test(value) && !PHONE_REG.test(value)) {
+            callback(new Error('账号格式有误，输入正确的手机号或邮箱'));
+          } else {
+            callback()
+          }
+        } else {
+          callback(new Error('账号不能为空'));
+        }
+      };
+
       const rules = {
         loginName: [
           {required: true, message: '请输入账号', trigger: 'blur'},
-          {min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur'}
+          {validator: validateLoginName, trigger: 'blur'}
         ],
         password: [
           {required: true, message: '请输入密码', trigger: 'blur'},

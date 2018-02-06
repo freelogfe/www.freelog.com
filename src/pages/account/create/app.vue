@@ -50,16 +50,16 @@
             :visible.sync="shouldShowCreateDialog"
             width="40%"
             :before-close="handleClose">
-      <h3 style="margin-bottom: 20px;text-align: center">请设置以太坊支付密码</h3>
+      <h3 style="margin-bottom: 20px;text-align: center">请设置以太坊密钥加密密码</h3>
       <el-form :model="createEthForm" status-icon
                :rules="createEthRules"
                ref="createEthForm"
                label-width="120px"
                class="demo-ruleForm">
-        <el-form-item label="支付密码" prop="pass" required>
+        <el-form-item label="加密密码" prop="pass" required>
           <el-input type="password" v-model="createEthForm.pass" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="确认支付密码" prop="checkPass" required>
+        <el-form-item label="确认加密密码" prop="checkPass" required>
           <el-input type="password" v-model="createEthForm.checkPass" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item>
@@ -155,23 +155,30 @@
         this.accountForm.address = address
       },
       createEthAccount() {
-        this.$refs['createEthForm'].validate((valid) => {
-          if (valid) {
-            this.$axios.post('/v1/pay/accounts/createEthAccount', {
-              password: this.createEthForm.pass
-            }).then((res) => {
-              var result = res.data
-              if (result.ret === 0 && result.errcode === 0) {
-                this.setAccountAddr(result.data.address)
-                this.$message.success('创建成功')
-              } else {
-                this.$message.error(result.msg || '创建失败')
-              }
-              this.shouldShowCreateDialog = false
-            })
-          } else {
-            console.log('error submit!!');
-          }
+        this.$confirm('此加密密码用于加密以太坊keystore，一旦创建后不可更改，系统不予以保存，需用户自行保存妥善！', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$refs['createEthForm'].validate((valid) => {
+            if (valid) {
+              this.$axios.post('/v1/pay/accounts/createEthAccount', {
+                password: this.createEthForm.pass
+              }).then((res) => {
+                var result = res.data
+                if (result.ret === 0 && result.errcode === 0) {
+                  this.setAccountAddr(result.data.address)
+                  this.$message.success('创建成功')
+                } else {
+                  this.$message.error(result.msg || '创建失败')
+                }
+                this.shouldShowCreateDialog = false
+              })
+            } else {
+              console.log('error submit!!');
+            }
+          });
+        }).catch(() => {
         });
       },
       createAccount(formName) {
