@@ -1,5 +1,13 @@
 <template>
   <div class="contract-transaction-wrap">
+    <el-alert
+            v-if="showError"
+            type="warning">
+      未设置支付密码，<a href="//www.freelog.com/pages/account/security.html" style="color: #409EFF;
+" target="_blank">去设置</a>
+    </el-alert>
+
+
     <el-form label-position="left" label-width="80px" :model="data" v-if="data">
       <el-form-item label="资源名称">
         {{data.contract.resourceDetail.resourceName}}
@@ -33,7 +41,7 @@
         </el-select>
         <el-tooltip placement="top">
           <div slot="content">
-            <p><a style="color: white" href="/pages/account/create.html" target="_blank">没有账号？去添加一个</a></p>
+            <p><a style="color: white" href="//www.freelog.com/pages/account/create.html" target="_blank">没有账号？去添加一个</a></p>
           </div>
           <i class="el-icon-question"></i>
         </el-tooltip>

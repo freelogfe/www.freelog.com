@@ -6,7 +6,8 @@ export default {
     return {
       accounts: [],
       password: '',
-      fromAccountId: ''
+      fromAccountId: '',
+      showError: false
     }
   },
   props: {
@@ -49,10 +50,12 @@ export default {
       }).then((res) => {
         var data = res.data
         if (data.errcode === 0) {
+          this.showError = false
           this.$message.success('操作成功')
           this.payResultHandler(data.data)
           this.doneHandler({shouldUpdate: data.status === 2, payResult: data})
         } else {
+          this.showError = true
           this.$message.error(data.msg)
         }
       })
