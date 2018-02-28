@@ -26,7 +26,6 @@
   </div>
 </template>
 
-
 <script>
   import NavTopBar from '@/components/nav-top/index.vue'
   import {mapGetters} from 'vuex'
@@ -37,7 +36,8 @@
     },
     mounted() {
       if (!this.user || !this.user.userId) {
-//        this.$vuex.dispatch('checkUserSession').then((user) => {})
+        this.$vuex.dispatch('getCurrentUserInfo').then((user) => {
+        })
       }
     },
     computed: mapGetters({

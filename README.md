@@ -26,6 +26,16 @@ npm run dev
 
 [http://localhost:8010/user/login.html](http://localhost:8010/user/login.html)
 
+## 部署（临时方案）
+
+打包
+
+```sh
+$ npm run build
+```
+
+构建打包后之后，将dist的内容提交到ali oss。
+
 
 ### todo
 

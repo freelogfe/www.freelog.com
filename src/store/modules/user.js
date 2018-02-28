@@ -14,7 +14,7 @@ const types = {
 
 const user = {
   state: {
-    session: storage.get('user_session') || null,
+    session: null,  //storage.get('user_session')
   },
 
   mutations: {
@@ -77,7 +77,9 @@ const user = {
             console.error(err)
             userInfo = {}
           }
-          resolve(!(!getters.session || getters.session.userId !== userInfo.userId))
+
+          //没有登录态的，新登录的 或者已有登录态且跟当前登录态一致的，表示登录中
+          resolve((!getters.session && userInfo.userId) || (getters.session && getters.session.userId === userInfo.userId))
         }
       })
     },
