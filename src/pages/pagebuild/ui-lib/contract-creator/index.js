@@ -1,4 +1,4 @@
-import compiler from 'presentable_policy_compiler'
+import compiler from '@freelog/presentable-policy-compiler'
 import ContractSteps from '../contract-steps/index.vue'
 import ContractInfoDetail from '../contract-info-detail/index.vue'
 
@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     formatPolicy() {
-      var formatContractDetail = compiler.compile(this.data.policyText, 'beautify')
+      var formatContractDetail = compiler.beautify(this.data.policyText)
       if (!formatContractDetail.errorMsg) {
         var formatPolicyText = formatContractDetail.stringArray.splice(1).join(' ').replace(/\n\s/g, '\n');
         this.$set(this.data, '_formatPolicyText', formatPolicyText)
