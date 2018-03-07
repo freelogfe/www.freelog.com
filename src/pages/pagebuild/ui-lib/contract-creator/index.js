@@ -31,12 +31,11 @@ export default {
   },
   methods: {
     formatPolicy() {
-      var formatContractDetail = compiler.beautify(this.data.policyText)
-      if (!formatContractDetail.errorMsg) {
-        var formatPolicyText = formatContractDetail.stringArray.splice(1).join(' ').replace(/\n\s/g, '\n');
+      try {
+        var formatPolicyText = compiler.beautify(this.data.policyText)
         this.$set(this.data, '_formatPolicyText', formatPolicyText)
-      } else {
-        this.$message.error(formatContractDetail.errorMsg)
+      } catch (err) {
+        this.$message.error(err)
       }
 
       this.parsePolicy(this.data)
@@ -180,7 +179,7 @@ export default {
             }
           })
         })
-        .catch((err)=>{
+        .catch((err) => {
           self.loading = false
           self.$error.showErrorMessage(err)
         })

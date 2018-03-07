@@ -30,6 +30,7 @@ export default {
   methods: {
     formatData() {
       var data = this.data
+
       this.$set(this.data, '_showContractSteps', data.contractDetail.status < 3)
     }
   }

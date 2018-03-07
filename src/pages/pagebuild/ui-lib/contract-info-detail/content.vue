@@ -6,6 +6,8 @@
 </template>
 
 <script>
+  import compiler from '@freelog/presentable-policy-compiler'
+
   let contractEventsMap = {
     transaction() {
       return '支付事件'
@@ -171,7 +173,7 @@
         return html
       },
       parseContract(detail) {
-        var lines = detail.policySegment.segmentText.split(/\n/)
+        var lines = compiler.beautify(detail.policySegment.segmentText).split(/\n/)
         var text = ''
         lines.forEach((line) => {
           let html = this.fillSpace(line)
