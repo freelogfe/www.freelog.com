@@ -77,9 +77,9 @@
 
   export default {
     data() {
-      const types = Object.values(AccountTypes).map((type) => {
+      const types = Object.values(AccountTypes).filter((type) => {
         type.label = type.name
-        return type
+        return !!type.enable
       })
 
       var validatePass = (rule, value, callback) => {

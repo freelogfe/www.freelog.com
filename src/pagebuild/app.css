@@ -1,7 +1,12 @@
 .page-container {
-    position: relative;
+  position: relative;
 }
 
 .js-widget {
-    position: absolute;
+  position: absolute;
+}
+
+.no-widget-error-tip {
+  color: #E6A23C;
+  padding: 5px;
 }
