@@ -84,6 +84,9 @@
         .then((accounts) => {
           this.accounts = accounts;
         })
+        .catch((err) => {
+          console.log(err);
+        })
     },
     methods: {
       handleCommand(command) {
@@ -102,7 +105,7 @@
             break;
         }
       },
-      viewAccountDetail(account){
+      viewAccountDetail(account) {
         location.href = `/pages/account/detail.html?accountId=${account.accountId}`
       },
       gotoPayHandler(account) {
@@ -155,7 +158,6 @@
         })
       },
       formatAssets(accounts) {
-        console.log(accounts)
         accounts.forEach((account) => {
           account.showDetail = AccountTypes[account.accountType]
         })
@@ -167,9 +169,7 @@
       },
       loadAssets() {
         return this.$axios.get('/v1/pay/accounts').then((res) => {
-          return res.data.data;
-        }).catch((err) => {
-          console.log(err);
+          return res.data.data || [];
         })
       }
     }

@@ -109,6 +109,7 @@
       },
       loadOrderDetail(orders) {
         return new Promise((resolve) => {
+          if (!orders) {resolve(null)}
           var contractIds = orders.map((o) => o.targetId)
           this.$axios.get(`/v1/contracts/contractRecords`, {
             params: {
