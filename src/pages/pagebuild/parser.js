@@ -58,6 +58,7 @@ export default {
   loadWidgets() {
     var self = this;
     var $widgets = this.getWidgets()
+
     Array.from($widgets).forEach(function (widget) {
       var prensentableId = widget.getAttribute('data-widget-presentable-id');
       if (prensentableId) {

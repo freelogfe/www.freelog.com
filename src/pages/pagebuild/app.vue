@@ -1,30 +1,36 @@
 <template>
   <div id="app">
-    <tool-bar ref="toolbar"></tool-bar>
-    <el-dialog
-            :close-on-click-modal="false"
-            title="合同管理"
-            :visible.sync="shouldShowAuthDialog"
-            :fullscreen="false"
-            custom-class="auth-dialog"
-            @close="_closeDialogHandler"
-            width="960px"
-            center>
-      <el-tabs v-model="activeTabName" type="card" @tab-remove="_removeTab">
-        <el-tab-pane label="presentable list" name="presentables">
-          <presentables ref="list" :data="presentables" @tabChange="_tabChange"></presentables>
-        </el-tab-pane>
-        <el-tab-pane
-                closable
-                :key="item.name"
-                v-for="(item, index) in tabs"
-                :label="item.title"
-                :name="item.name">
-          <component :is="item.content" :tab-name="item.name" :data="item.data"
-                     @tabChange="_tabChange" @refresh="refreshHandler"></component>
-        </el-tab-pane>
-      </el-tabs>
-    </el-dialog>
+    <el-alert title="" type="warning"
+              v-if="showUpgrade"
+              center
+              show-icon>请使用<a href="https://www.google.cn/chrome/index.html">chrome</a>访问本页面！</el-alert>
+    <div v-else>
+      <tool-bar ref="toolbar"></tool-bar>
+      <el-dialog
+              :close-on-click-modal="false"
+              title="合同管理"
+              :visible.sync="shouldShowAuthDialog"
+              :fullscreen="false"
+              custom-class="auth-dialog"
+              @close="_closeDialogHandler"
+              width="960px"
+              center>
+        <el-tabs v-model="activeTabName" type="card" @tab-remove="_removeTab">
+          <el-tab-pane label="presentable list" name="presentables">
+            <presentables ref="list" :data="presentables" @tabChange="_tabChange"></presentables>
+          </el-tab-pane>
+          <el-tab-pane
+                  closable
+                  :key="item.name"
+                  v-for="(item, index) in tabs"
+                  :label="item.title"
+                  :name="item.name">
+            <component :is="item.content" :tab-name="item.name" :data="item.data"
+                       @tabChange="_tabChange" @refresh="refreshHandler"></component>
+          </el-tab-pane>
+        </el-tabs>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -39,6 +45,7 @@
   export default {
     data() {
       return {
+        showUpgrade: !window.__supports,
         shouldShowAuthDialog: false,
         presentables: [],
         tabs: [],

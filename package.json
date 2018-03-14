@@ -7,7 +7,8 @@
     "autod": "autod",
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "beta": "node build/build.js --beta"
   },
   "dependencies": {
     "@freelog/presentable-policy-compiler": "0.0.10",

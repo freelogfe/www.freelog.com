@@ -9,4 +9,25 @@ import plugins from '../plugins';
 Vue.use(ElementUI)
 Vue.use(plugins)
 
+function supportsWebComponent() {
+  return !!window.customElements
+}
+
+function supportsImports() {
+  return 'import' in document.createElement('link');
+}
+
+function supportsFetch() {
+  return !!window.fetch;
+}
+
+function detectSupports() {
+  window.__supports = supportsWebComponent() && supportsImports() && supportsFetch()
+
+  return window.__supports
+}
+
+detectSupports()
+
+
 export default Vue

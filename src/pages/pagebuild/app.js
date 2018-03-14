@@ -31,7 +31,9 @@ function main() {
         this.appUI = appUI
         window.FreeLogApp = App;
         EventDispatcher.init(appUI)
-        PageBuildeParser.start()
+        if (window.__supports) {
+          PageBuildeParser.start()
+        }
         appUI.$on('close', function () {
         })
       }

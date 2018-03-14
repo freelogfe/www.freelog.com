@@ -25,7 +25,7 @@ instance.interceptors.request.use(config => {
 
 
 instance.interceptors.response.use(response => {
-    var loginPath = '/pages/user/login.html'
+    var loginPath = '//www.freelog.com/pages/user/login.html?redirect=' + encodeURIComponent(location.href)
 
     var data = response.data
     if ([28, 30].indexOf(data.errcode) > -1 && location.pathname !== loginPath) {
