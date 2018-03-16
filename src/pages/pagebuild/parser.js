@@ -19,8 +19,7 @@ export default {
   },
   getWidgets() {
     var $page = document.querySelector('#js-page-container')
-    var $widgets = $page.querySelectorAll('.js-wc-widget');
-    return $widgets
+    return $page.querySelectorAll('.js-wc-widget');
   },
   importHtml(opt) {
     const htmlFile = new File([opt.content], opt.name, {

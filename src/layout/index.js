@@ -22,12 +22,36 @@ function supportsFetch() {
 }
 
 function detectSupports() {
-  window.__supports = supportsWebComponent() && supportsImports() && supportsFetch()
+  var win = window
+  win.__supports = false
+  win.__supportMsg = ''
 
-  return window.__supports
+  if (!supportsWebComponent()) {
+    win.__supportMsg = '不支持window.customElements'
+  } else if (!supportsImports()) {
+    win.__supportMsg = '不支持link import属性'
+  } else if (!supportsFetch()) {
+    win.__supportMsg = '不支持fetch'
+  } else {
+    win.__supports = true
+  }
+
+  return win.__supports
 }
 
-detectSupports()
+
+function alertTip() {
+  var errMsg = '不支持当前浏览器访问，请使用PC最新版chrome浏览器访问！'
+
+  if (/debug/.test(location.search)) {
+    errMsg += window.__supportMsg
+  }
+  alert(errMsg)
+}
+
+if (!detectSupports()) {
+  alertTip()
+}
 
 
 export default Vue

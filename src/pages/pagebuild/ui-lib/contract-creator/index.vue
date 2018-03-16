@@ -12,7 +12,7 @@
                 style="width: 100%">
             <el-table-column type="expand">
                 <template slot-scope="props">
-                    <pre>{{props.row.policyText || data._formatPolicyText}}</pre>
+                    <pre>{{props.row.detail._formatPolicyText || data._formatPolicyText}}</pre>
                 </template>
             </el-table-column>
             <el-table-column
