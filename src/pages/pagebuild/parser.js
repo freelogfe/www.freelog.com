@@ -33,7 +33,11 @@ export default {
   },
   parseWidgetPresentable(res) {
     var systemMeta = atob(res.headers.get('freelog-system-meta'))
-    systemMeta = JSON.parse(systemMeta)
+    try {
+      systemMeta = JSON.parse(systemMeta)
+    } catch (err) {
+      console.log(err)
+    }
     res.text().then((content) => {
       this.importHtml({
         name: systemMeta.widgetName,
