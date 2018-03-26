@@ -52,7 +52,7 @@ export default {
         data: data,
         callback(presentable) {
           if (presentable._contractStatus === 3) {
-            location.reload()
+            location.reload()  //后续考虑局部更新？
           }
         }
       })

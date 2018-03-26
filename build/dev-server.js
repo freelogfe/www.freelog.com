@@ -6,23 +6,21 @@ if (!process.env.NODE_ENV) {
 }
 var fs = require('fs')
 var https = require('https')
+var http = require('http')
 var opn = require('opn')
 var path = require('path')
 var express = require('express')
 var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
-var privateKey  = fs.readFileSync(path.join(__dirname,'cert/server_ca.key'), 'utf8');
-var certificate = fs.readFileSync(path.join(__dirname,'cert/server_ca.crt'), 'utf8');
+var privateKey = fs.readFileSync(path.join(__dirname, 'cert/server_ca.key'), 'utf8');
+var certificate = fs.readFileSync(path.join(__dirname, 'cert/server_ca.crt'), 'utf8');
 var credentials = {key: privateKey, cert: certificate};
 
 var webpackConfig = require('./webpack.dev.conf')
 var cors = require('cors')
 
-// default port where dev server listens for incoming traffic
-var port = process.env.PORT || config.dev.port
-// automatically open browser, if not set will be false
+var port = config.dev.port
 var autoOpenBrowser = !!config.dev.autoOpenBrowser
-// Define HTTP proxies to your custom API backend
 // https://github.com/chimurai/http-proxy-middleware
 var proxyTable = config.dev.proxyTable
 
@@ -41,7 +39,7 @@ var hotMiddleware = require('webpack-hot-middleware')(compiler, {
 // force page reload when html-webpack-plugin template changes
 compiler.plugin('compilation', function (compilation) {
   compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
-    hotMiddleware.publish({ action: 'reload' })
+    hotMiddleware.publish({action: 'reload'})
     cb()
   })
 })
@@ -50,7 +48,7 @@ compiler.plugin('compilation', function (compilation) {
 Object.keys(proxyTable).forEach(function (context) {
   var options = proxyTable[context]
   if (typeof options === 'string') {
-    options = { target: options }
+    options = {target: options}
   }
   app.use(proxyMiddleware(options.filter || context, options))
 })
@@ -70,7 +68,7 @@ app.use(hotMiddleware)
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
 
-var uri = 'https://localhost:' + port + '/pages/user/login.html'
+var uri = 'http://localhost:' + port.http + '/pages/user/login.html'
 
 var _resolve
 var readyPromise = new Promise(resolve => {
@@ -87,13 +85,15 @@ devMiddleware.waitUntilValid(() => {
   _resolve()
 })
 
-// var server = app.listen(port)
 var httpsServer = https.createServer(credentials, app);
-var server = httpsServer.listen(port);
+var server = httpsServer.listen(port.https);
+
+var httpServer = http.createServer(app).listen(port.http);
 
 module.exports = {
   ready: readyPromise,
   close: () => {
     server.close()
+    httpServer.close()
   }
 }

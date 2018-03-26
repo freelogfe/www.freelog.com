@@ -15,3 +15,5 @@ npm-debug.log
 *.ipr
 *.iws
 *.log
+
+console.tar

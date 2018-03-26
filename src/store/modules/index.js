@@ -1,3 +1,4 @@
 import user from './user'
+import pagebuild from './pagebuild'
 
-export default {user}
+export default {user, pagebuild}
