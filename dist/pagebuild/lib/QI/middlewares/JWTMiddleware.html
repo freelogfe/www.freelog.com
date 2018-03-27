@@ -1,0 +1,19 @@
+<link rel="import" href="./Middleware.html">
+<script>
+    class JWTMiddleware extends Middleware {
+        constructor() {
+            super();
+        }
+
+        transform_request(target, req) {
+            req = req || {};
+            if (!req.credentials) {
+                req.credentials= 'same-origin'
+            }
+
+            return req;
+        }
+    }
+
+    window.customElements.define('middleware-jwt', JWTMiddleware);
+</script>

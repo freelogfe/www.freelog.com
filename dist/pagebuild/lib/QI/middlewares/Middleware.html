@@ -1,0 +1,38 @@
+<script>
+    'use strict'
+
+    class Middleware extends HTMLElement {
+        constructor() {
+            super();
+        }
+
+        connectedCallback() {
+            if (this.parentNode.nodeName === 'MIDDLEWARE-STACK') {
+                this.parentNode.use(this);
+            }
+        }
+
+
+        transform_request(target, req) {
+
+            return req;
+        }
+
+        transform_response(res) {
+            return res
+        }
+
+        set_next(mw) {
+            this.next = mw;
+        }
+
+        fetch(target, req) {
+            var self = this;
+            return this.next.fetch(target, this.transform_request(target, req)).then(function (res) {
+                res.request = req
+                return self.transform_response(res)
+            });
+        }
+    }
+
+</script>
