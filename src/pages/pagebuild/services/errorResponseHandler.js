@@ -76,8 +76,8 @@ export default {
   _gotoLoginHandler() {
     location.href = `//www.freelog.com/pages/user/login.html?redirect=` + encodeURIComponent(location.href)
   },
-  handle(data, appUI, callback) {
-    this.appUI = appUI
+  handle(data, app, callback) {
+    this.app = app
     if (data && data.errcode) {
       var errorMsg = data.msg;
       var resData = data.data && data.data.data
@@ -113,7 +113,7 @@ export default {
       }
 
       if (typeof callback === 'function') {
-        appUI.$on('close', function (detail) {
+        app.ui.$on('close', function (detail) {
           console.log(detail)
           var presentable = null
           detail.presentables.forEach((p) => {
@@ -128,7 +128,7 @@ export default {
     }
   },
   appendDataToUI(data) {
-    this.appUI.appendData(data)
-    this.appUI.showAuthDialog()
+    this.app.ui.appendData(data)
+    this.app.ui.showAuthDialog()
   }
 }

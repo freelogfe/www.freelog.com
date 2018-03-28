@@ -1,7 +1,7 @@
 export default {
     name: 'showDialogHandler',
-    handle(data, appUI, callback) {
-        appUI.showAuthDialog()
+    handle(data, app, callback) {
+        app.ui.showAuthDialog()
         callback && callback()
     }
 }

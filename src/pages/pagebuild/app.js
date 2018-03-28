@@ -6,6 +6,7 @@ import PageBuildeParser from './parser'
 import EventCode from './event-code'
 import EventDispatcher from './event-dispatcher'
 import ExceptionCode from './exception-code'
+
 //对外接口服务
 var App = {
   isValidResponse(res) {
@@ -30,7 +31,10 @@ function main() {
         //挂载UI
         this.appUI = appUI
         window.FreeLogApp = App;
-        EventDispatcher.init(appUI)
+        EventDispatcher.init({
+          ui: appUI,
+          model: this.$store
+        })
         if (window.__supports) {
           PageBuildeParser.start()
         }

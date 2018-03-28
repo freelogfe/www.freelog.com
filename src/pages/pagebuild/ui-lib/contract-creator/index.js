@@ -35,9 +35,11 @@ export default {
         var formatPolicyText = compiler.beautify(this.data.policyText)
         this.$set(this.data, '_formatPolicyText', formatPolicyText)
 
-        this.data.segments.forEach((segment) => {
-          segment.detail._formatPolicyText = compiler.beautify(segment.detail.segmentText)
-        })
+        if (this.data.segments) {
+          this.data.segments.forEach((segment) => {
+            segment.detail._formatPolicyText = compiler.beautify(segment.detail.segmentText)
+          })
+        }
       } catch (err) {
         this.$message.error(err)
       }

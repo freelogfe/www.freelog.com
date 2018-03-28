@@ -4,8 +4,8 @@ import {Message} from 'element-ui'
 
 const DEFAULT_EVENT_NAME = 'freelogSystemService';
 export default {
-  init(appUI) {
-    this.appUI = appUI
+  init(app) {
+    this.app = app
     this.bus = new Vue()
     //统一监听服务，根据action进行分发执行器
     this.bus.$on(DEFAULT_EVENT_NAME, this.dispatchHandler.bind(this))
@@ -24,7 +24,7 @@ export default {
     var Handler = Service[handlerName]
     if (Handler) {
       try {
-        Handler.handle(opts.data, this.appUI, opts.callback)
+        Handler.handle(opts.data, this.app, opts.callback)
       } catch (err) {
         this.showErrorMessage(err)
       }
