@@ -1,6 +1,6 @@
-import compiler from '@freelog/presentable-policy-compiler'
 import ContractSteps from '../contract-steps/index.vue'
 import ContractInfoDetail from '../contract-info-detail/index.vue'
+import Tabs from '../tabs'
 
 //创建合同
 export default {
@@ -9,7 +9,8 @@ export default {
   data() {
     return {
       loading: false,
-      btnType: ''
+      btnType: '',
+      selectedSegmentId: ''
     }
   },
   props: {
@@ -21,8 +22,6 @@ export default {
     },
     tabName: String
   },
-  watch: {},
-
   components: {ContractSteps, ContractInfoDetail},
   mounted() {
   },
@@ -35,22 +34,17 @@ export default {
       }
     },
     gotoExecuteContract() {
-      var tabConfig = {
-        content: 'contract-detail',
-        data: this.data,
-        title: '合同管理',
-        name: 'tab_' + this.data.presentableId
-      }
+      var tabConfig = Tabs.getTabConfig('contractDetail', this.data);
       this.$emit('tabChange', {
         action: 'close',
         tabName: this.tabName
-      })
+      });
       this.$emit('tabChange', tabConfig)
     },
     signPolicyHandler() {
       var self = this;
       var policyData = self.data
-      if (!policyData.selectedSegmentId) {
+      if (!this.selectedSegmentId) {
         return this.$message.warning('没有选择策略')
       }
 
@@ -67,7 +61,7 @@ export default {
       });
     },
     cancelSegmentSelection() {
-      this.data.selectedSegmentId = ''
+      this.selectedSegmentId = ''
     },
     updateContractDetail(data) {
       //创建合同后，后端存在异步初始化的过程，这时合同状态为none
@@ -105,7 +99,7 @@ export default {
             data: {
               contractType: 3,
               targetId: policyData.presentableId,
-              segmentId: policyData.selectedSegmentId,
+              segmentId: this.selectedSegmentId,
               serialNumber: policyData.serialNumber,
               partyTwo: userId
             }

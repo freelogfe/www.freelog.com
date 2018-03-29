@@ -25,12 +25,12 @@
             </el-table-column>
             <el-table-column>
                 <template slot-scope="scope">
-                    <el-radio class="select-btn" v-model="data.selectedSegmentId"
+                    <el-radio class="select-btn" v-model="selectedSegmentId"
                               :label="scope.row.detail.segmentId">选择
                     </el-radio>
 
                     <el-tooltip class="item" effect="dark" content="取消选择" placement="top"
-                                v-show="data.selectedSegmentId===scope.row.detail.segmentId">
+                                v-show="selectedSegmentId===scope.row.detail.segmentId">
                         <i class="el-icon-circle-close-outline"
                            @click="cancelSegmentSelection(scope.row)"></i>
                     </el-tooltip>
@@ -41,7 +41,7 @@
             <el-button @click="policyHandler"
                        v-loading="loading"
                        :type="btnType"
-                       :disabled="!data.selectedSegmentId">{{btnType?'去执行合同': '创建合同'}}
+                       :disabled="!selectedSegmentId">{{btnType?'去执行合同': '创建合同'}}
             </el-button>
         </div>
     </div>
