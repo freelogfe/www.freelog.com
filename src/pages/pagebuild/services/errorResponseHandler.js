@@ -1,77 +1,28 @@
 // import {Message} from 'element-ui';
 
-var dataloaderHelpers = {
-  loadResourceDetail(resourceId) {
-    return window.QI.fetch(`/v1/resources/${resourceId}`).then((res) => {
-      if (res.status === 200) {
-        return res.json()
-      } else {
-        return Promise.reject(res)
-      }
-    }).then((res) => {
-      if (res.ret === 0 && res.errcode === 0) {
-        return res.data
-      } else {
-        return Promise.reject(res)
-      }
-    })
-  },
-  loadPresentableDetail(presentableId) {
-    return window.QI.fetch(`/v1/presentables/${presentableId}`).then((res) => {
-      if (res.status === 200) {
-        return res.json()
-      } else {
-        return Promise.reject(res)
-      }
-    }).then((res) => {
-      if (res.ret === 0 && res.errcode === 0) {
-        return res.data
-      } else {
-        return Promise.reject(res)
-      }
-    })
-  },
-
-  loadContractDetail(data) {
-    var contractData = data.contract
-    return this.loadPresentableDetail(contractData.targetId)
-      .then((data) => {
-        contractData.resourceDetail = data.tagInfo.resourceInfo
-        data.contractDetail = contractData
-        data.resourceDetail = data.tagInfo.resourceInfo
-        return data
-      })
-  },
-  loadPolicyDetail(authData) {
-    var presentableId = authData.presentableId;
-    return this.loadPresentableDetail(presentableId)
-      .then((data) => {
-        data.resourceDetail = data.tagInfo.resourceInfo
-        return data
-      })
-  }
-}
-
 export default {
   name: 'errorResponseHandler',
   _unactivatedHandler(data) {
-    dataloaderHelpers.loadContractDetail(data)
-      .then(this.appendDataToUI.bind(this));
+    var contractData = data.contract
+    this.app.model.dispatch('loadPresentableDetail', data.presentableId)
+      .then((presentable) => {
+        this.app.model.dispatch('updateContractDetail', contractData)
+        console.log(presentable)
+        this.app.ui.showAuthDialog()
+        this.app.ui.gotoExecuteContract(presentable)
+      })
   },
-  _unauthHandler(data) {
-    dataloaderHelpers.loadPolicyDetail(data)
-      .then(this.appendDataToUI.bind(this));
+  _unauthHandler(authData) {
+    var presentable = authData.presentableInfo
+    this.app.model.dispatch('updatePresentableDetail', presentable)
+    this.app.ui.showAuthDialog()
+    this.app.ui.gotoCreateContract(presentable)
   },
   _invalidHandler(data) {
-    dataloaderHelpers.loadResourceDetail(data.contract.resourceId)
-      .then((resourcee) => {
-        var result = {
-          resourceDetail: resourcee,
-          nodeContractDetail: data.contract
-        }
-        return result
+    this.app.model.dispatch('loadResourceDetail', data.contract.resourceId)
+      .then(() => {
+        this.app.ui.showAuthDialog()
       })
-      .then(this.appendDataToUI.bind(this));
   },
   _gotoLoginHandler() {
     location.href = `//www.freelog.com/pages/user/login.html?redirect=` + encodeURIComponent(location.href)
@@ -100,7 +51,6 @@ export default {
         case 70080202:
           this._invalidHandler(resData)
           break;
-
         //未登录
         case 70080301:
         case 28:
@@ -113,22 +63,11 @@ export default {
       }
 
       if (typeof callback === 'function') {
-        app.ui.$on('close', function (detail) {
-          console.log(detail)
-          var presentable = null
-          detail.presentables.forEach((p) => {
-            if (resData.presentableId === p.presentableId || resData.contractId === p.contractId) {
-              presentable = p
-            }
-          })
-
-          callback(presentable)
+        app.ui.$on('close', function (presentableMap) {
+          var presentable = presentableMap[resData.presentableId] || null
+          presentable && callback(presentable)
         })
       }
     }
-  },
-  appendDataToUI(data) {
-    this.app.ui.appendData(data)
-    this.app.ui.showAuthDialog()
   }
 }

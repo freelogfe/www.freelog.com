@@ -24,7 +24,8 @@
         </el-form-item>
         <el-form-item label="执行状态" class="info-row">
           {{data.contractDetail.fsmState==='none'?'正在初始化合同中':data.contractDetail.fsmState}}
-          <i class="el-icon-refresh" :class="{loading: refreshing}" @click="refreshHandler" v-if="data.contractDetail.status < 3"></i>
+          <i class="el-icon-refresh" :class="{loading: refreshing}" @click="refreshHandler"
+             v-if="data.contractDetail.status < 3"></i>
         </el-form-item>
         <el-form-item label="甲方" class="info-row">
           <span v-if="data.contractDetail.partyOneInfo">{{ data.contractDetail.partyOneInfo.nodeName }}</span>

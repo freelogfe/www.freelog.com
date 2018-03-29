@@ -10,13 +10,13 @@
 
     <el-form label-position="left" label-width="80px" :model="data" v-if="data">
       <el-form-item label="资源名称">
-        {{data.contract.resourceDetail.resourceName}}
+        {{data.resource.resourceName}}
       </el-form-item>
       <el-form-item label="资源类型">
-        {{data.contract.resourceDetail.resourceType}}
+        {{data.resource.resourceType}}
       </el-form-item>
       <el-form-item label="contractId">
-        {{data.event.contractId}}
+        {{data.contract.contractId}}
       </el-form-item>
       <el-form-item label="甲方">
         {{data.contract.partyOne}}

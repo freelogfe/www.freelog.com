@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  import NavTopBar from '@/components/nav-top/index.vue'
+  import NavTopBar from '@/components/NavTop/index.vue'
   import {mapGetters} from 'vuex'
 
   export default {

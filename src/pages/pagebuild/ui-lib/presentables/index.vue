@@ -1,54 +1,57 @@
 <template>
-    <div style="width: 100%">
-        <el-table
-                :data="presentables"
-                stripe
-                cell-class-name="presentable-cell">
-            <el-table-column
-                    label="资源名称"
-                    min-width="250"
-                    prop="resourceDetail.resourceName">
-            </el-table-column>
-            <el-table-column
-                    label="合同名称"
-                    min-width="250"
-                    prop="name">
-            </el-table-column>
-            <el-table-column
-                    label="资源类型"
-                    prop="resourceDetail.resourceType"
-                    width="120">
-            </el-table-column>
-            <el-table-column
-                    min-width="120"
-                    label="状态">
-                <template slot-scope="scope">
-                    <el-tag :type="scope.row._statusInfo.type">{{scope.row._statusInfo.desc}}</el-tag>
-                </template>
-            </el-table-column>
-            <el-table-column label="操作" align="center" width="120">
-                <template slot-scope="scope">
-                    <el-button
-                            size="mini"
-                            @click="tabActionHandler(scope.row, scope.$index)">
-                        {{CONTRACT_STATUS_ACTION_TIPS[scope.row._contractStatus]}}
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-    </div>
+  <div style="width: 100%">
+    <el-table
+            :data="presentables"
+            stripe
+            cell-class-name="presentable-cell">
+      <el-table-column
+              label="名称"
+              min-width="300"
+              prop="name">
+      </el-table-column>
+      <el-table-column
+              label="资源名称"
+              min-width="250"
+              prop="resourceDetail.resourceName">
+      </el-table-column>
+      <el-table-column
+              label="资源类型"
+              prop="resourceDetail.resourceType"
+              width="120">
+      </el-table-column>
+      <el-table-column
+              min-width="120"
+              align="center"
+              label="状态">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row._statusInfo.type">{{scope.row._statusInfo.desc}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" width="120">
+        <template slot-scope="scope">
+          <el-button
+                  size="mini"
+                  @click="tabActionHandler(scope.row, scope.$index)">
+            {{CONTRACT_STATUS_ACTION_TIPS[scope.row._contractStatus]}}
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
-    import Presentables from './index.js'
+  import Presentables from './index.js'
 
-    export default Presentables
+  export default Presentables
 </script>
 
 <style lang="less">
-    .presentable-cell {
-        .cell {
-            word-break: keep-all;
-        }
-    }
+  .presentable-cell {
+
+  .cell {
+    word-break: keep-all;
+  }
+
+  }
 </style>

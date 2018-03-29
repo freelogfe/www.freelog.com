@@ -266,26 +266,7 @@ export default {
       return width
     },
     updateContractState() {
-      return this.loadContractDetail(this.data.contractId)
-        .then((data) => {
-          Object.assign(this.data, data)
-          return {contract: data}
-        })
-    },
-    loadContractDetail(contractId) {
-      return window.QI.fetch(`/v1/contracts/${contractId}`).then((res) => {
-        if (res.status === 200) {
-          return res.json()
-        } else {
-          return Promise.reject(res)
-        }
-      }).then((res) => {
-        if (res.ret === 0 && res.errcode === 0) {
-          return res.data
-        } else {
-          return Promise.reject(res)
-        }
-      })
+      return this.$store.dispatch('loadContractDetail',this.data.contractId)
     },
     activateContractHandler(data) {
       var self = this;
@@ -334,8 +315,7 @@ export default {
         this.$refs.popover.showPopper = false
         setTimeout(()=>{
           this.updateContractState()
-            .then((data) => {
-              this.$eventBus.$emit('updateList', {update: data})
+            .then(() => {
               this.draw()
             })
         },5e2) //等待后端更新数据，待优化，从UI上进行友好展示

@@ -3,7 +3,8 @@
     <el-alert title="" type="warning"
               v-if="showUpgrade"
               center
-              show-icon>请使用<a href="https://www.google.cn/chrome/index.html">chrome</a>访问本页面！</el-alert>
+              show-icon>请使用<a href="https://www.google.cn/chrome/index.html">chrome</a>访问本页面！
+    </el-alert>
     <div v-else>
       <tool-bar ref="toolbar"></tool-bar>
       <el-dialog
@@ -17,7 +18,7 @@
               center>
         <el-tabs v-model="activeTabName" type="card" @tab-remove="_removeTab">
           <el-tab-pane label="presentable list" name="presentables">
-            <presentables ref="list" :data="presentables" @tabChange="_tabChange"></presentables>
+            <presentables ref="list" :data="pagebuild.presentableMap" @tabChange="_tabChange"></presentables>
           </el-tab-pane>
           <el-tab-pane
                   closable
@@ -36,14 +37,17 @@
 
 
 <script>
-  import ToolBar from '@/components/toolbar/index.vue'
+  import ToolBar from '@/components/ToolBar/index.vue'
   import ContractState from './ui-lib/contract-state/index.vue'
   import Presentables from './ui-lib/presentables/index.vue'
   import ContractDetail from './ui-lib/contract-detail/index.vue'
   import ContractCreator from './ui-lib/contract-creator/index.vue'
+  import Tabs from './ui-lib/tabs'
+  import {mapGetters} from 'vuex'
 
   export default {
     data() {
+      console.log(this.$store.getters)
       return {
         showUpgrade: !window.__supports,
         shouldShowAuthDialog: false,
@@ -59,6 +63,13 @@
       ContractCreator,
       ContractDetail
     },
+
+    computed: {
+      ...mapGetters({
+        pagebuild: 'pagebuild'
+      })
+    },
+
     mounted() {
       //表示UI框架渲染完成，可调用
       this.$emit('ready', this)
@@ -104,19 +115,17 @@
       },
       _closeDialogHandler() {
         this.$emit('close', {
-          presentables: this.presentables
+          presentableMap: this.pagebuild.presentableMap
         })
       },
       showAuthDialog() {
         this.shouldShowAuthDialog = true;
       },
-      appendData(data) {
-        var existed = this.presentables.some((presentable) => {
-          return presentable.presentableId === data.presentableId
-        })
-        if (!existed) {
-          this.presentables.push(data)
-        }
+      gotoCreateContract(presentable) {
+        this._tabChange(Tabs.getTabConfig('contractCreator', presentable))
+      },
+      gotoExecuteContract(presentable) {
+        this._tabChange(Tabs.getTabConfig('contractDetail', presentable))
       },
       showToolBar() {
         this.$refs.toolbar.show()

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <contract-steps :step="1" v-show="data._showContractSteps"></contract-steps>
+        <contract-steps :step="1" v-show="showContractSteps"></contract-steps>
 
         <contract-info-detail class="contract-detail" :data="data" collapseName="process"></contract-info-detail>
     </div>

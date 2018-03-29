@@ -19,7 +19,7 @@
 </template>
 
 <script>
-  import NavTopBar from '@/components/nav-top/index.vue'
+  import NavTopBar from '@/components/NavTop/index.vue'
   import AccountList from './accounts/index.vue'
   import ContractList from './contracts/index.vue'
   import UserOrderList from './orders/index.vue'

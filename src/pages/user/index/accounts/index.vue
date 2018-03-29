@@ -57,7 +57,7 @@
 
 <script>
   import AccountTypes from '@/config/account-types'
-  import ClipBoard from '@/components/clipboard/index.vue'
+  import ClipBoard from '@/components/Clipboard/index.vue'
 
   export default {
     name: 'account-list',

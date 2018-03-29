@@ -21,50 +21,12 @@ export default {
     },
     tabName: String
   },
-  watch: {
-    data: 'formatPolicy'
-  },
+  watch: {},
 
   components: {ContractSteps, ContractInfoDetail},
   mounted() {
-    this.formatPolicy()
   },
   methods: {
-    formatPolicy() {
-      try {
-        var formatPolicyText = compiler.beautify(this.data.policyText)
-        this.$set(this.data, '_formatPolicyText', formatPolicyText)
-
-        if (this.data.segments) {
-          this.data.segments.forEach((segment) => {
-            segment.detail._formatPolicyText = compiler.beautify(segment.detail.segmentText)
-          })
-        }
-      } catch (err) {
-        this.$message.error(err)
-      }
-
-      this.parsePolicy(this.data)
-    },
-    parsePolicy(data) {
-      var segments = []
-      data.policy.forEach(function (block) {
-        var segment = {
-          detail: block,
-          states: block.fsmDescription,
-          selected: false
-        }
-
-        block._userGroup = block.users.reduce((userGroup, item) => {
-          userGroup = userGroup.concat(item.users)
-          return userGroup
-        }, []).join('/')
-
-        segments.push(segment)
-      })
-
-      this.$set(this.data, 'segments', segments)
-    },
     policyHandler() {
       if (this.btnType) {
         this.gotoExecuteContract()
@@ -107,36 +69,15 @@ export default {
     cancelSegmentSelection() {
       this.data.selectedSegmentId = ''
     },
-    loadContractDetail(contractId) {
-      return window.QI.fetch(`/v1/contracts/${contractId}`).then((res) => {
-        if (res.status === 200) {
-          return res.json()
-        } else {
-          return Promise.reject(res)
-        }
-      }).then((res) => {
-        if (res.ret === 0 && res.errcode === 0) {
-          return res.data
-        } else {
-          return Promise.reject(res)
-        }
-      })
-    },
     updateContractDetail(data) {
-      return new Promise((resolve) => {
-        //创建合同后，后端存在异步初始化的过程，这时合同状态为none
-        if (data.fsmState === 'none') {
-          return this.loadContractDetail(data.contractId)
-            .then((detail) => {
-              Object.assign(data, detail)
-              resolve(data)
-            })
-        } else {
-          resolve(data)
-        }
-      })
+      //创建合同后，后端存在异步初始化的过程，这时合同状态为none
+      if (data.fsmState === 'none') {
+        this.$store.dispatch('loadContractDetail', data.contractId)
+      } else {
+        this.$store.dispatch('updateContractDetail', data)
+      }
     },
-    loadPartyTwo() {
+    loadUserId() {
       return new Promise((resolve) => {
         if (window.__auth_info__.__auth_user_id__) {
           resolve(window.__auth_info__.__auth_user_id__)
@@ -154,7 +95,7 @@ export default {
       }
       self.loading = true
 
-      this.loadPartyTwo()
+      this.loadUserId()
         .then((userId) => {
           if (!userId) {
             return this.$message.error('获取不到用户ID')
@@ -176,10 +117,6 @@ export default {
               self.btnType = 'success'
               self.$message.success('签约成功')
               this.updateContractDetail(data.data)
-                .then((data) => {
-                  self.$set(self.data, 'contractDetail', data)
-                  self.$eventBus.$emit('updateList')
-                })
             } else {
               self.$message.error(data.msg)
             }
