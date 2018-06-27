@@ -1,4 +1,5 @@
 // import {Message} from 'element-ui';
+import {gotoLogin} from "../../../lib/utils";
 
 export default {
   name: 'errorResponseHandler',
@@ -7,7 +8,6 @@ export default {
     this.app.model.dispatch('loadPresentableDetail', data.presentableId)
       .then((presentable) => {
         this.app.model.dispatch('updateContractDetail', contractData)
-        console.log(presentable)
         this.app.ui.showAuthDialog()
         this.app.ui.gotoExecuteContract(presentable)
       })
@@ -25,7 +25,7 @@ export default {
       })
   },
   _gotoLoginHandler() {
-    location.href = `//www.freelog.com/pages/user/login.html?redirect=` + encodeURIComponent(location.href)
+    gotoLogin(location.href)
   },
   handle(data, app, callback) {
     this.app = app

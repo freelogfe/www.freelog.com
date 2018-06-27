@@ -22,6 +22,7 @@ export default {
     var handlerName = detail.eventName
     var opts = detail.opts || {}
     var Handler = Service[handlerName]
+console.log('Service',Service)
     if (Handler) {
       try {
         Handler.handle(opts.data, this.app, opts.callback)

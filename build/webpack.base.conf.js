@@ -11,6 +11,18 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin')
 const CWD = process.cwd();
 const SrcDir = path.join(CWD, 'src')
+var minimist = require('minimist')
+var argv = minimist(process.argv.slice(2));
+
+
+var assetsPublicPath;
+var assetsDomain = '';
+if (process.env.NODE_ENV === 'production') {
+  assetsDomain = (argv.beta ? config.build.assetsTestDomain : config.build.assetsDomain)
+  assetsPublicPath = assetsDomain + config.build.assetsPublicPath
+} else {
+  assetsPublicPath = config.dev.assetsPublicPath
+}
 
 const extractCSS = new ExtractTextPlugin({
   // filename: '[name].[chunkhash].css',
@@ -50,9 +62,7 @@ var webpackConfig = {
     path: path.join(CWD, 'dist', 'public'),
     filename: '[name].js',
     // filename: '[name].[chunkhash].js',
-    publicPath: process.env.NODE_ENV === 'production'
-      ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
+    publicPath: assetsPublicPath
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -170,6 +180,7 @@ glob.sync('./src/pages/**/*.pug').forEach(filepath => {
   const htmlConf = {
     filename: filename,
     template: filepath,
+    assetsDomain: assetsDomain,
     inject: 'body',
     favicon: './src/static/img/logo.png',
     hash: process.env.NODE_ENV === 'production',

@@ -2,6 +2,7 @@ require('./check-versions')()
 
 process.env.NODE_ENV = 'production'
 
+console.log();
 var ora = require('ora')
 var rm = require('rimraf')
 var chalk = require('chalk')

@@ -89,6 +89,16 @@
     },
 
     methods: {
+      isSafe(url) {
+        var obj = new URL(url)
+        var reg = /^.+\.freelog\.com$/
+
+        if (reg.test(obj.hostname) || (/^\/[^\/]+/.test(url))) {
+          return true
+        } else {
+          return false
+        }
+      },
       submit(ref) {
         var self = this;
         this.$refs[ref].validate(valid => {
@@ -105,7 +115,12 @@
             .then(() => {
               this.loading = false
               var qs = querystring.parse(location.search.slice(1))
-              location.href = qs.redirect || '/pages/user/index.html'
+              var url = qs.redirect || '/pages/user/index.html'
+              if (this.isSafe(url)) {
+                location.href = url
+              } else {
+                location.href = '/pages/user/index.html'
+              }
             })
             .catch((msg) => {
               this.loading = false

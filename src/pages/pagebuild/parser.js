@@ -27,6 +27,7 @@ export default {
     })
     const objectURL = window.URL.createObjectURL(htmlFile);
     const link = document.createElement('link');
+
     link.rel = 'import';
     link.href = objectURL;
     document.head.appendChild(link);
@@ -64,33 +65,40 @@ export default {
 
     Array.from($widgets).forEach(function (widget) {
       var prensentableId = widget.getAttribute('data-widget-presentable-id');
+      var srcId = widget.getAttribute('data-widget-src');
       if (prensentableId) {
-        window.QI.fetchPresentable(`${prensentableId}.data`)
-          .then((res) => {
-            if (res.headers.get('freelog-contract-id')) {
+        window.QI.fetchPresentable(`${prensentableId}.data`, {
+          data: {
+            resourceId: srcId
+          }
+        }).then((res) => {
+          if (res.ok) {
+            if (res.headers.get('freelog-resource-type') || res.headers.get('content-type')==='text/html') {
               self.parseWidgetPresentable(res)
             } else {
               self.triggerPresentableAuth(res)
             }
-          })
-          .catch((err) => {
-            console.error(err)
-          })
+          } else {
+            throw new Error(res)
+          }
+        }).catch((err) => {
+          console.error(err)
+        })
       } else {
         //节点还没关联组件
-        var srcId = widget.getAttribute('data-widget-src')
-        if (srcId) {
-          console.error('还未关联组件:' + widget.getAttribute('data-widget-src'))
-          window.QI.fetch(`/v1/resources/${srcId}`).then((res) => {
-            return res.json()
-          }).then((res) => {
-            if (res.errcode === 0) {
-              widget.innerHTML = `<div class="no-widget-error-tip">组件${res.data.resourceName}还没有被关联，<a href="javascript:;">通知节点</a></div>`
-            }
-          })
-        } else {
-          console.error('没有找到对应的组件ID')
-        }
+        // var srcId = widget.getAttribute('data-widget-src')
+        // if (srcId) {
+        //   console.error('还未关联组件:' + widget.getAttribute('data-widget-src'))
+        //   window.QI.fetch(`/v1/resources/${srcId}`).then((res) => {
+        //     return res.json()
+        //   }).then((res) => {
+        //     if (res.errcode === 0) {
+        //       widget.innerHTML = `<div class="no-widget-error-tip">组件${res.data.resourceName}还没有被关联，<a href="javascript:;">通知节点</a></div>`
+        //     }
+        //   })
+        // } else {
+        console.error('没有找到对应的组件ID')
+        // }
       }
     })
   }

@@ -61,7 +61,7 @@
       }
 
       fetchPresentable(target, param) {
-        var url = `/v1/presentables/resource/${target}?nodeId=${window.__auth_info__.__auth_node_id__}`
+        var url = `/v1/auths/presentable/${target}?nodeId=${window.__auth_info__.__auth_node_id__}`
         return this.fetch(url, param)
       }
     }
