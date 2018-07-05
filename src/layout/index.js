@@ -9,6 +9,13 @@ import plugins from '../plugins';
 Vue.use(ElementUI)
 Vue.use(plugins)
 
+
+window.G_FreelogConfig = {
+  isTest: /\.testfreelog\.com$/.test(location.host)
+};
+G_FreelogConfig.mainDomain = G_FreelogConfig.isTest? 'testfreelog.com': 'freelog.com'
+
+
 function supportsWebComponent() {
   return !!window.customElements
 }

@@ -3,7 +3,7 @@
     <el-alert
             v-if="showError"
             type="warning">
-      未设置支付密码，<a href="//www.freelog.com/pages/account/security.html" style="color: #409EFF;
+      未设置支付密码，<a :href="accountSecUrl" style="color: #409EFF;
 " target="_blank">去设置</a>
     </el-alert>
 
@@ -19,10 +19,10 @@
         {{data.contract.contractId}}
       </el-form-item>
       <el-form-item label="甲方">
-        {{data.contract.partyOne}}
+        {{data.contract.partyOneInfo.nodeName}}
       </el-form-item>
       <el-form-item label="乙方">
-        {{data.contract.partyTwo}}
+        {{data.contract.partyTwoInfo.nickname}}
       </el-form-item>
       <el-form-item label="转入账号">
         {{data.event.params[0]}}
@@ -41,7 +41,7 @@
         </el-select>
         <el-tooltip placement="top">
           <div slot="content">
-            <p><a style="color: white" href="//www.freelog.com/pages/account/create.html" target="_blank">没有账号？去添加一个</a></p>
+            <p><a style="color: white" :href="createPayAccountUrl" target="_blank">没有账号？去添加一个</a></p>
           </div>
           <i class="el-icon-question"></i>
         </el-tooltip>

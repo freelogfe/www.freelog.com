@@ -5,18 +5,18 @@
             stripe
             cell-class-name="presentable-cell">
       <el-table-column
-              label="名称"
-              min-width="300"
-              prop="name">
-      </el-table-column>
-      <el-table-column
               label="资源名称"
-              min-width="250"
-              prop="resourceDetail.resourceName">
+              min-width="300"
+              prop="presentableName">
       </el-table-column>
+      <!--<el-table-column-->
+              <!--label="资源名称"-->
+              <!--min-width="250"-->
+              <!--prop="resourceInfo.resourceName">-->
+      <!--</el-table-column>-->
       <el-table-column
               label="资源类型"
-              prop="resourceDetail.resourceType"
+              prop="resourceInfo.resourceType"
               width="120">
       </el-table-column>
       <el-table-column

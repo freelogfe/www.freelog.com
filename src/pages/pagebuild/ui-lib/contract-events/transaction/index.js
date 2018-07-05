@@ -7,13 +7,15 @@ export default {
       accounts: [],
       password: '',
       fromAccountId: '',
-      showError: false
+      showError: false,
+      accountSecUrl: `//www.${G_FreelogConfig.mainDomain}/pages/account/security.html`,
+      createPayAccountUrl: `//www.${G_FreelogConfig.mainDomain}/pages/account/create.html`
     }
   },
   props: {
     data: {
       type: Object,
-      default(){
+      default() {
         return null
       }
     }
@@ -24,6 +26,7 @@ export default {
     }
   },
   mounted() {
+    console.log(this.data)
     this.$axios.get('/v1/pay/accounts').then((res) => {
       this.accounts = res.data.data;
     })

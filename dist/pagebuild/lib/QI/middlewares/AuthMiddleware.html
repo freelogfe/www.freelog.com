@@ -1,40 +1,52 @@
 <link rel="import" href="./Middleware.html">
 <script>
-    class AuthMiddleware extends Middleware {
-        constructor() {
-            super();
-        }
+  class AuthMiddleware extends Middleware {
+    constructor() {
+      super();
+    }
 
-        transform_response(response) {
-            return response
-            //走系统授权的
+    transform_response(response) {
+      return response
+      //走系统授权的
 //            if (!response.request || !response.request.needAuth) {
 //                return response
 //            }
-//            var cloneResponse = response.clone() //body仅允许读取一次，因此需要clone，避免污染response
-
-//            return new Promise(function (resolve, reject) {
-//                cloneResponse.json()
-//                    .then(function (body) {
-//                        //todo 细化根据不同的errcode调用不同的service
-//                        if (body.errcode !== 0) {
-//                            var event = new CustomEvent('freelogService', {'detail': {
-//                                action: 'authService',
-//                                data: body
-//                            }});
-//                            window.dispatchEvent(event)
-//                            //不阻塞响应流程的开发体验，错误的情况返回一个前端根据errcode创建的response
-//                            resolve(new Response('', {headers: response.headers, statusText: 'UNAUTH', status: 401}))
-//                        } else {
-//                            resolve(response)
-//                        }
-//                    })
-//                    .catch(function () {
-//                        resolve(response)
-//                    })
-//            })
-        }
+//       var cloneResponse = response.clone() //body仅允许读取一次，因此需要clone，避免污染response
+//
+//       if (/application\/json/.test(cloneResponse.headers.get('content-type'))) {
+//         return new Promise(function (resolve, reject) {
+//           cloneResponse.json()
+//             .then(function (body) {
+//               //todo 细化根据不同的errcode调用不同的service
+//
+//               if (body.errcode !== 0) {
+//                 // var event = new CustomEvent('freelogService', {
+//                 //   'detail': {
+//                 //     action: 'authService',
+//                 //     data: body
+//                 //   }
+//                 // });
+//                 // window.dispatchEvent(event)
+//
+//                 window.FreeLogApp.trigger('errorResponseHandler', {
+//                   data: body
+//                 })
+//                 //不阻塞响应流程的开发体验，错误的情况返回一个前端根据errcode创建的response
+//                 resolve(response)
+//                 // resolve(new Response('', {headers: response.headers, statusText: 'UNAUTH', status: 401}))
+//               } else {
+//                 resolve(response)
+//               }
+//             })
+//             .catch(function () {
+//               resolve(response)
+//             })
+//         })
+//       } else {
+//         return response
+//       }
     }
+  }
 
-    window.customElements.define('middleware-auth', AuthMiddleware);
+  window.customElements.define('middleware-auth', AuthMiddleware);
 </script>

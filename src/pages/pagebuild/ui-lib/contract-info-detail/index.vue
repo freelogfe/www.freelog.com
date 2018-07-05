@@ -2,13 +2,13 @@
   <div class="presentable-detail">
     <el-form label-position="right" inline label-width="120px" class="presentable-info small-el-form">
       <el-form-item label="presentable名" class="info-row">
-        {{data.name }}
+        {{data.presentableName }}
       </el-form-item>
       <el-form-item label="资源名" class="info-row">
-        {{data.resourceDetail.resourceName }}
+        {{data.resourceInfo.resourceName }}
       </el-form-item>
       <el-form-item label="资源类型" class="info-row">
-        {{data.resourceDetail.resourceType }}
+        {{data.resourceInfo.resourceType }}
       </el-form-item>
       <template v-if="data.contractDetail">
         <el-form-item label="合同ID" class="info-row">

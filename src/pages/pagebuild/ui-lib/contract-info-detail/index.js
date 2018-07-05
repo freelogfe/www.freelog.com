@@ -75,10 +75,11 @@ export default {
     },
     executeContractHandler(params) {
       var eventComConfig = eventComponentMap[params.type]
+
       this.selectedContractEvent = {
         event: params,
         contract: this.data.contractDetail,
-        resource: this.data.resourceDetail
+        resource: this.data.resourceInfo
       }
       this.eventComponent = eventComConfig.type;
       this.dialogTitle = eventComConfig.title

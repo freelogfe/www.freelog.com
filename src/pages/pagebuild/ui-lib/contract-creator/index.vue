@@ -28,7 +28,6 @@
                     <el-radio class="select-btn" v-model="selectedSegmentId"
                               :label="scope.row.detail.segmentId">选择
                     </el-radio>
-
                     <el-tooltip class="item" effect="dark" content="取消选择" placement="top"
                                 v-show="selectedSegmentId===scope.row.detail.segmentId">
                         <i class="el-icon-circle-close-outline"

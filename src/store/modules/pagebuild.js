@@ -7,6 +7,7 @@ const types = {
   LOAD_CONTRACT: 'loadContractDetail',
   LOAD_RESOURCE: 'loadResourceDetail',
   LOAD_NODE_INFO: 'loadNodeDetail',
+  LOAD_PRESENTABLE_AUTH: 'loadPresentableAuth',
 
   UPDATE_PRESENTABLE: 'updatePresentableDetail',
   UPDATE_PRESENTABLE_MAP: 'updatePresentableMap',
@@ -19,7 +20,7 @@ const types = {
 
 
 function loader(url) {
-  return window.QI.fetch(url).then((res) => {
+  return axios.get(url).then((res) => {
     return (res.status === 200) ? res.json() : Promise.reject(res)
   }).then((res) => {
     if (res.ret === 0 && res.errcode === 0) {
@@ -33,6 +34,7 @@ function loader(url) {
 function parsePolicy(data) {
   var segments = []
   data.policy.forEach(function (block) {
+    block._formatPolicyText = compiler.beautify(block.segmentText)
     var segment = {
       detail: block,
       states: block.fsmDescription,
@@ -61,7 +63,7 @@ const pagebuild = {
   mutations: {
     [types.LOAD_PRESENTABLE](state, data) {
       if (!data.resourceDetail) {
-        data.resourceDetail = data.tagInfo.resourceInfo
+        data.resourceDetail = data.resourceInfo
       }
       data._formatPolicyText = compiler.beautify(data.policyText)
       if (data.segments) {
@@ -91,18 +93,8 @@ const pagebuild = {
     },
     [types.UPDATE_PRESENTABLE_MAP](state, data) {
       var presentable = state.presentableMap[data.presentableId]
-      if (!data.resourceDetail) {
-        data.resourceDetail = data.tagInfo.resourceInfo
-      }
-      data._formatPolicyText = compiler.beautify(data.policyText)
-      if (data.segments) {
-        data.segments.forEach((segment) => {
-          segment.detail._formatPolicyText = compiler.beautify(segment.detail.segmentText)
-        })
-      }
 
       data.segments = parsePolicy(data)
-
       if (presentable) {
         Object.assign(presentable, data)
       } else {
@@ -122,7 +114,7 @@ const pagebuild = {
       if (presentable.contractDetail) {
         contractStatus = presentable.contractDetail.status
       } else if (presentable.nodeContractDetail) {
-        presentable.name = presentable.resourceDetail.resourceName
+        presentable.name = presentable.presentableInfo.presentableName
         contractStatus = CONTRACT_STATUS.invalid
       } else {
         contractStatus = CONTRACT_STATUS.uncreated
@@ -160,6 +152,21 @@ const pagebuild = {
           resolve(data)
         } else {
           loader(`/v1/presentables/${presentableId}`)
+            .then((data) => {
+              commit(types.UPDATE_PRESENTABLE_MAP, data)
+              commit(types.UPDATE_PRESENTABLE_STATUS, data)
+              resolve(data)
+            })
+        }
+      })
+    },
+    [types.LOAD_PRESENTABLE_AUTH]({commit, getters}, presentableId) {
+      return new Promise((resolve) => {
+        var data = getters.pagebuild.presentableMap[presentableId]
+        if (data) {
+          resolve(data)
+        } else {
+          axios.get(`/v1/auths/presentableIdentityAuth`)
             .then((data) => {
               commit(types.UPDATE_PRESENTABLE_MAP, data)
               commit(types.UPDATE_PRESENTABLE_STATUS, data)

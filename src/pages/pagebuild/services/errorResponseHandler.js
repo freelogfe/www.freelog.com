@@ -1,4 +1,3 @@
-// import {Message} from 'element-ui';
 import {gotoLogin} from "../../../lib/utils";
 
 export default {
@@ -26,6 +25,12 @@ export default {
   },
   _gotoLoginHandler() {
     gotoLogin(location.href)
+  },
+  _connectCustomerService(){
+    this.app.vm.notify({
+      message: '已通知',
+      type: 'warning'
+    })
   },
   handle(data, app, callback) {
     this.app = app
@@ -58,7 +63,8 @@ export default {
           this._gotoLoginHandler()
           break;
         default:
-          throw new Error(errorMsg)
+          this._connectCustomerService(resData)
+          // throw new Error(errorMsg)
           break;
       }
 

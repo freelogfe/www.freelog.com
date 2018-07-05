@@ -76,6 +76,7 @@ export default {
             if (res.headers.get('freelog-resource-type') || res.headers.get('content-type')==='text/html') {
               self.parseWidgetPresentable(res)
             } else {
+              debugger
               self.triggerPresentableAuth(res)
             }
           } else {
@@ -85,20 +86,7 @@ export default {
           console.error(err)
         })
       } else {
-        //节点还没关联组件
-        // var srcId = widget.getAttribute('data-widget-src')
-        // if (srcId) {
-        //   console.error('还未关联组件:' + widget.getAttribute('data-widget-src'))
-        //   window.QI.fetch(`/v1/resources/${srcId}`).then((res) => {
-        //     return res.json()
-        //   }).then((res) => {
-        //     if (res.errcode === 0) {
-        //       widget.innerHTML = `<div class="no-widget-error-tip">组件${res.data.resourceName}还没有被关联，<a href="javascript:;">通知节点</a></div>`
-        //     }
-        //   })
-        // } else {
         console.error('没有找到对应的组件ID')
-        // }
       }
     })
   }

@@ -48,7 +48,7 @@ export default {
         return this.$message.warning('没有选择策略')
       }
 
-      var tip = `<ul><li>presentable name: ${policyData.name}</li><li>resource name: ${policyData.resourceDetail.resourceName}</li></ul>`
+      var tip = `<ul><li>presentable name: ${policyData.presentableName}</li><li>resource name: ${policyData.resourceInfo.resourceName}</li></ul>`
       this.$confirm(`<h3>合同详情</h3><p>${tip}</p>确定签约合同？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -94,19 +94,16 @@ export default {
           if (!userId) {
             return this.$message.error('获取不到用户ID')
           }
-          window.QI.fetch('/v1/contracts', {
-            method: 'POST',
-            data: {
-              contractType: 3,
-              targetId: policyData.presentableId,
-              segmentId: this.selectedSegmentId,
-              serialNumber: policyData.serialNumber,
-              partyTwo: userId
-            }
+          console.log(this.selectedSegmentId)
+
+          this.$axios.post('/v1/contracts', {
+            contractType: 3,
+            targetId: policyData.presentableId,
+            segmentId: this.selectedSegmentId,
+            partyTwo: userId
           }).then((res) => {
-            return res.json()
-          }).then((data) => {
             self.loading = false
+            var data = res.data;
             if (data.ret === 0 && data.errcode === 0) {
               self.btnType = 'success'
               self.$message.success('签约成功')

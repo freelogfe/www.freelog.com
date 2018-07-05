@@ -29,9 +29,11 @@ function main() {
     methods: {
       onReady(appUI) {
         //挂载UI
+        console.log(appUI)
         this.appUI = appUI
         window.FreeLogApp = App;
         EventDispatcher.init({
+          vm: this,
           ui: appUI,
           model: this.$store
         })
@@ -40,6 +42,12 @@ function main() {
         }
         appUI.$on('close', function () {
         })
+      },
+      notify(opt){
+        if (!opt.duration) {
+          opt.duration = 3e3;
+        }
+        this.$notify(opt);
       }
     }
   })

@@ -25,8 +25,8 @@
         <el-form-item>
           <el-checkbox v-model="model.isRememer">记住我</el-checkbox>
           <span class="user-ops">
-          <a class="user-op" href="//console.freelog.com/user/reset_pw">忘记密码</a> | <a class="user-op"
-                                                                                      href="//console.freelog.com/user/signup?redirect=%2F%2Fwww.freelog.com%2Fpages%2Fuser%2Findex.html">注册新用户</a>
+          <a class="user-op" :href="resetPasswordUrl">忘记密码</a> | <a class="user-op"
+                                                                    :href="signUpUrl">注册新用户</a>
         </span>
         </el-form-item>
         <el-form-item class="login-btns">
@@ -75,6 +75,8 @@
       };
 
       return {
+        resetPasswordUrl: `//console.${G_FreelogConfig.mainDomain}/user/reset_pw`,
+        signUpUrl: `//console.${G_FreelogConfig.mainDomain}/user/signup?redirect=%2F%2Fwww.${G_FreelogConfig.mainDomain}%2Fpages%2Fuser%2Findex.html`,
         model: {
           loginName: '',
           password: '',
@@ -90,13 +92,13 @@
 
     methods: {
       isSafe(url) {
-        var obj = new URL(url)
-        var reg = /^.+\.freelog\.com$/
+        if (/^https?:\/\//.test(url)) {
+          var obj = new URL(url)
+          var reg = /^.+\.freelog\.com$/
 
-        if (reg.test(obj.hostname) || (/^\/[^\/]+/.test(url))) {
-          return true
+          return (reg.test(obj.hostname) || (/^\/[^\/]+/.test(url)))
         } else {
-          return false
+          return true
         }
       },
       submit(ref) {
@@ -124,6 +126,9 @@
             })
             .catch((msg) => {
               this.loading = false
+              if (typeof msg !== 'string') {
+                msg = msg.toString();
+              }
               this.error = {message: msg}
             })
         })

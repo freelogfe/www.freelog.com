@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Service from './services'
-import {Message} from 'element-ui'
-
+import {Error} from '../../plugins/error'
 const DEFAULT_EVENT_NAME = 'freelogSystemService';
+
 export default {
   init(app) {
     this.app = app
@@ -11,18 +11,14 @@ export default {
     this.bus.$on(DEFAULT_EVENT_NAME, this.dispatchHandler.bind(this))
   },
   showErrorMessage(err) {
-    var msg = (err && err.message) || err
-    Message({
-      type: 'error',
-      message: msg
-    })
+    Error.showErrorMessage(err)
   },
   dispatchHandler(event) {
     var detail = event.detail
     var handlerName = detail.eventName
     var opts = detail.opts || {}
     var Handler = Service[handlerName]
-console.log('Service',Service)
+
     if (Handler) {
       try {
         Handler.handle(opts.data, this.app, opts.callback)
