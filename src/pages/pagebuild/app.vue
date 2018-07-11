@@ -47,7 +47,6 @@
 
   export default {
     data() {
-      console.log(this.$store.getters)
       return {
         showUpgrade: !window.__supports,
         shouldShowAuthDialog: false,

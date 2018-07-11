@@ -5,7 +5,7 @@ export default {
   handle(data, app, callback) {
     Message({
       type: 'success',
-      message: '已通知节点'
+      message: '节点资源合同未生效，已通知节点'
     })
   }
 }

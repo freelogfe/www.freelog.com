@@ -94,7 +94,6 @@ export default {
           if (!userId) {
             return this.$message.error('获取不到用户ID')
           }
-          console.log(this.selectedSegmentId)
 
           this.$axios.post('/v1/contracts', {
             contractType: 3,

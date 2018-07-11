@@ -34,30 +34,27 @@ export default {
   },
   handle(data, app, callback) {
     this.app = app
+
     if (data && data.errcode) {
       var errorMsg = data.msg;
       var resData = data.data && data.data.data
-
       switch (data.errcode) {
         //未激活状态
-        case 70080104:
+        case 501:
           this._unactivatedHandler(resData)
           break;
-
-        case 70080302: //todo 个人身份授权不通过
-        case 70080303: //todo 用户分组策认证不通过
-        case 70080305: //todo 资源策略拒绝
-        case 70080306: //too presentable策略拒绝
         //未签约状态
-        case 70080101:
+        case 502:
+        case 503:
+        case 504:
           this._unauthHandler(resData)
           break;
         //节点与资源之间的合约未生效
-        case 70080202:
+        case 401:
           this._invalidHandler(resData)
           break;
         //未登录
-        case 70080301:
+        case 505:
         case 28:
         case 30:
           this._gotoLoginHandler()

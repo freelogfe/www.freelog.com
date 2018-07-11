@@ -4,7 +4,7 @@ export default {
   name: 'reportHandler',
   handle(data, app, callback) {
     Message({
-      message: '已上报',
+      message: '已上报错误',
       type: 'success'
     })
   }

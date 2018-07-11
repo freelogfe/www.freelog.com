@@ -26,7 +26,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.data)
     this.$axios.get('/v1/pay/accounts').then((res) => {
       this.accounts = res.data.data;
     })

@@ -144,7 +144,6 @@
                 address: address
               }
             }).then((res) => {
-              console.log(res.data)
               var result = res.data
               if (result.ret === 0 && result.errcode === 0) {
                 this.$message.success('成功清除')

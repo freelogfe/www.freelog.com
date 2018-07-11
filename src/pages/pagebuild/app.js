@@ -15,6 +15,15 @@ var App = {
   trigger() {
     EventDispatcher.trigger.apply(EventDispatcher, arguments)
   },
+  handleErrorResponse(response, callback){
+    var App = window.FreeLogApp
+    var exception = App.ExceptionCode[response.errcode] || {}
+    var event = exception.action || App.EventCode.invalidResponse
+    App.trigger(event, {
+      data: response,
+      callback: callback
+    });
+  },
   EventCode,
   ExceptionCode
 }
@@ -29,7 +38,6 @@ function main() {
     methods: {
       onReady(appUI) {
         //挂载UI
-        console.log(appUI)
         this.appUI = appUI
         window.FreeLogApp = App;
         EventDispatcher.init({

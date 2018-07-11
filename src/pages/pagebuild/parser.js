@@ -86,7 +86,7 @@ export default {
           console.error(err)
         })
       } else {
-        console.error('没有找到对应的组件ID')
+        // console.warn('没有找到对应的组件ID')
       }
     })
   }

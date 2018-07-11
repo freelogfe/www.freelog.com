@@ -56,7 +56,6 @@
                     callback(new Error('请输入'));
                 } else if (value !== '' && value.length !== '42' && value.substr(0, 2) !== '0x') {
                     //验证账户的格式
-                    console.log(value.substr(0, 2));
                     callback(new Error('16进制长度为42位的外部账号'));
                 }
             };
@@ -105,7 +104,6 @@
             createAccount(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        console.log(valid);
                         alert('submit!');
                         var data;
                         if (this.ruleForm2.accountNumber != '') {
