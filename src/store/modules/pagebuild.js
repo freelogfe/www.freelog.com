@@ -126,7 +126,7 @@ const pagebuild = {
     [types.UPDATE_CONTRACT](state, data) {
       var presentableId = data.targetId
       var presentable = state.presentableMap[presentableId]
-
+      var statusInfo = CONTRACT_STATUS_COLORS[data.status]
       if (!data._userGroup) {
         data._userGroup = data.policySegment.users.reduce((users, item) => {
           users = users.concat(item.users)
@@ -134,7 +134,7 @@ const pagebuild = {
         }, []).join('/')
       }
 
-      this._vm.$set(data, '_statusInfo', CONTRACT_STATUS_COLORS[data.status])
+      this._vm.$set(data, '_statusInfo', statusInfo)
       state.contractMap[data.contractId] = {...data}
 
       if (!presentable.contractDetail) {
@@ -184,6 +184,7 @@ const pagebuild = {
         .then((data) => {
           commit(types.LOAD_CONTRACT, data)
           commit(types.UPDATE_CONTRACT, data)
+          commit(types.UPDATE_PRESENTABLE_STATUS, data)
           return data
         })
     },

@@ -16,13 +16,19 @@ var App = {
     EventDispatcher.trigger.apply(EventDispatcher, arguments)
   },
   handleErrorResponse(response, callback){
-    var App = window.FreeLogApp
-    var exception = App.ExceptionCode[response.errcode] || {}
-    var event = exception.action || App.EventCode.invalidResponse
-    App.trigger(event, {
+    var exception = ExceptionCode[response.errcode] || {}
+    var event = exception.action || EventCode.invalidResponse
+    this.trigger(event, {
       data: response,
       callback: callback
     });
+  },
+  getErrorInfo(error){
+    return ExceptionCode[error.errcode] || {
+      desc: `未定义的错误[${error.errcode}]`,
+      tip: '上报错误',
+      action: 'reportHandler',
+    }
   },
   EventCode,
   ExceptionCode

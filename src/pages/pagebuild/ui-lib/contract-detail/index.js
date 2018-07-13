@@ -7,7 +7,6 @@ export default {
 
   data() {
     return {
-      showContractSteps: false
     }
   },
   components: {
@@ -29,10 +28,18 @@ export default {
   mounted() {
     this.formatData()
   },
+  computed: {
+    showContractSteps() {
+      return this.data.contractDetail.status <= 3
+    },
+    contractStep() {
+      return this.data.contractDetail.status === 3 ? 2 : 1;
+    }
+  },
   methods: {
     formatData() {
-      var data = this.data
-      this.showContractSteps = data.contractDetail.status < 3
+      // var data = this.data
+      // this.showContractSteps = data.contractDetail.status < 3
     }
   }
 }

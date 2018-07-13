@@ -28,11 +28,11 @@ const ExceptionCode = {
     tip: '查看策略'
   },
   503: {
-    desc: '未找到用户合同',
+    desc: '未创建资源合同',
     tip: '去创建合同'
   },
   505: {
-    desc: '未登陆用户',
+    desc: '未登录用户',
     action: 'loginHandler',
     tip: '去登录'
   },

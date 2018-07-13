@@ -48,12 +48,13 @@ export default {
         return this.$message.warning('没有选择策略')
       }
 
-      var tip = `<ul><li>presentable name: ${policyData.presentableName}</li><li>resource name: ${policyData.resourceInfo.resourceName}</li></ul>`
+      var tip = `<ul><li>资源名称: ${policyData.presentableName}</li></ul>`
       this.$confirm(`<h3>合同详情</h3><p>${tip}</p>确定签约合同？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         dangerouslyUseHTMLString: true,
-        type: 'warning'
+        type: 'warning',
+        customClass: 'contract-confirm-dialog'
       }).then(() => {
         self.createContract(policyData)
       }).catch(() => {

@@ -33,7 +33,7 @@ export default {
     document.head.appendChild(link);
   },
   parseWidgetPresentable(res) {
-    var systemMeta = atob(res.headers.get('freelog-system-meta'))
+    var systemMeta = decodeURIComponent(res.headers.get('freelog-system-meta'))
     try {
       systemMeta = JSON.parse(systemMeta)
     } catch (err) {
