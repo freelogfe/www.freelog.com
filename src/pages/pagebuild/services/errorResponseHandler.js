@@ -66,7 +66,7 @@ export default {
       }
 
       if (typeof callback === 'function') {
-        app.ui.$on('close', function (data) {
+        app.ui.$once('close', function (data) {
           var presentable = data.presentableMap[resData.presentableId] || null
           presentable && callback(presentable)
         })

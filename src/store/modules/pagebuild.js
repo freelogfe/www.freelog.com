@@ -21,7 +21,7 @@ const types = {
 
 function loader(url) {
   return axios.get(url).then((res) => {
-    return (res.status === 200) ? res.json() : Promise.reject(res)
+    return (res.status === 200) ? Promise.resolve(res.data) : Promise.reject(res)
   }).then((res) => {
     if (res.ret === 0 && res.errcode === 0) {
       return res.data

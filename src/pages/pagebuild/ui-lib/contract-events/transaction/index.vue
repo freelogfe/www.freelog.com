@@ -19,7 +19,7 @@
         {{data.contract.contractId}}
       </el-form-item>
       <el-form-item label="甲方">
-        {{data.contract.partyOneInfo.nodeName}}
+       {{data.contract.partyOneInfo && data.contract.partyOneInfo.nodeName}}
       </el-form-item>
       <el-form-item label="乙方">
         {{data.contract.partyTwoInfo.nickname}}
