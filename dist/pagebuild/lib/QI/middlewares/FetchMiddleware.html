@@ -39,8 +39,8 @@
         delete req.data
         req.headers = headers
       } else if (method === 'get' && req.data) {
-        var qs = '?' + this.getQueryString(req.data)
-        target += qs;
+        var qs = this.getQueryString(req.data)
+        target += (target.indexOf('?') > -1 ? '&' : '?') + qs;
         delete req.data
       }
       return [target, req];

@@ -39,6 +39,7 @@
     },
     mounted() {
       this.initDefaultAcitve()
+      this.$vuex.dispatch('getCurrentUserInfo')
     },
     components: {
       NavTopBar

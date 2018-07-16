@@ -6,7 +6,7 @@ import PageBuildeParser from './parser'
 import EventCode from './event-code'
 import EventDispatcher from './event-dispatcher'
 import ExceptionCode from './exception-code'
-
+import {gotoCacheScrollTop} from '../../lib/utils'
 //对外接口服务
 var App = {
   isValidResponse(res) {
@@ -56,6 +56,8 @@ function main() {
         }
         appUI.$on('close', function () {
         })
+
+        gotoCacheScrollTop()
       },
       notify(opt){
         if (!opt.duration) {

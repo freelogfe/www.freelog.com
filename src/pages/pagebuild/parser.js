@@ -64,19 +64,14 @@ export default {
     var $widgets = this.getWidgets()
 
     Array.from($widgets).forEach(function (widget) {
-      var prensentableId = widget.getAttribute('data-widget-presentable-id');
+      var token = widget.getAttribute('data-widget-token');
       var srcId = widget.getAttribute('data-widget-src');
-      if (prensentableId) {
-        window.QI.fetchPresentable(`${prensentableId}.data`, {
-          data: {
-            resourceId: srcId
-          }
-        }).then((res) => {
+      if (token && srcId) {
+        window.QI.fetch(`/v1/auths/presentable/subResource/${srcId}?token=${token}`).then((res) => {
           if (res.ok) {
             if (res.headers.get('freelog-resource-type') || res.headers.get('content-type')==='text/html') {
               self.parseWidgetPresentable(res)
             } else {
-              debugger
               self.triggerPresentableAuth(res)
             }
           } else {

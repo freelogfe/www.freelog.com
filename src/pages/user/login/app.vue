@@ -94,7 +94,7 @@
       isSafe(url) {
         if (/^https?:\/\//.test(url)) {
           var obj = new URL(url)
-          var reg = /^.+\.freelog\.com$/
+          var reg = /^.+\.(test)?freelog\.com$/
 
           return (reg.test(obj.hostname) || (/^\/[^\/]+/.test(url)))
         } else {
@@ -113,6 +113,7 @@
 
           var data = Object.assign({}, self.model)
           data.isRememer = data.isRememer ? 1 : 0
+
           this.$store.dispatch('userLogin', data)
             .then(() => {
               this.loading = false

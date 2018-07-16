@@ -1,21 +1,55 @@
-function gotoLogin(url) {
+function getPageKey() {
+  return `${location.href}_scrollTop`
+}
+
+function cacheScrollTop() {
+  var key = getPageKey()
+  var rect = document.body.getBoundingClientRect()
+  localStorage.setItem(key, -rect.top)
+}
+
+
+function _scrollTop(st,callBuf) {
+  var rect = document.body.getBoundingClientRect()
+  window.scrollTo(0, st)
+  callBuf--;
+  if (-rect.top < st && callBuf > 0) {
+    setTimeout(function () {
+      _scrollTop(st, callBuf)
+    }, 20)
+  } else {
+    var key = getPageKey()
+    localStorage.removeItem(key)
+  }
+}
+
+function gotoCacheScrollTop() {
+  var key = getPageKey()
+  var st = parseInt(localStorage.getItem(key))
+  if (!isNaN(st)) {
+    _scrollTop(st, 3333)
+  }
+}
+
+function gotoLogin(redirect) {
+  cacheScrollTop()
   var host = location.host.replace(/\w+\./, 'www.')
-  var loginUrl = `//${host}/pages/user/login.html?redirect=`
-  if (url) {
-    loginUrl += encodeURIComponent(url)
+  var loginUrl = `//${host}/pages/user/login.html`
+  if (redirect) {
+    loginUrl += '?redirect=' + encodeURIComponent(redirect)
   }
 
   location.href = loginUrl
 }
 
 
-// export var gotoLogin = gotoLogin
-
 export {
-  gotoLogin
+  gotoLogin,
+  gotoCacheScrollTop
 }
 
 export default {
-  gotoLogin
+  gotoLogin,
+  gotoCacheScrollTop
 }
 
