@@ -15,7 +15,7 @@
     transform_request(target, req) {
       req = req || {};
       var method = (req.method || 'get').toLowerCase();
-      if (req.data && method && method === 'post') {
+      if (req.data && method && (method === 'post' || method === 'put')) {
         try {
           req.body = JSON.stringify(req.data)
         } catch (err) {
@@ -54,7 +54,7 @@
     }
 
     fetch(target, req) {
-      return this.next.fetch.apply(this, this.transform_request(target, req))
+      return this.next.fetch.apply(this.next, this.transform_request(target, req))
     }
   }
 
