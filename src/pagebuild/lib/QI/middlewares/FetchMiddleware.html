@@ -16,23 +16,27 @@
       req = req || {};
       var method = (req.method || 'get').toLowerCase();
       if (req.data && method && (method === 'post' || method === 'put')) {
-        try {
-          req.body = JSON.stringify(req.data)
-        } catch (err) {
-          console.error(err)
-        }
+        if(req.data instanceof FormData){
+          req.body = req.data
+        }else{
+          try {
+            req.body = JSON.stringify(req.data)
+          } catch (err) {
+            console.error(err)
+          }
 
-        var headers = req.headers
-        if (!headers) {
-          headers = {
-            'content-type': 'application/json'
-          };
-        } else {
-          Object.keys(headers).forEach(function (key) {
-            if (key.toLowerCase() === 'content-type' && !headers[key]) {
-              headers[key] = 'application/json'
-            }
-          });
+          var headers = req.headers
+          if (!headers) {
+            headers = {
+              'content-type': 'application/json'
+            };
+          } else {
+            Object.keys(headers).forEach(function (key) {
+              if (key.toLowerCase() === 'content-type' && !headers[key]) {
+                headers[key] = 'application/json'
+              }
+            });
+          }
         }
 
 
