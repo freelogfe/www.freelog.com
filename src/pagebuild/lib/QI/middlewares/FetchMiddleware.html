@@ -49,12 +49,11 @@
     transform_response(res) {
       var headers = res.headers;
       var rids = headers.get('freelog-sub-resourceids');
-
       return res
     }
 
     fetch(target, req) {
-      return this.next.fetch.apply(this, this.transform_request(target, req))
+      return this.next.fetch.apply(this.next, this.transform_request(target, req))
     }
   }
 

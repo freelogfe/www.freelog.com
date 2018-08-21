@@ -23,6 +23,7 @@
         const instance = template.content.cloneNode(true);
         shadowRoot.appendChild(instance);
         this.$QI = shadowRoot.querySelector('#js-mw-stack')
+        this._cachedResources = {}
       }
 
       static get observedAttributes() {
@@ -37,16 +38,25 @@
         if (!/^(https?:)?\/\//.test(target) && !/^\/api/.test(target)) {
           target = '/api' + target
         }
+
         return this.$QI.fetch(target, req)
       }
 
-      //获取免授权资源，比如license
+      //通过资源ID获取资源内容
       fetchResource(target, param) {
-        var url = `/v1/auths/resource/${target}`
-        if (window.__auth_info__ && window.__auth_info__.__auth_node_id__) {
-          url += `?nodeId=${window.__auth_info__.__auth_node_id__}`
+        var resource = this._cachedResources[target]
+
+        if (resource.ok) {
+          return Promise.resolve(resource.file)
         }
 
+        var url = `/v1/auths/presentable/${target}`
+
+        param = param || {}
+        param.data = param.data || {};
+        Object.assign(param.data, {
+          nodeId: window.__auth_info__.__auth_node_id__
+        })
         return this.fetch(url, param)
       }
 

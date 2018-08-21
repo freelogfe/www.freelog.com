@@ -15,15 +15,16 @@ var App = {
   trigger() {
     EventDispatcher.trigger.apply(EventDispatcher, arguments)
   },
-  handleErrorResponse(response, callback){
+  handleErrorResponse(response, callback) {
     var exception = ExceptionCode[response.errcode] || {}
     var event = exception.action || EventCode.invalidResponse
+
     this.trigger(event, {
       data: response,
       callback: callback
     });
   },
-  getErrorInfo(error){
+  getErrorInfo(error) {
     return ExceptionCode[error.errcode] || {
       desc: `未定义的错误[${error.errcode}]`,
       tip: '上报错误',
@@ -34,9 +35,23 @@ var App = {
   ExceptionCode
 }
 
+function initGlobalQI() {
+  var $QI = document.querySelector('.js-lib-qi')
+  Object.defineProperty(window, 'QI', {
+    enumerable: false,
+    configurable: false,
+    writable: false,
+    value: Object.freeze($QI)
+  })
+  //  window.QI = $QI;
+}
+
 function main() {
-  window.QI = document.querySelector('.js-lib-qi');
+  initGlobalQI()
   //render app view
+
+  document.body.querySelector('#js-page-container').classList.add('freelog-app-loading');
+
   Vue({
     el: '#app',
     template: '<app-view @ready="onReady"/>',
@@ -59,7 +74,7 @@ function main() {
 
         gotoCacheScrollTop()
       },
-      notify(opt){
+      notify(opt) {
         if (!opt.duration) {
           opt.duration = 3e3;
         }

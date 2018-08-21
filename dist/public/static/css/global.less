@@ -1,5 +1,5 @@
 #app {
-  font-family: arial,Hiragino Sans GB,Microsoft Yahei;
+  font-family: arial, Hiragino Sans GB, Microsoft Yahei;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -12,8 +12,9 @@ body {
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  };
-  background-color:#d3d3d32b;
+  }
+;
+  background-color: #d3d3d32b;
 }
 
 @import url("../../../node_modules/font-awesome/less/font-awesome");
@@ -31,5 +32,31 @@ body {
     a {
       color: black;
     }
+  }
+}
+
+.freelog-app-loading {
+  &:before {
+    content: ' ';
+    display: block;
+    width: 100px;
+    height: 100px;
+    background: url("../img/loading-spinner.png") no-repeat;
+    animation: rotateAnim 1.5s linear infinite;
+    background-size: 100%;
+    margin-left: 49%;
+    margin-top: 49vh;
+  }
+}
+
+@keyframes rotateAnim {
+  0% {
+    transform: rotate(0)
+  }
+  50% {
+    transform: rotate(-180deg)
+  }
+  100% {
+    transform: rotate(-360deg)
   }
 }

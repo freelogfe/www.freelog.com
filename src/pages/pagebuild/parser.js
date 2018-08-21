@@ -3,19 +3,19 @@ export default {
     var self = this
     var authInfo = window.__auth_info__;
     var authErrorData = authInfo && authInfo.__auth_error_info__
-
     if (!authErrorData) {
       self.loadWidgets()
     } else {
-      window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, {
-        data: authErrorData || {},
-        callback(presentable) {
-          if (presentable._contractStatus === 3) {
-            location.reload()
-          }
+      window.FreeLogApp.handleErrorResponse(authErrorData, (presentable) => {
+        if (presentable._contractStatus === 3) {
+          location.reload()  //后续考虑局部更新？
         }
-      })
+      });
+      self.hideLoading()
     }
+  },
+  hideLoading() {
+    document.body.querySelector('#js-page-container').classList.remove('freelog-app-loading');
   },
   getWidgets() {
     var $page = document.querySelector('#js-page-container')
@@ -35,8 +35,9 @@ export default {
   parseWidgetPresentable(res) {
     var systemMeta = decodeURIComponent(res.headers.get('freelog-system-meta'))
     try {
-      systemMeta = JSON.parse(systemMeta)
+      systemMeta = JSON.parse(systemMeta) || {}
     } catch (err) {
+      systemMeta = {}
       console.log(err)
     }
     res.text().then((content) => {
@@ -49,12 +50,9 @@ export default {
   },
   triggerPresentableAuth(res) {
     res.json().then(function (data) {
-      window.FreeLogApp.trigger(window.FreeLogApp.EventCode.invalidResponse, {
-        data: data,
-        callback(presentable) {
-          if (presentable._contractStatus === 3) {
-            location.reload()  //后续考虑局部更新？
-          }
+      window.FreeLogApp.handleErrorResponse(data, (presentable) => {
+        if (presentable._contractStatus === 3) {
+          location.reload()  //后续考虑局部更新？
         }
       })
     })
@@ -62,14 +60,14 @@ export default {
   loadWidgets() {
     var self = this;
     var $widgets = this.getWidgets()
-
-    Array.from($widgets).forEach(function (widget) {
+    var promises = []
+    Array.from($widgets).forEach(widget => {
       var token = widget.getAttribute('data-widget-token');
       var srcId = widget.getAttribute('data-widget-src');
       if (token && srcId) {
-        window.QI.fetch(`/v1/auths/presentable/subResource/${srcId}?token=${token}`).then((res) => {
+        var p = window.QI.fetch(`/v1/auths/presentable/subResource/${srcId}?token=${token}`).then((res) => {
           if (res.ok) {
-            if (res.headers.get('freelog-resource-type') || res.headers.get('content-type')==='text/html') {
+            if (res.headers.get('freelog-resource-type') || res.headers.get('content-type') === 'text/html') {
               self.parseWidgetPresentable(res)
             } else {
               self.triggerPresentableAuth(res)
@@ -79,10 +77,19 @@ export default {
           }
         }).catch((err) => {
           console.error(err)
-        })
+        });
+        promises.push(p)
       } else {
         // console.warn('没有找到对应的组件ID')
       }
-    })
+    });
+
+    if (promises.length) {
+      Promise.all(promises).then(() => {
+        self.hideLoading()
+      })
+    } else {
+      self.hideLoading()
+    }
   }
 }

@@ -1,5 +1,10 @@
 //异常码对应的解释和event
 const ExceptionCode = {
+  301: {
+    desc: '资源合同未激活',
+    tip: '去通知节点',
+    action: 'notifyNodeHandler'
+  },
   401: {
     desc: '节点的合同未激活',
     tip: '去通知节点',
