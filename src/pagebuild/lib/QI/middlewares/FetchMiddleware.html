@@ -12,35 +12,92 @@
         .join('&');
     }
 
+    getDataType(val) {
+      return Object.prototype.toString.call(val)
+    }
+
+
+    isFormData(val) {
+      return (typeof FormData !== 'undefined') && (val instanceof FormData);
+    }
+
+    isArrayBuffer(val) {
+      return this.getDataType(val) === '[object ArrayBuffer]';
+    }
+
+    isArrayBufferView(val) {
+      var result;
+      if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
+        result = ArrayBuffer.isView(val);
+      } else {
+        result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
+      }
+      return result;
+    }
+
+    isFile(val) {
+      return this.getDataType(val) === '[object File]';
+    }
+
+    isBlob(val) {
+      return this.getDataType(val) === '[object Blob]';
+    }
+
+    isStream(val) {
+      return this.isObject(val) && this.isFunction(val.pipe);
+    }
+
+    isURLSearchParams(val) {
+      return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+    }
+
+    isObject(val) {
+      return val !== null && typeof val === 'object';
+    }
+
+    isFunction(val) {
+      return this.getDataType(val) === '[object Function]';
+    }
+
+    setContentTypeIfUnset(headers, value) {
+      if (!headers['content-type'] && !headers['Content-Type']) {
+        headers['Content-Type'] = value;
+      }
+    }
+
     transform_request(target, req) {
       req = req || {};
       var method = (req.method || 'get').toLowerCase();
-      if (req.data && method && method === 'post') {
-        try {
-          req.body = JSON.stringify(req.data)
-        } catch (err) {
-          console.error(err)
-        }
-
-        var headers = req.headers
-        if (!headers) {
-          headers = {
-            'content-type': 'application/json'
-          };
+      if (req.data) {
+        if (method === 'get') {
+          var qs = this.getQueryString(req.data)
+          target += (target.indexOf('?') > -1 ? '&' : '?') + qs;
         } else {
-          Object.keys(headers).forEach(function (key) {
-            if (key.toLowerCase() === 'content-type' && !headers[key]) {
-              headers[key] = 'application/json'
-            }
-          });
+          var headers = req.headers || {};
+          var data = req.data;
+          var body;
+          if (this.isFormData(data) ||
+            this.isArrayBuffer(data) ||
+            this.isBuffer(data) ||
+            this.isStream(data) ||
+            this.isFile(data) ||
+            this.isBlob(data)) {
+            body = data;
+          }
+          if (this.isArrayBufferView(data)) {
+            body = data.buffer;
+          }
+          if (this.isURLSearchParams(data)) {
+            this.setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8')
+            body = data.toString();
+          }
+          if (this.isObject(data)) {
+            this.setContentTypeIfUnset(headers, 'application/json;charset=utf-8')
+            body = JSON.stringify(data);
+          }
+          req.headers = headers
+          req.body = body
         }
-
-
-        delete req.data
-        req.headers = headers
-      } else if (method === 'get' && req.data) {
-        var qs = this.getQueryString(req.data)
-        target += (target.indexOf('?') > -1 ? '&' : '?') + qs;
         delete req.data
       }
       return [target, req];
