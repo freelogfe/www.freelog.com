@@ -7,6 +7,7 @@ import EventCode from './event-code'
 import EventDispatcher from './event-dispatcher'
 import ExceptionCode from './exception-code'
 import {gotoCacheScrollTop} from '../../lib/utils'
+import '@/lib/freelog-core/index.js'
 //对外接口服务
 var App = {
   isValidResponse(res) {
@@ -35,6 +36,7 @@ var App = {
   ExceptionCode
 }
 
+// 废弃于2018/08/28
 function initGlobalQI() {
   var $QI = document.querySelector('.js-lib-qi')
   Object.defineProperty(window, 'QI', {
@@ -47,7 +49,6 @@ function initGlobalQI() {
 }
 
 function main() {
-  initGlobalQI()
   //render app view
 
   document.body.querySelector('#js-page-container').classList.add('freelog-app-loading');

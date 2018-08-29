@@ -19,7 +19,6 @@ export default class MiddlewareFetch extends MiddlewareBase {
                 var body
                 if (util.isFormData(data) ||
                     util.isArrayBuffer(data) ||
-                    util.isBuffer(data) ||
                     util.isStream(data) ||
                     util.isFile(data) ||
                     util.isBlob(data)) {
