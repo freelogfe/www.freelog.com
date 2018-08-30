@@ -3,7 +3,7 @@ import MiddlewareFetch from  './middlewares/resolveReq.js'
 import MiddlewareJWT from  './middlewares/jwt.js'
 
 import QICore from './QI-core.js'
-import createApi from './utils/api.js'
+import createApi from './api.js'
 
 const _QI = new QICore()
                 .use(new MiddlewareAuth())
