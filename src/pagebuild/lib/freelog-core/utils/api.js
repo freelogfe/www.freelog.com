@@ -7,35 +7,35 @@
  * 5. 节点资源详情：presentable映射资源的资源详情
  */
 
-export default function createApi(fetch){
-    return {
-        // 获取节点的presentables列表
-        fetchPresentablesList (params = {}){
-            params = Object.assign({
-                nodeId: window.__auth_info__.__auth_node_id__
-            }, params)
-            return fetch(`v1/presentables`, { data: params })
-        },
-        // 获取单个presentable的详情
-        fetchPresentableInfo (presentableId){
-            return fetch(`v1/presentables/${presentableId}`)
-        },
-        _fetchPresentableResource(target, params = {}) {
-            var url = `/v1/auths/presentable/${target}`
+export default function createApi(fetch) {
+  return {
+    // 获取节点的presentables列表
+    fetchPresentablesList(params = {}) {
+      params = Object.assign({
+        nodeId: window.__auth_info__.__auth_node_id__
+      }, params)
+      return fetch(`v1/presentables`, {data: params})
+    },
+    // 获取单个presentable的详情
+    fetchPresentableInfo(presentableId) {
+      return fetch(`v1/presentables/${presentableId}`)
+    },
+    _fetchPresentableResource(target, params = {}) {
+      var url = `/v1/auths/presentable/${target}`
 
-            params = Object.assign({
-                nodeId: window.__auth_info__.__auth_node_id__
-            }, params)
-            return fetch(url, { data: params })
-        },
-        //获取节点资源的数据内容
-        fetchPresentableResourceData(presentableId, params) {
-            return this._fetchPresentableResource(`${presentableId}.data`, params)
-        },
-        //获取节点资源的详情信息
-        fetchPresentableResourceInfo(presentableId, params) {
-            return this._fetchPresentableResource(`${presentableId}.info`, params)
-        },
-    }
-        
+      params = Object.assign({
+        nodeId: window.__auth_info__.__auth_node_id__
+      }, params)
+      return fetch(url, {data: params})
+    },
+    //获取节点资源的数据内容
+    fetchPresentableResourceData(presentableId, params) {
+      return this._fetchPresentableResource(`${presentableId}.data`, params)
+    },
+    //获取节点资源的详情信息
+    fetchPresentableResourceInfo(presentableId, params) {
+      return this._fetchPresentableResource(`${presentableId}.info`, params)
+    },
+  }
+
 }

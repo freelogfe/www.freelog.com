@@ -9,6 +9,9 @@ const _QI = new QICore()
                 .use(middlewareAuth)
                 .use(middlewareFetch)
                 .use(middlewareJWT)
+  .use(function (ctx, next) {
+
+  })
 const fetch = _QI.fetch.bind(_QI)
 const load = _QI.load.bind(_QI)
 

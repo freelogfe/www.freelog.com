@@ -57,27 +57,53 @@ export default {
       })
     })
   },
+  createImport(srcId, token) {
+    return new Promise((resolve, reject) => {
+      var url = `/api/v1/auths/presentable/subResource/${srcId}?token=${token}`
+      var link = document.createElement('link')
+      link.rel = 'import'
+      link.onload = resolve
+      link.onerror = reject
+      link.href = url
+      document.head.appendChild(link)
+    })
+  },
+  createScript(url, type) {
+    return new Promise((resolve, reject) => {
+      var link = document.createElement('script')
+      link.type = type || 'module'
+      link.onload = resolve
+      link.onerror = reject
+      link.src = url
+      document.head.appendChild(link)
+    })
+  },
   loadWidgets() {
     var self = this;
     var $widgets = this.getWidgets()
-    var promises = []
+    var promises = [];
+    var vis = {}
     Array.from($widgets).forEach(widget => {
       var token = widget.getAttribute('data-widget-token');
       var srcId = widget.getAttribute('data-widget-src');
-      if (token && srcId) {
-        var p = window.QI.fetch(`/v1/auths/presentable/subResource/${srcId}?token=${token}`).then((res) => {
-          if (res.ok) {
-            if (res.headers.get('freelog-resource-type') || res.headers.get('content-type') === 'text/html') {
-              self.parseWidgetPresentable(res)
-            } else {
-              self.triggerPresentableAuth(res)
-            }
-          } else {
-            throw new Error(res)
-          }
-        }).catch((err) => {
-          console.error(err)
-        });
+      if (token && srcId && !vis[srcId]) {
+        vis[srcId] = true
+        var url = `/v1/auths/presentable/subResource/${srcId}?token=${token}`
+        var p = this.createScript(url)
+        this.createScript(url, 'nomodule') //兼容不支持esm的浏览器
+        // var p = window.QI.fetch(`/v1/auths/presentable/subResource/${srcId}?token=${token}`).then((res) => {
+        //   if (res.ok) {
+        //     if (res.headers.get('freelog-resource-type') || res.headers.get('content-type') === 'text/html') {
+        //       self.parseWidgetPresentable(res)
+        //     } else {
+        //       self.triggerPresentableAuth(res)
+        //     }
+        //   } else {
+        //     throw new Error(res)
+        //   }
+        // }).catch((err) => {
+        //   console.error(err)
+        // });
         promises.push(p)
       } else {
         // console.warn('没有找到对应的组件ID')
@@ -87,6 +113,9 @@ export default {
     if (promises.length) {
       Promise.all(promises).then(() => {
         self.hideLoading()
+      }).catch(err => {
+        self.hideLoading()
+        console.error(err)
       })
     } else {
       self.hideLoading()
