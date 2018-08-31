@@ -21,7 +21,7 @@ export default function createApi(fetch, options){
                     .then(resp => resp.json())
         },
         // 获取单个presentable的详情
-        fetchPresentableInfo (presentableId, params = {}){
+        fetchPresentableInfo (presentableId){
             return fetch(`/v1/presentables/${presentableId}`)
                     .then(resp => resp.json())
         },
