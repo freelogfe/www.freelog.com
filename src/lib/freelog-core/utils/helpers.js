@@ -1,10 +1,11 @@
 export function createScript (url, type){
     return new Promise((resolve, reject) => {
         const script = document.createElement("script")
-        script.type = type || 'text/javascript'
+        script.type = type || 'module'
         script.src = url
         script.onload = resolve
         script.onerror = reject
+        script.async = 'async'
         document.getElementsByTagName("head").item(0).appendChild(script)
     })
 }

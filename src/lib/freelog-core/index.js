@@ -21,5 +21,4 @@ Object.defineProperty(window, 'QI', {
     })
 })
 
-debugger
 
