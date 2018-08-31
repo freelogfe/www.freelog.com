@@ -6,6 +6,7 @@
  * 4. presentable详情：指一个presentable的名称、描述、资源ID、合同状态、授权策略和标签等信息的集合；
  * 5. 节点资源详情：presentable映射资源的资源详情
  */
+import * as helpers from './utils/helpers.js'
 
 export default function createApi(fetch, options){
     var resourceLoadedState = new Map()
@@ -68,37 +69,16 @@ export default function createApi(fetch, options){
                 var url = window.URL.createObjectURL(file)
                 switch(type){
                     case 'text/javascript': {
-                        return this.createScript(url)
+                        return helpers.createScript(url)
                                 .then(() => resourceLoadedState.set(resourceId, true))
                     }
                     case 'text/css': {
-                        return this.createCssLink(url)
+                        return helpers.createCssLink(url)
                                 .then(() => resourceLoadedState.set(resourceId, true))
                     }
                     default: return Promise.reject('wrong type!')
                 }
             }
-        },
-        createScript (url){
-            return new Promise((resolve, reject) => {
-                const script = document.createElement("script")
-                script.type = 'text/javascript'
-                script.src = url
-                script.onload = resolve
-                script.onerror = reject
-                document.getElementsByTagName("head").item(0).appendChild(script)
-            })
-        },
-        createCssLink (href){
-            return new Promise((resolve, reject) => {
-                const link = document.createElement("link")
-                link.ref = 'stylesheet'
-                link.type = 'text/css'
-                link.href = href
-                link.onload = resolve
-                link.onerror = reject
-                document.getElementsByTagName("head").item(0).appendChild(link)
-            })
         },
         resolveResourceUrl ({ presentableId, resourceId }){
             if(resourceId){

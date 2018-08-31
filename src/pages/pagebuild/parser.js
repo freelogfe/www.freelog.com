@@ -1,3 +1,4 @@
+import * as helpers from '@/lib/freelog-core/utils/helpers.js'
 export default {
   start() {
     var self = this
@@ -89,8 +90,8 @@ export default {
       if (token && srcId && !vis[srcId]) {
         vis[srcId] = true
         var url = `/v1/auths/presentable/subResource/${srcId}?token=${token}`
-        var p = this.createScript(url)
-        this.createScript(url, 'nomodule') //兼容不支持esm的浏览器
+        var p = helpers.createScript(url, 'module')
+        helpers.createScript(url, 'nomodule') //兼容不支持esm的浏览器
         // var p = window.QI.fetch(`/v1/auths/presentable/subResource/${srcId}?token=${token}`).then((res) => {
         //   if (res.ok) {
         //     if (res.headers.get('freelog-resource-type') || res.headers.get('content-type') === 'text/html') {

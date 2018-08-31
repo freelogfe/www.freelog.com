@@ -1,13 +1,13 @@
 import Vue from '@/layout/default/index'
 
 import AppView from './app.vue'
+import '@/lib/freelog-core/index.js'
 
 import PageBuildeParser from './parser'
 import EventCode from './event-code'
 import EventDispatcher from './event-dispatcher'
 import ExceptionCode from './exception-code'
 import {gotoCacheScrollTop} from '../../lib/utils'
-import '@/lib/freelog-core/index.js'
 //对外接口服务
 var App = {
   isValidResponse(res) {
