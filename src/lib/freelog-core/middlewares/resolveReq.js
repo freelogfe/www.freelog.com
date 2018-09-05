@@ -23,16 +23,13 @@ export default class MiddlewareFetch extends MiddlewareBase {
                     util.isFile(data) ||
                     util.isBlob(data)) {
                     body = data
-                }
-                if (util.isArrayBufferView(data)) {
+                }else if (util.isArrayBufferView(data)) {
                     body = data.buffer
-                }
-                if (util.isURLSearchParams(data)) {
-                    setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8')
+                }else if (util.isURLSearchParams(data)) {
+                    this.setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8')
                     body = data.toString()
-                }
-                if (util.isObject(data)) {
-                    setContentTypeIfUnset(headers, 'application/json;charset=utf-8')
+                }else if (util.isObject(data)) {
+                    this.setContentTypeIfUnset(headers, 'application/json;charset=utf-8')
                     body = JSON.stringify(data)
                 }
                 req.headers = headers
@@ -47,6 +44,12 @@ export default class MiddlewareFetch extends MiddlewareBase {
         var headers = resp.headers
         var rids = headers.get('freelog-sub-resourceids')
         return resp
+    }
+
+    setContentTypeIfUnset(headers, value) {
+        if (!headers['content-type'] && !headers['Content-Type']) {
+            headers['Content-Type'] = value
+        }
     }
       
 }

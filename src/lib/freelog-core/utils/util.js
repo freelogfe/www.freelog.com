@@ -15,7 +15,7 @@ export function isFormData(val) {
 }
 
 export function isArrayBuffer(val) {
-    return this.getDataType(val) === '[object ArrayBuffer]'
+    return getDataType(val) === '[object ArrayBuffer]'
 }
 
 export function isArrayBufferView(val) {
@@ -29,15 +29,15 @@ export function isArrayBufferView(val) {
 }
 
 export function isFile(val) {
-    return this.getDataType(val) === '[object File]'
+    return getDataType(val) === '[object File]'
 }
 
 export function isBlob(val) {
-    return this.getDataType(val) === '[object Blob]'
+    return getDataType(val) === '[object Blob]'
 }
 
 export function isStream(val) {
-    return this.isObject(val) && this.isFunction(val.pipe)
+    return isObject(val) && isFunction(val.pipe)
 }
 
 export function isURLSearchParams(val) {
@@ -49,5 +49,5 @@ export function isObject(val) {
 }
 
 export function isFunction(val) {
-    return this.getDataType(val) === '[object Function]'
+    return getDataType(val) === '[object Function]'
 }
