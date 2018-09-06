@@ -35,15 +35,23 @@ export default function createApi(fetch, options){
                     .then(resp => resp.json())
         },
         fetchSubResource (resourceId){
-            return this.resolveResourceUrl(resourceId)
+            return this.resolveResourceUrl({ resourceId })
                         .then(resourceUrl => fetch(resourceUrl))
         },
-        requireSubResource (resourceId){   
+        requireSubResource (resourceId, token){   
             // 已经加载的资源不再加载
             if(resourceLoadedState.get(resourceId)) return Promise.resolve()
-            var type = ''
+            var type = '', promise = null
 
-            return this.fetchSubResource(resourceId)
+            if(token){
+                const resourceUrl = `/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`
+                promise = fetch(resourceUrl)
+                resourceIDsMap.set(resourceId, token)
+            }else{
+                promise = this.fetchSubResource(resourceId)
+            }
+
+            return promise
                         .then(resp => {
                             var contentType = resp.headers.get('content-type')
                             if(/css/.test(contentType)){
@@ -57,7 +65,7 @@ export default function createApi(fetch, options){
                             }
                         })
                         .then(res => {
-                            if(typeof res.errcode !== 'undefined'){
+                            if(typeof res.errcode === 'undefined'){
                                 return loadResource.call(this, res, type)
                             }else{
                                 return Promise.reject(res)
@@ -84,7 +92,7 @@ export default function createApi(fetch, options){
             if(resourceId){
                 var token = resourceIDsMap.get(resourceId)
                 if(token){
-                    return Promise.resolve(window.location.origin + `/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`)
+                    return Promise.resolve(`/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`)
                 }
 
                 if(presentableId){
@@ -93,7 +101,7 @@ export default function createApi(fetch, options){
                                 .then(res => {
                                     let token = resourceIDsMap.get(resourceId)
                                     if(token){
-                                        return Promise.resolve(window.location.origin + `/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`)
+                                        return Promise.resolve(`/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`)
                                     }
                                 })
                                 .catch(e => {
@@ -102,7 +110,7 @@ export default function createApi(fetch, options){
                 }
             }else{
                 if(presentableId){
-                    return Promise.resolve(window.location.origin + `/api/v1/auths/presentable/${presentableId}?nodeId=${nodeId}`)
+                    return Promise.resolve(`/api/v1/auths/presentable/${presentableId}?nodeId=${nodeId}`)
                 }
             }
             return Promise.reject('no found token!')

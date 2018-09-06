@@ -32,8 +32,8 @@ export default {
       var srcId = widget.getAttribute('data-widget-src');
       if (token && srcId && !vis[srcId]) {
         vis[srcId] = true
-        var url = `/api/v1/auths/presentable/subResource/${srcId}?token=${token}`
-        var p = helpers.createScript(url, 'module')
+        // var url = `/api/v1/auths/presentable/subResource/${srcId}?token=${token}`
+        var p = QI.requireSubResource(srcId, token)
         promises.push(p)
       } else {
         // console.warn('没有找到对应的组件ID')
