@@ -4,10 +4,11 @@ import AppView from './app.vue'
 import '@/lib/freelog-core/index.js'
 
 import PageBuildeParser from './parser'
+import {gotoCacheScrollTop} from '../../lib/utils'
+
 import EventCode from './event-code'
 import EventDispatcher from './event-dispatcher'
 import ExceptionCode from './exception-code'
-import {gotoCacheScrollTop} from '../../lib/utils'
 
 //对外接口服务
 var App = {
@@ -37,20 +38,8 @@ var App = {
   ExceptionCode
 }
 
-// 废弃于2018/08/28
-function initGlobalQI() {
-  var $QI = document.querySelector('.js-lib-qi')
-  Object.defineProperty(window, 'QI', {
-    enumerable: false,
-    configurable: false,
-    writable: false,
-    value: Object.freeze($QI)
-  })
-  //  window.QI = $QI;
-}
 
 function main() {
-  //render app view
 
   document.body.querySelector('#js-page-container').classList.add('freelog-app-loading');
 
@@ -59,20 +48,22 @@ function main() {
     template: '<app-view @ready="onReady"/>',
     components: {'app-view': AppView},
     methods: {
-      onReady(appUI) {
-        //挂载UI
-        this.appUI = appUI
-        window.FreeLogApp = App;
-        EventDispatcher.init({
-          vm: this,
-          ui: appUI,
-          model: this.$store
-        })
+      // app-view mounted
+      onReady(appUiVm) {
+        // 加载widget
         if (window.__supports) {
           PageBuildeParser.start()
         }
-        appUI.$on('close', function () {
+
+        this.appUiVm = appUiVm
+        window.FreeLogApp = App;
+        EventDispatcher.init({
+          vm: this,
+          ui: appUiVm,
+          model: this.$store
         })
+
+        appUiVm.$on('close', function () {})
 
         gotoCacheScrollTop()
       },

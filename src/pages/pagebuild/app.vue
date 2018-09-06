@@ -6,6 +6,15 @@
               show-icon>请使用<a href="https://www.google.cn/chrome/index.html">chrome</a>访问本页面！
     </el-alert>
     <div v-else>
+      <multi-contract 
+        :visible="isShowMultiContract" 
+        :presentableList="[]" 
+        :selectedPresentableId="''"
+      ></multi-contract>
+      <single-contract 
+        :visible="isShowSingleContract" 
+        :presentableId="''"
+      ></single-contract>
       <tool-bar ref="toolbar"></tool-bar>
       <el-dialog
               :close-on-click-modal="false"
@@ -37,6 +46,8 @@
 
 
 <script>
+  import multiContract from '@/components/resourceContract/multiContract.vue'
+  import singleContract from '@/components/resourceContract/singleContract.vue'
   import ToolBar from '@/components/ToolBar/index.vue'
   import ContractState from './ui-lib/contract-state/index.vue'
   import Presentables from './ui-lib/presentables/index.vue'
@@ -50,12 +61,16 @@
       return {
         showUpgrade: !window.__supports,
         shouldShowAuthDialog: false,
+        isShowSingleContract: false,
+        isShowMultiContract: false,
         presentables: [],
         tabs: [],
         activeTabName: 'presentables'
       }
     },
     components: {
+      multiContract,
+      singleContract,
       ToolBar,
       ContractState,
       Presentables,
