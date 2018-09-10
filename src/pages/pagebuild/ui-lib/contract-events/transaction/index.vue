@@ -22,7 +22,7 @@
        {{data.contract.partyOneInfo && data.contract.partyOneInfo.nodeName}}
       </el-form-item>
       <el-form-item label="乙方">
-        {{data.contract.partyTwoInfo.nickname}}
+        {{data.contract.partyTwoInfo && data.contract.partyTwoInfo.nickname}}
       </el-form-item>
       <el-form-item label="转入账号">
         {{data.event.params[0]}}

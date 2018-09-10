@@ -18,6 +18,7 @@ export default {
     this.app.ui.gotoCreateContract(presentable)
   },
   _invalidHandler(data) {
+    console.log('_invalidHandler --', data)
     this.app.model.dispatch('loadResourceDetail', data.contract.resourceId)
       .then(() => {
         this.app.ui.showAuthDialog()

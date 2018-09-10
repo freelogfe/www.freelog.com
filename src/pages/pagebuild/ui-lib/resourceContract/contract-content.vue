@@ -101,7 +101,7 @@
       fillSpace(line) {
         return line.replace(/^(\s+)/g, function ($) {
           var spaceArr = new Array($.length)
-          spaceArr.fill('&nbsp;&nbsp;')
+          spaceArr.fill('&nbsp;')
           return spaceArr.join('')
         })
       },
@@ -189,5 +189,72 @@
 </script>
 
 <style lang="less">
-  @import "content.less";
+.contract-detail-content-wrapper {
+
+  .state-tip {
+    display: none;
+    position: absolute;
+    background: white;
+    border: 1px solid #ebeef5;
+    padding: 6px 9px;
+    border-radius: 2px;
+    width: 80px;
+    text-align: center;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  }
+  .from-state {
+    .cur-step-icon {
+      display: none;
+    }
+  }
+  .cur-state {
+    color: #E6A23C;
+    position: relative;
+    &:hover {
+      .state-tip {
+        display: block;
+      }
+    }
+    .cur-step-icon {
+      display: inline;
+      margin-left: 3px;
+      font-size: 12px !important;
+    }
+  }
+
+  .operation-tag[data-action] {
+    .slideInRight;
+    color: #E6A23C;
+    cursor: pointer;
+    display: inline-block;
+    .cur-step-icon {
+      margin-left: 3px;
+      font-size: 16px !important;
+    }
+  }
+  .active-state {
+    color: #67c23a;
+  }
+  .slideInRight {
+    animation-name: slideInRight;
+    animation-duration: 1s;
+    animation-delay: .2s;
+  }
+  .to-state {
+    color: #409EFF;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translate3d(100px, 0, 0);
+      visibility: visible;
+    }
+
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+}
+
 </style>

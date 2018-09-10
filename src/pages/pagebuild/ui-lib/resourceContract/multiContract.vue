@@ -1,39 +1,32 @@
 <template>
-    <div>
-        <fe-modal
-            :title="title"
-            width="1000px"
-            :visible.sync="visible"
-        >
-            <div class="cutoff-line"></div>
-            <div class="sc-content">
-                <div class="sc-left-box sc-resource-list">
-                    <ul>
-                        <li
-                            class="sc-resource-item"
-                            :class="{'active': index == selectedIndex}"
-                            v-for="(item, index) in presentableList"
-                            :key="'sc-item-' + (index + 1)"
-                            @click="selectedResource(index)"
-                        >
-                            {{item.presentableName}}
-                            <div class="sc-tag-box">
-                                <span class="sc-tag sc-tag-active">可用</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="sc-cutoff-line-2"></div>
-                <div class="sc-right-box">
-                    <resource-contract :presentableId="selectedPresentableId"></resource-contract>
-                </div>
+    <div v-if="visible">
+        <div class="cutoff-line"></div>
+        <div class="sc-content">
+            <div class="sc-left-box sc-resource-list">
+                <ul>
+                    <li
+                        class="sc-resource-item"
+                        :class="{'active': index == selectedIndex}"
+                        v-for="(item, index) in presentableList"
+                        :key="'sc-item-' + (index + 1)"
+                        @click="selectedResource(index)"
+                    >
+                        {{item.presentableName}}
+                        <div class="sc-tag-box">
+                            <span class="sc-tag sc-tag-active">可用</span>
+                        </div>
+                    </li>
+                </ul>
             </div>
-        </fe-modal>
+            <div class="sc-cutoff-line-2"></div>
+            <div class="sc-right-box">
+                <resource-contract :presentableId="selectedPresentableId"></resource-contract>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-import feModal from '@/components/modal/modal.vue'
 import resourceContract from './index.vue'
 export default {
     name: 'multi-contract',
@@ -74,7 +67,6 @@ export default {
         }
     },
     components: {
-        feModal,
         resourceContract,
     },
     mounted (){

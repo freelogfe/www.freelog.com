@@ -6,17 +6,28 @@
               show-icon>请使用<a href="https://www.google.cn/chrome/index.html">chrome</a>访问本页面！
     </el-alert>
     <div v-else>
-      <multi-contract 
-        :visible="isShowMultiContract" 
-        :presentableList="[]" 
-        :selectedPresentableId="''"
-      ></multi-contract>
-      <single-contract 
-        :visible="isShowSingleContract" 
-        :presentableId="''"
-      ></single-contract>
+      <fe-modal
+        :close-on-click-modal="false"
+        :title="scTitle"
+        width="1000px"
+        :visible.sync="shouldShowAuthDialog"
+        :close="hideAuthDialog"
+      >
+        <!-- <multi-contract 
+          :visible="isShowMultiContract" 
+          :presentableList="[]" 
+          :selectedPresentableId="''"
+        ></multi-contract> -->
+        <single-contract 
+          :visible="isShowSingleContract" 
+          :presentable="scAuthData && scAuthData.presentableInfo || {}"
+          :contracts="scAuthContracts"
+          @close-modal="hideAuthDialog"
+        ></single-contract>
+      </fe-modal>
+        
       <tool-bar ref="toolbar"></tool-bar>
-      <el-dialog
+      <!-- <el-dialog
               :close-on-click-modal="false"
               title="合同管理"
               :visible.sync="shouldShowAuthDialog"
@@ -39,36 +50,42 @@
                        @tabChange="_tabChange" @refresh="refreshHandler"></component>
           </el-tab-pane>
         </el-tabs>
-      </el-dialog>
+      </el-dialog> -->
     </div>
   </div>
 </template>
 
 
 <script>
-  import multiContract from '@/components/resourceContract/multiContract.vue'
-  import singleContract from '@/components/resourceContract/singleContract.vue'
-  import ToolBar from '@/components/ToolBar/index.vue'
-  import ContractState from './ui-lib/contract-state/index.vue'
-  import Presentables from './ui-lib/presentables/index.vue'
-  import ContractDetail from './ui-lib/contract-detail/index.vue'
-  import ContractCreator from './ui-lib/contract-creator/index.vue'
-  import Tabs from './ui-lib/tabs'
-  import {mapGetters} from 'vuex'
+  import feModal from '@/components/modal/modal.vue'
+    import multiContract from './ui-lib/resourceContract/multiContract.vue'
+    import singleContract from './ui-lib/resourceContract/singleContract.vue'
+    import ToolBar from '@/components/ToolBar/index.vue'
+    import ContractState from './ui-lib/contract-state/index.vue'
+    import Presentables from './ui-lib/presentables/index.vue'
+    import ContractDetail from './ui-lib/contract-detail/index.vue'
+    import ContractCreator from './ui-lib/contract-creator/index.vue'
+    import Tabs from './ui-lib/tabs'
+    import {mapGetters} from 'vuex'
 
   export default {
     data() {
       return {
-        showUpgrade: !window.__supports,
-        shouldShowAuthDialog: false,
+        scTitle: '资源签约&nbsp;&nbsp;&nbsp;&nbsp;' + window.location.hostname,
         isShowSingleContract: false,
         isShowMultiContract: false,
+        scAuthData: null,
+        scAuthContracts: [],
+
+        showUpgrade: !window.__supports,
+        shouldShowAuthDialog: false,
         presentables: [],
         tabs: [],
         activeTabName: 'presentables'
       }
     },
     components: {
+      feModal,
       multiContract,
       singleContract,
       ToolBar,
@@ -135,10 +152,36 @@
       showAuthDialog() {
         this.shouldShowAuthDialog = true;
       },
+      hideAuthDialog (){
+        this.shouldShowAuthDialog = false
+        this.$emit('close', '{}')
+      },
+      showSingleAuthModal (authData){
+        const { contract, contracts, presentableInfo, presentableId } = authData
+        this.scAuthData = authData
+        if(contract){
+          this.scAuthContracts = [ contract ]
+        }else if(contracts){
+          this.scAuthContracts = contracts
+        }else{
+          this.scAuthContracts = []
+        }
+        
+        this.shouldShowAuthDialog = true
+        this.isShowSingleContract = true
+        this.isShowMultiContract = false
+      },
+      showMultiAuthModal (){
+        this.shouldShowAuthDialog = true
+        this.isShowSingleContract = false
+        this.isShowMultiContract = true
+      },
       gotoCreateContract(presentable) {
+        console.log(Tabs.getTabConfig('contractCreator', presentable))
         this._tabChange(Tabs.getTabConfig('contractCreator', presentable))
       },
       gotoExecuteContract(presentable) {
+        console.log(Tabs.getTabConfig('contractDetail', presentable))
         this._tabChange(Tabs.getTabConfig('contractDetail', presentable))
       },
       showToolBar() {

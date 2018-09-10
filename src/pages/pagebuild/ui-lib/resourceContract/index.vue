@@ -1,0 +1,274 @@
+<template>
+    <div class="resource-contract-box">
+        <div class="rcb-id-box">
+            <label class="rcb-name">资源ID</label>
+            <div class="rcb-value">{{resourceId}}</div>
+        </div>
+        <div class="rcb-type-box">
+            <label class="rcb-name">资源类型</label>
+            <div class="rcb-value">{{resourceType}}</div>
+        </div>
+        <div class="rcb-intro-box" v-if="false">
+            <label class="rcb-name">资源描述</label>
+            <div class="rcb-value">{{resourceIntro}}</div>
+        </div>
+        <div class="rcb-tab-box">
+            <ul>
+                <li 
+                    class="rcb-tab-item"
+                    :class="{'active': index == actPolicyIndex}" 
+                    v-for="(item, index) in policyList" 
+                    :key="'rc-tab-'+(index+1)"
+                    @click="exchangePolicy(index)"
+                >{{item.policyName + (item.resourceState.type != 'nosign' ? '(已签约)': '')}}</li>
+            </ul>
+        </div>
+        <div class="rcb-tab-pane">
+            <div class="rcb-tp-contract-content">
+                <contract-content 
+                    v-if="actPolicy.resourceState.type != 'nosign' && isShowContractContent" 
+                    :data="selectedContract" 
+                    @execute="executeContractHandler"></contract-content>
+                <div v-else v-html="actSegmentText"></div>
+                <el-dialog
+                    :title="modalTitle"
+                    ref="eventDialog"
+                    :visible.sync="showEventExecModal"
+                    :before-close="closeModalHandler"
+                    append-to-body
+                    :center=true
+                    width="40%"
+                >
+                    <component 
+                        :is="eventComponent"
+                        @close="closeModalHandler"
+                        :data="selectedContractEvent"
+                    ></component>
+                </el-dialog>
+            </div>
+            <div class="rcb-tp-status-bar">
+                {{actPolicy.resourceState && actPolicy.resourceState.info}}
+                <div class="rcb-tp-sb-btn-box" v-if="actPolicy.resourceState.type != 'nosign'">
+                    <button class="rcb-tp-sb-default" v-if="isActPolicyDefault">默认合约</button>
+                    <button class="rcb-tp-sb-set-default" v-else>设为默认</button>
+                </div>
+            </div>
+        </div>
+        <div class="rcb-remark">
+            <div class="rcb-r-left">
+                <span v-if="actPolicy.resourceState.type == 'nosign'" class="rcb-add-remark" id="rcb-remak" @click="addRemark">添加备注</span>
+                <span v-else >备注</span>
+            </div>
+            <div class="rcb-r-right">
+                <div  v-if="actPolicy.resourceState.type != 'nosign'">我是备注，暂无内容，以此文案占位！！！<br/>我是备注，暂无内容，以此文案占位！！</div>
+                <textarea v-if="actPolicy.resourceState.type == 'nosign' && isAddRemark" name="rcb-remak" id="" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="rcb-footer">
+            <button class="btn-normal btn-cancel" @click="cancelSign">取消</button>
+            <button type="button" class="btn-normal btn-sign" :class="{'disabled': isActPolicySigned}">签约</button>
+        </div>
+    </div>
+</template>
+
+<script>
+let eventComponentMap = {
+  transaction: {
+    type: 'transaction-event',
+    title: '支付'
+  },
+  signing: {
+    type: 'license-event',
+    title: '签署'
+  }
+}
+
+import compiler from '@freelog/presentable-policy-compiler'
+import ContractContent from '../contract-info-detail/content.vue'
+
+import LicenseEvent from '../contract-events/license/index.vue'
+import TransactionEvent from '../contract-events/transaction/index.vue'
+
+import FeModal from '@/components/modal/modal.vue'
+
+export default {
+    props: {
+        presentable: {
+            type: Object
+        },
+        contractsPolicyMap: {
+            type: Map,
+        },
+    },
+    data (){
+        return {
+            resourceIntro: '音乐播放器是一种用于播放各种音乐文件的多媒体播放软件。它涵盖了各种音乐格式的播放工具，比如：MP3播放器，WMA播放器，MP4播放器等。它们不仅界面美观，而且操作简单，带你进入一个完美的音乐空间。',
+            actPolicyIndex: 0,
+            isActPolicyDefault: false,
+            isAddRemark: false,
+            selectedContractEvent: '',
+            eventComponent: '',
+            modalTitle: '',
+            showEventExecModal: false,
+            userinfos: {},
+            isShowContractContent: false
+        }
+    },
+    methods: {
+        exchangePolicy (index){
+            this.actPolicyIndex = index
+        },
+        addRemark (){
+            this.isAddRemark = true
+        },
+        cancelSign (){
+            this.$emit('cancel-sign')
+        },
+        fillSpace(line) {
+            return line.replace(/^(\s+)/g, function ($) {
+                var spaceArr = new Array($.length)
+                spaceArr.fill('&nbsp;&nbsp;')
+                return spaceArr.join('')
+            })
+        },
+        closeModalHandler (){
+            this.showEventExecModal = false
+        },
+        executeContractHandler(params) {
+            var eventComConfig = eventComponentMap[params.type]
+
+            this.selectedContractEvent = {
+                event: params,
+                contract: this.selectedContract,
+                resource: Object.assign(this.presentable, this.presentable.resourceInfo)
+            }
+            this.eventComponent = eventComConfig.type
+            this.modalTitle = eventComConfig.title
+            this.showEventExecModal = true
+        }
+    },
+    computed: {
+        actPolicy (){
+            return this.policyList[this.actPolicyIndex]
+        },
+        isActPolicySigned (){
+            return this.actPolicy && this.actPolicy.resourceState.type != 'nosign'
+        },  
+        resourceId (){
+            return this.presentable.resourceId
+        },
+        resourceType (){
+            return this.presentable.resourceInfo.resourceType
+        },
+        policyList (){
+            return this.presentable.policy
+        },
+        selectedContract (){
+            var contract = this.contractsPolicyMap.get(this.actPolicy.segmentId)
+            contract.partyOneInfo = {
+                nodeName:  this.presentable.nodeName,
+                ownerUserId: this.presentable.userId
+            }
+            contract.partyTwoInfo = this.userinfos
+            return contract
+        },
+        actSegmentText (){
+            var lines = compiler.beautify(this.actPolicy.segmentText).split(/\n/)
+            var text = ''
+            lines.forEach((line) => {
+                let html = this.fillSpace(line)
+                text += `<p>${html}</p>`
+            })
+            return text
+        },
+    },
+    components: {
+        ContractContent, FeModal, TransactionEvent, LicenseEvent
+    },
+    beforeMount (){
+        QI.fetch('/v1/userinfos/current')
+            .then(resp => resp.json())
+            .then(res => {
+                if(res.errcode == 0){
+                    this.userinfos = res.data
+                    this.isShowContractContent = true
+                }
+            })
+    }
+}
+</script>
+
+<style lang="less" scoped>
+.rcb-name{ display: inline-block; width: 80px; color: #666; }
+.rcb-value{ display: inline-block; font-size: 14px; font-weight: bold; color: #222; }
+.rcb-id-box, .rcb-type-box, .rcb-intro-box{
+    display: inline-block; margin-top: 20px;
+}
+.rcb-id-box{ width: 425px;}
+.rcb-intro-box{ 
+    display: flex; width: 100%;
+    .rcb-value{ flex: 1; }
+}
+.rcb-tab-box{
+    margin-top: 20px;
+
+    .rcb-tab-item{
+        display: inline-block;
+        margin: 0 12px; line-height: 32px; color: #999; cursor: pointer;
+        font-size: 14px; font-weight: bold;
+
+        &.active{ border-bottom: 3px solid #4396F0; color: #222; }
+    }
+}
+.rcb-tab-pane{
+    position: relative; overflow-y: scroll;
+    height: 282px; padding-bottom: 46px; border: 1px solid #CECECE; border-radius: 4px;
+
+    .rcb-tp-status-bar{
+        position: absolute; left: 0; right: 0; bottom: 0; 
+        height: 46px; padding: 0 10px; border-top: 1px solid #CECECE;
+        background: #F3F5F5; color: #333; font-size: 12px; line-height: 46px;
+
+        .rcb-tp-sb-btn-box{ position: absolute; top: 0; right: 9px; }
+        .rcb-tp-sb-default, .rcb-tp-sb-set-default{
+            width: 100px; border-radius: 20px;
+            background: #4396F0; font-size: 14px; line-height: 30px;
+        }
+        .rcb-tp-sb-default{ color: #fff; }
+        .rcb-tp-sb-set-default{ border: 1px solid #4396F0; background: #fff; color: #4396F0; }
+    }
+}
+
+.rcb-tp-contract-content{
+    padding: 15px; font-size: 16px; line-height: 1.4;
+}
+
+.rcb-remark{
+    display: flex; margin-top: 30px; font-size: 14px; color: #222; font-weight: bold;
+
+    .rcb-add-remark{ color: #3C99FC; }
+    .rcb-r-left{ width: 78px; }
+    .rcb-r-right{ 
+        flex: 1; 
+
+        textarea { box-sizing: border-box; width: 100%; padding: 10px; border-radius: 4px; }
+    }
+}
+
+.rcb-footer{
+    padding-top: 20px; text-align: right;
+
+    .btn-normal{
+        padding: 10px 26px; font-size: 14px; border: none; outline: 0;
+
+        &.btn-cancel{ color: #666; }
+        &.btn-sign{ 
+            border: 1px solid #CECECE; border-radius: 4px; color: #333; 
+            &.disabled{ border: 1px solid #CECECE; border-radius: 4px; background: #F9F9F9; color: #999; }
+        }
+        
+    }
+}
+</style>
+
+

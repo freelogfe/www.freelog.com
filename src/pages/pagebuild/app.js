@@ -4,11 +4,12 @@ import AppView from './app.vue'
 import '@/lib/freelog-core/index.js'
 
 import PageBuildeParser from './parser'
-import {gotoCacheScrollTop} from '../../lib/utils'
+import initialEventCenter from './event-center'
 
 import EventCode from './event-code'
 import EventDispatcher from './event-dispatcher'
 import ExceptionCode from './exception-code'
+import {gotoCacheScrollTop} from '../../lib/utils'
 
 //对外接口服务
 var App = {
@@ -50,20 +51,23 @@ function main() {
     methods: {
       // app-view mounted
       onReady(appUiVm) {
-        // 加载widget
-        if (window.__supports) {
-          PageBuildeParser.start()
-        }
-
         this.appUiVm = appUiVm
         window.FreeLogApp = App;
+        initialEventCenter({
+          appUiVm
+        })
         EventDispatcher.init({
           vm: this,
           ui: appUiVm,
           model: this.$store
         })
+        // 加载widget
+        if (window.__supports) {
+          PageBuildeParser.start()
+        }
+        appUiVm.$on('close', function () {
 
-        appUiVm.$on('close', function () {})
+        })
 
         gotoCacheScrollTop()
       },

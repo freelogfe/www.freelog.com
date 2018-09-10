@@ -128,6 +128,11 @@
         this.rendered = true
       }
     },
+    updated (){
+      if (this.visible) {
+        this.rendered = true
+      }
+    },
     destroyed() {
         
     }
@@ -139,7 +144,7 @@
   transition: all .3s ease;
 }
 .modal-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
 }
 .modal-fade-enter, .modal-fade-leave-to{
 //   transform: translateY(30px);
