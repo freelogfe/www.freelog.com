@@ -10,7 +10,24 @@ export default (Vue, options) => {
   Vue.filter('fmtDate', function (value, frm) {
     if (!value) return ''
     var date = new Date(value)
-    return date.toLocaleDateString()
+    frm = frm || 'yyyy-MM-dd hh:mm'
+    var regs = {
+      'y+': date.getFullYear(),
+      "M+": date.getMonth() + 1,
+      "d+": date.getDate(),
+      "h+": date.getHours(),
+      "m+": date.getMinutes(),
+      "s+": date.getSeconds(),
+      "S": date.getMilliseconds()
+    };
+
+    for (var key in regs) {
+      var reg = new RegExp(`(${key})`)
+      if (reg.test(frm)) {
+        frm = frm.replace(reg, regs[key].toString().padStart(2, '0'))
+      }
+    }
+    return frm
   })
 
   Vue.filter('humanizeCurrency', function (value, abbr) {

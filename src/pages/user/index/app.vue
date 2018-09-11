@@ -1,45 +1,54 @@
 <template>
   <div id="app">
-    <div class="main-content">
-      <el-main>
-        <account-list></account-list>
-        <div class="main-content">
-          <el-tabs v-model="activeTabName">
-            <el-tab-pane label="已购买资源" name="trade">
-              <contract-list></contract-list>
-            </el-tab-pane>
-            <el-tab-pane label="支付订单" name="orders">
-              <user-order-list></user-order-list>
-            </el-tab-pane>
-          </el-tabs>
-        </div>
-      </el-main>
-    </div>
+    <component :is="personal.panelName" :renderData="personal.data"></component>
   </div>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   import NavTopBar from '@/components/NavTop/index.vue'
-  import AccountList from './accounts/index.vue'
-  import ContractList from './contracts/index.vue'
-  import UserOrderList from './orders/index.vue'
+  import MyProfile from './profile/index'
+  import MyCollections from './collections/index'
+  import MyAccounts from './accounts/index.vue'
+  import MyResources from './resources/index.vue'
+  import AccountCreateView from './accounts/create.vue'
+  import AccountRechargeView from './accounts/recharge'
+  import AccountTransactionRecordsView from './accounts/records'
+  import AccountResetPayPasswordView from './accounts/reset'
+  import AccountWithdrawView from './accounts/withdraw'
+  import AccountTransferView from './accounts/transfer'
+  import ResourceContractDetailView from './resources/contract'
 
   export default {
     data() {
-      return {
-        activeTabName: 'trade'
-      }
+      return {}
     },
+
+    computed: {
+      ...mapGetters({
+        personal: 'personal'
+      })
+    },
+
     mounted() {
     },
+
     components: {
       NavTopBar,
-      AccountList,
-      ContractList,
-      UserOrderList
+      MyAccounts,
+      MyProfile,
+      MyCollections,
+      MyResources,
+      AccountCreateView,
+      AccountRechargeView,
+      AccountTransactionRecordsView,
+      AccountResetPayPasswordView,
+      AccountWithdrawView,
+      AccountTransferView,
+      ResourceContractDetailView
     },
-    methods: {
-    }
+    methods: {}
   }
 </script>
 
