@@ -6,25 +6,35 @@
               show-icon>请使用<a href="https://www.google.cn/chrome/index.html">chrome</a>访问本页面！
     </el-alert>
     <div v-else>
-      <fe-modal
+      <fe-dialog
+        :close-on-click-modal="false"
+        :title="scTitle"
+        width="790px"
+        top="40px"
+        :visible.sync="isShowSingleContract"
+        :close="hideAuthDialog"
+        is-destoryed-body
+      >
+        <single-contract 
+          :presentable="scAuthPresentable || {}"
+          :contractIDs="scAuthContractIDs"
+          @close-dialog="hideAuthDialog"
+        ></single-contract>
+      </fe-dialog>
+      <fe-dialog
         :close-on-click-modal="false"
         :title="scTitle"
         width="1000px"
-        :visible.sync="shouldShowAuthDialog"
+        top="40px"
+        :visible.sync="isShowMultiContract"
         :close="hideAuthDialog"
       >
-        <!-- <multi-contract 
-          :visible="isShowMultiContract" 
-          :presentableList="[]" 
-          :selectedPresentableId="''"
-        ></multi-contract> -->
-        <single-contract 
-          :visible="isShowSingleContract" 
-          :presentable="scAuthData && scAuthData.presentableInfo || {}"
-          :contracts="scAuthContracts"
-          @close-modal="hideAuthDialog"
-        ></single-contract>
-      </fe-modal>
+        <multi-contract 
+          :presentableList="scAuthPresentableList" 
+          :contractIDs="scAuthContractIDs"
+          @close-dialog="hideAuthDialog"
+        ></multi-contract>
+      </fe-dialog>
         
       <tool-bar ref="toolbar"></tool-bar>
       <!-- <el-dialog
@@ -57,9 +67,9 @@
 
 
 <script>
-  import feModal from '@/components/modal/modal.vue'
-    import multiContract from './ui-lib/resourceContract/multiContract.vue'
-    import singleContract from './ui-lib/resourceContract/singleContract.vue'
+  import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
+    import multiContract from './ui-lib/resource-contract/multi-contract.vue'
+    import singleContract from './ui-lib/resource-contract/single-contract.vue'
     import ToolBar from '@/components/ToolBar/index.vue'
     import ContractState from './ui-lib/contract-state/index.vue'
     import Presentables from './ui-lib/presentables/index.vue'
@@ -74,8 +84,9 @@
         scTitle: '资源签约&nbsp;&nbsp;&nbsp;&nbsp;' + window.location.hostname,
         isShowSingleContract: false,
         isShowMultiContract: false,
-        scAuthData: null,
-        scAuthContracts: [],
+        scAuthPresentable: null,
+        scAuthPresentableList: [],
+        scAuthContractIDs: [],
 
         showUpgrade: !window.__supports,
         shouldShowAuthDialog: false,
@@ -85,7 +96,7 @@
       }
     },
     components: {
-      feModal,
+      FeDialog,
       multiContract,
       singleContract,
       ToolBar,
@@ -106,90 +117,75 @@
       this.$emit('ready', this)
     },
     methods: {
-      refreshHandler() {
-        this.$refs.list.refresh()
-      },
-      _tabChange(data) {
-        //关闭tab
-        if (data.action === 'close') {
-          this._removeTab(data.tabName)
-        } else {
-          var isExisted = this.tabs.some((tab) => {
-            return tab.name === data.name
-          })
+      // refreshHandler() {
+        //   this.$refs.list.refresh()
+        // },
+        // _tabChange(data) {
+        //   //关闭tab
+        //   if (data.action === 'close') {
+        //     this._removeTab(data.tabName)
+        //   } else {
+        //     var isExisted = this.tabs.some((tab) => {
+        //       return tab.name === data.name
+        //     })
 
-          if (!isExisted) {
-            this.tabs.push(data);
-          }
-          this.activeTabName = data.name;
-        }
-      },
-      _removeTab(targetName) {
-        let activeName = this.activeTabName;
-        if (activeName === targetName) {
-          this.tabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
-              let nextTab = this.tabs[index + 1] || this.tabs[index - 1];
-              if (nextTab) {
-                activeName = nextTab.name;
-              } else {
-                activeName = null
-              }
-            }
-          });
-        }
+        //     if (!isExisted) {
+        //       this.tabs.push(data);
+        //     }
+        //     this.activeTabName = data.name;
+        //   }
+        // },
+        // _removeTab(targetName) {
+        //   let activeName = this.activeTabName;
+        //   if (activeName === targetName) {
+        //     this.tabs.forEach((tab, index) => {
+        //       if (tab.name === targetName) {
+        //         let nextTab = this.tabs[index + 1] || this.tabs[index - 1];
+        //         if (nextTab) {
+        //           activeName = nextTab.name;
+        //         } else {
+        //           activeName = null
+        //         }
+        //       }
+        //     });
+        //   }
 
-        this.activeTabName = activeName || 'presentables';
-        this.tabs = this.tabs.filter((t) => {
-          return t.name !== targetName
-        })
-      },
-      _closeDialogHandler() {
-        this.$emit('close', {
-          presentableMap: this.pagebuild.presentableMap
-        })
-      },
-      showAuthDialog() {
-        this.shouldShowAuthDialog = true;
-      },
+        //   this.activeTabName = activeName || 'presentables';
+        //   this.tabs = this.tabs.filter((t) => {
+        //     return t.name !== targetName
+        //   })
+        // },
+        // _closeDialogHandler() {
+        //   this.$emit('close', {
+        //     presentableMap: this.pagebuild.presentableMap
+        //   })
+        // },
       hideAuthDialog (){
         this.shouldShowAuthDialog = false
         this.$emit('close', '{}')
       },
-      showSingleAuthModal (authData){
-        const { contract, contracts, presentableInfo, presentableId } = authData
-        this.scAuthData = authData
-        if(contract){
-          this.scAuthContracts = [ contract ]
-        }else if(contracts){
-          this.scAuthContracts = contracts
-        }else{
-          this.scAuthContracts = []
-        }
+      showSingleAuthDialog (presentable, contractIDs = []){
+        this.scAuthPresentable = presentable
+        this.scAuthContractIDs = contractIDs
         
         this.shouldShowAuthDialog = true
         this.isShowSingleContract = true
         this.isShowMultiContract = false
       },
-      showMultiAuthModal (){
+      showMultiAuthDialog (presentableList, contractIDs = []){
+        this.scAuthPresentableList = presentableList
+        this.scAuthContractIDs = contractIDs
+
         this.shouldShowAuthDialog = true
         this.isShowSingleContract = false
         this.isShowMultiContract = true
-      },
-      gotoCreateContract(presentable) {
-        console.log(Tabs.getTabConfig('contractCreator', presentable))
-        this._tabChange(Tabs.getTabConfig('contractCreator', presentable))
-      },
-      gotoExecuteContract(presentable) {
-        console.log(Tabs.getTabConfig('contractDetail', presentable))
-        this._tabChange(Tabs.getTabConfig('contractDetail', presentable))
       },
       showToolBar() {
         this.$refs.toolbar.show()
       },
       hideToolBar() {
         this.$refs.toolbar.hide()
-      }
+      },
     }
   }
 </script>

@@ -1,15 +1,15 @@
 <template>
-    <div v-if="visible">
+    <div v-if="isFetchedContracts">
         <div class="cutoff-line"></div>
         <div class="sc-content">
             <div class="sc-cont-header">
                 {{presentableName}}
                 <span 
-                    :class="['sc-tag', `sc-tag-${resourceState.type}`]" 
-                    v-if="resourceState.type != 'active'"
-                >{{resourceState.tagName}}</span>    
+                    :class="['sc-tag', `sc-tag-${contractState.type}`]" 
+                    v-if="contractState.type != 'active'"
+                >{{contractState.tagName}}</span>    
             </div>
-            <resource-contract :presentable="presentable" :contractsPolicyMap="contractsPolicyMap" @cancel-sign="cancelSgin"></resource-contract>
+            <resource-contract :presentable="presentable" :policyContractsMap="policyContractsMap" @cancel-sign="cancelSgin"></resource-contract>
         </div>
     </div>
 </template>
@@ -19,27 +19,26 @@ import resourceContract from './index.vue'
 export default {
     name: 'single-contract',
     props: {
-        visible: {
-            type: Boolean,
-            default: false
-        },
         presentable: {
             tyep: Object,
             required: true
         },
-        contracts: {
+        contractIDs: {
             type: Array,
+            required: true
         }
     },
     data (){
         return {
             resourceName: '暗黑风格音乐播放器插件',
             defaultContract: null,
+            contracts: [],
+            isFetchedContracts: false
         }
     },
     methods :{
         // 根据合同获取 资源标签状态
-        getReourceState (contract){
+        getContractState (contract){
             if(contract == null){
                 return { type: 'nosign', tagName: '未签约', info: '未签约' }
             }else{
@@ -56,22 +55,41 @@ export default {
         // 处理策略与合同的关系
         resolvePolicyContractMap (){
             this.policyList.forEach(policy => {
-                var contract = this.contractsPolicyMap.get(policy.segmentId) || null
-                policy.resourceState = this.getReourceState(contract)
+                var contract = this.policyContractsMap.get(policy.segmentId) || null
+                policy.contractState = this.getContractState(contract)
             })
         },
         // 重新部分参数
         reInitialData (){
-            this.defaultContract = this.contracts.length ? this.contracts[0] : null
-            this.resolvePolicyContractMap()
+            Promise.all(this.contractIDs.map(contractId => {
+                return QI.fetch(`/v1/contracts/${contractId}`)
+                    .then(resp => resp.json())
+            }))
+            .then((arr) => {
+                var contracts = []
+                arr.forEach(contractRes => {
+                    if(contractRes.errcode == 0){
+                        contracts.push(contractRes.data)
+                    }
+                })
+                
+                return Promise.resolve(contracts)
+            })
+            .catch(e => Promise.resolve([]))
+            .then(contracts => {
+                this.isFetchedContracts = true
+                this.contracts = contracts
+                this.defaultContract = this.contracts.length ? this.contracts[0] : null
+                this.resolvePolicyContractMap()
+            })
         },
         // 点击取消
         cancelSgin ( ){
-            this.$emit('close-modal')
+            this.$emit('close-dislog')
         }
     },
     computed: {
-        // modal biaoti
+        // dislog 标题
         title (){
             return '资源签约&nbsp;&nbsp;&nbsp;&nbsp;' + window.location.host
         },
@@ -84,11 +102,11 @@ export default {
             return this.presentable.policy
         },
         // 资源标签状态
-        resourceState (){
-            return this.getReourceState(this.defaultContract)
+        contractState (){
+            return this.getContractState(this.defaultContract)
         },
         // 合同与策略的关系
-        contractsPolicyMap(){
+        policyContractsMap(){
             var map = new Map()
             this.contracts.forEach(contract => map.set(contract.segmentId, contract))
             return map
@@ -100,14 +118,14 @@ export default {
     beforeMount (){
         this.reInitialData()
     },
-    beforeUpdate (){
-        this.reInitialData()
+    destroyed (){
+        
     }
 }
 </script>
 
 <style lang='less' scoped>
-.sc-fe-modal-footer{
+.sc-fe-dislog-footer{
     padding: 0 45px; text-align: right;
 
     .btn-normal{

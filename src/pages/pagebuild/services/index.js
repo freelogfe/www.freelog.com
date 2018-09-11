@@ -5,6 +5,7 @@ import reportHandler from './reportHandler'
 import notifyNodeHandler from './notifyNodeHandler'
 
 import handleAuthError from './authError'
+import showResourceSignDialog from './showResourceSignDialog'
 
 export default {
   errorResponseHandler,
@@ -14,4 +15,5 @@ export default {
   notifyNodeHandler,
 
   handleAuthError,
+  showResourceSignDialog,
 }

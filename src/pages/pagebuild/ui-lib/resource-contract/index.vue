@@ -20,13 +20,13 @@
                     v-for="(item, index) in policyList" 
                     :key="'rc-tab-'+(index+1)"
                     @click="exchangePolicy(index)"
-                >{{item.policyName + (item.resourceState.type != 'nosign' ? '(已签约)': '')}}</li>
+                >{{item.policyName + (item.contractState.type != 'nosign' ? '(已签约)': '')}}</li>
             </ul>
         </div>
         <div class="rcb-tab-pane">
             <div class="rcb-tp-contract-content">
                 <contract-content 
-                    v-if="actPolicy.resourceState.type != 'nosign' && isShowContractContent" 
+                    v-if="actPolicy.contractState.type == 'inactive' && isShowContractContent" 
                     :data="selectedContract" 
                     @execute="executeContractHandler"></contract-content>
                 <div v-else v-html="actSegmentText"></div>
@@ -47,8 +47,8 @@
                 </el-dialog>
             </div>
             <div class="rcb-tp-status-bar">
-                {{actPolicy.resourceState && actPolicy.resourceState.info}}
-                <div class="rcb-tp-sb-btn-box" v-if="actPolicy.resourceState.type != 'nosign'">
+                {{actPolicy.contractState && actPolicy.contractState.info}}
+                <div class="rcb-tp-sb-btn-box" v-if="actPolicy.contractState.type != 'nosign'">
                     <button class="rcb-tp-sb-default" v-if="isActPolicyDefault">默认合约</button>
                     <button class="rcb-tp-sb-set-default" v-else>设为默认</button>
                 </div>
@@ -56,12 +56,12 @@
         </div>
         <div class="rcb-remark">
             <div class="rcb-r-left">
-                <span v-if="actPolicy.resourceState.type == 'nosign'" class="rcb-add-remark" id="rcb-remak" @click="addRemark">添加备注</span>
+                <span v-if="actPolicy.contractState.type == 'nosign'" class="rcb-add-remark" id="rcb-remak" @click="addRemark">添加备注</span>
                 <span v-else >备注</span>
             </div>
             <div class="rcb-r-right">
-                <div  v-if="actPolicy.resourceState.type != 'nosign'">我是备注，暂无内容，以此文案占位！！！<br/>我是备注，暂无内容，以此文案占位！！</div>
-                <textarea v-if="actPolicy.resourceState.type == 'nosign' && isAddRemark" name="rcb-remak" id="" rows="3"></textarea>
+                <div  v-if="actPolicy.contractState.type != 'nosign'">我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！</div>
+                <textarea v-if="actPolicy.contractState.type == 'nosign' && isAddRemark" name="rcb-remak" id="" rows="3"></textarea>
             </div>
         </div>
         <div class="rcb-footer">
@@ -89,14 +89,15 @@ import ContractContent from '../contract-info-detail/content.vue'
 import LicenseEvent from '../contract-events/license/index.vue'
 import TransactionEvent from '../contract-events/transaction/index.vue'
 
-import FeModal from '@/components/modal/modal.vue'
+import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
 
+var userinfos = null
 export default {
     props: {
         presentable: {
             type: Object
         },
-        contractsPolicyMap: {
+        policyContractsMap: {
             type: Map,
         },
     },
@@ -152,7 +153,7 @@ export default {
             return this.policyList[this.actPolicyIndex]
         },
         isActPolicySigned (){
-            return this.actPolicy && this.actPolicy.resourceState.type != 'nosign'
+            return this.actPolicy && this.actPolicy.contractState.type != 'nosign'
         },  
         resourceId (){
             return this.presentable.resourceId
@@ -164,12 +165,15 @@ export default {
             return this.presentable.policy
         },
         selectedContract (){
-            var contract = this.contractsPolicyMap.get(this.actPolicy.segmentId)
-            contract.partyOneInfo = {
-                nodeName:  this.presentable.nodeName,
-                ownerUserId: this.presentable.userId
+            var contract = this.policyContractsMap.get(this.actPolicy.segmentId)
+            if(contract){
+                contract.partyOneInfo = {
+                    nodeName:  this.presentable.nodeName,
+                    ownerUserId: this.presentable.userId
+                }
+                contract.partyTwoInfo = userinfos
             }
-            contract.partyTwoInfo = this.userinfos
+            
             return contract
         },
         actSegmentText (){
@@ -181,19 +185,26 @@ export default {
             })
             return text
         },
+        // 点击取消
+        cancelSgin ( ){
+            this.$emit('close-dislog')
+        }
     },
     components: {
-        ContractContent, FeModal, TransactionEvent, LicenseEvent
+        ContractContent, FeDialog, TransactionEvent, LicenseEvent
     },
     beforeMount (){
-        QI.fetch('/v1/userinfos/current')
-            .then(resp => resp.json())
-            .then(res => {
-                if(res.errcode == 0){
-                    this.userinfos = res.data
-                    this.isShowContractContent = true
-                }
-            })
+        if(userinfos == null){
+            QI.fetch('/v1/userinfos/current')
+                .then(resp => resp.json())
+                .then(res => {
+                    if(res.errcode == 0){
+                        userinfos = res.data
+                        this.isShowContractContent = true
+                    }
+                })
+        }
+        
     }
 }
 </script>
@@ -244,7 +255,7 @@ export default {
 }
 
 .rcb-remark{
-    display: flex; margin-top: 30px; font-size: 14px; color: #222; font-weight: bold;
+    display: flex; height: 64px; margin-top: 30px; font-size: 14px; color: #222; font-weight: bold;
 
     .rcb-add-remark{ color: #3C99FC; }
     .rcb-r-left{ width: 78px; }
@@ -259,7 +270,7 @@ export default {
     padding-top: 20px; text-align: right;
 
     .btn-normal{
-        padding: 10px 26px; font-size: 14px; border: none; outline: 0;
+        padding: 10px 26px; font-size: 14px; border: none; outline: 0; cursor: pointer;
 
         &.btn-cancel{ color: #666; }
         &.btn-sign{ 

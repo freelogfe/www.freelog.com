@@ -1,31 +1,31 @@
 <template>
-    <transition name="modal-fade" @after-leave="afterLeave">
+    <transition name="dialog-fade" @after-leave="afterLeave">
         <div v-show="visible">
-            <div class="fe-modal-wrapper" @click.self="handleWrapperClick">
+            <div class="fe-dialog-wrapper" @click.self="handleWrapperClick">
                 <div 
-                    class="fe-modal"
+                    class="fe-dialog"
                     :class="[customClass]"
-                    ref="modal"
+                    ref="dialog"
                     :style="style"
                 >
-                    <div class="fe-modal-header">
+                    <div class="fe-dialog-header">
                         <slot name="title">
-                            <h3 class="fe-modal-title" v-html="title"></h3>
+                            <h3 class="fe-dialog-title" v-html="title"></h3>
                         </slot>
-                        <button type="button" class="fe-modal-header-btn"
+                        <button type="button" class="fe-dialog-header-btn"
                             aria-label="Close"
                             v-if="showClose"
                             @click="handleClose">
                             <i class="fe-model-close">X</i>
                         </button>
                     </div>
-                    <div class="fe-modal-body" v-if="rendered"><slot></slot></div>
-                    <div class="fe-modal-footer" v-if="$slots.footer">
+                    <div class="fe-dialog-body" v-if="rendered"><slot></slot></div>
+                    <div class="fe-dialog-footer" v-if="$slots.footer">
                         <slot name="footer"></slot>
                     </div>
                 </div>
             </div>
-            <div class="fe-modal-mask"></div>
+            <div class="fe-dialog-mask"></div>
         </div>
         
     </transition>
@@ -34,7 +34,7 @@
 
 <script>
   export default {
-    name: 'fe-modal',
+    name: 'fe-dialog',
     props: {
       visible: {
         type: Boolean,
@@ -44,7 +44,7 @@
         type: String,
         default: ''
       },
-      closeOnClickModal: {
+      closeOnClickDialog: {
         type: Boolean,
         default: true
       },
@@ -59,10 +59,14 @@
       },
       top: {
         type: String,
-        default: '15vh'
+        default: '10vh'
       },
       beforeClose: Function,
       center: {
+        type: Boolean,
+        default: false
+      },
+      isDestoryedBody: {
         type: Boolean,
         default: false
       }
@@ -80,7 +84,7 @@
           this.$emit('open')
         //   this.$el.addEventListener('scroll', this.updatePopper)
           this.$nextTick(() => {
-            this.$refs.modal.scrollTop = 0
+            this.$refs.dialog.scrollTop = 0
           })
         } else {
         //   this.$el.removeEventListener('scroll', this.updatePopper)
@@ -102,7 +106,7 @@
     },
     methods: {
       handleWrapperClick() {
-        // if (!this.closeOnClickModal) return
+        // if (!this.closeOnClickDialog) return
         this.handleClose()
       },
       handleClose() {
@@ -124,13 +128,16 @@
       }
     },
     mounted() {
-      if (this.visible) {
-        this.rendered = true
-      }
+      this.rendered = this.visible
     },
     updated (){
-      if (this.visible) {
+      // 是否卸载body-slot
+      if(this.visible){
         this.rendered = true
+      }else {
+        if(this.isDestoryedBody){
+          this.rendered = false
+        }
       }
     },
     destroyed() {
@@ -140,43 +147,43 @@
 </script>
 
 <style lang="less" scoped>
-.modal-fade-enter-active {
+.dialog-fade-enter-active {
   transition: all .3s ease;
 }
-.modal-fade-leave-active {
+.dialog-fade-leave-active {
   transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
 }
-.modal-fade-enter, .modal-fade-leave-to{
+.dialog-fade-enter, .dialog-fade-leave-to{
 //   transform: translateY(30px);
   opacity: 0;
 }
 
-.fe-modal-mask{
+.fe-dialog-mask{
     position: fixed; left: 0; top: 0; z-index: 999;
     width: 100%; height: 100%;
     opacity: .5; background: #000;
 }
-.fe-modal-wrapper{ 
+.fe-dialog-wrapper{ 
     position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1000;
     overflow: auto;
 }
-.fe-modal{
+.fe-dialog{
     box-sizing: border-box;
     position: relative;
     margin: 0 auto 50px; border-radius: 2px;
     background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3);
 }
-.fe-modal-header{ 
+.fe-dialog-header{ 
     padding: 20px; 
 
     h3{ font-size: 16px; color: #222; }
     .fe-model-close{ color: #999; }
 }
-.fe-modal-header-btn{ 
+.fe-dialog-header-btn{ 
     position: absolute; top: 20px; right: 20px; 
     padding: 0; border: none; outline: none;
     background: transparent; cursor: pointer; font-size: 16px;
  }
-.fe-modal-body{ padding: 20px; font-size: 14px; color: #606266; }
-.fe-modal-footer{ box-sizing: border-box; padding: 20px; padding-top: 10px; text-align: right; }
+.fe-dialog-body{ padding: 20px; font-size: 14px; color: #606266; }
+.fe-dialog-footer{ box-sizing: border-box; padding: 20px; padding-top: 10px; text-align: right; }
 </style>

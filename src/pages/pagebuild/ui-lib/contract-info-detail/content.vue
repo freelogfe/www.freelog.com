@@ -52,8 +52,13 @@
     },
     methods: {
       render() {
-        this.currentEvents = this.resolveContractEvents(this.data)
-        this.segmentDetail = this.parseContract(this.data)
+        try{
+          this.currentEvents = this.resolveContractEvents(this.data)
+          this.segmentDetail = this.parseContract(this.data)
+        }catch(e){
+          console.log('e ----', e )
+        }
+        
       },
       cmdHandler(event) {
         var action = event.target.dataset.action
