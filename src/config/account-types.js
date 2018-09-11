@@ -1,3 +1,12 @@
+
+export const currentTypes = {
+  feth: 1,
+  fcny: 2,
+  fusd: 3,
+  feur: 4
+}
+
+
 export default {
   '1': {
     name: '飞致币',

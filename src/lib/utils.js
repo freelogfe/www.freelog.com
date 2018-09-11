@@ -1,3 +1,5 @@
+const host = location.host.split('.').slice(1).join('.')
+
 function getPageKey() {
   return `${location.href}_scrollTop`
 }
@@ -43,9 +45,15 @@ function gotoLogin(redirect) {
 }
 
 
+function resolveNodeDomain(domain) {
+  return `${domain}.${host}`
+}
+
+
 export {
   gotoLogin,
-  gotoCacheScrollTop
+  gotoCacheScrollTop,
+  resolveNodeDomain
 }
 
 export default {
