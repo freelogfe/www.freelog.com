@@ -18,7 +18,7 @@
   import AccountResetPayPasswordView from './accounts/reset'
   import AccountWithdrawView from './accounts/withdraw'
   import AccountTransferView from './accounts/transfer'
-  import ResourceContractDetailView from './resources/contract'
+  import ResourceContractDetailView from './resources/detail'
 
   export default {
     data() {
