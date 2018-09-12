@@ -76,22 +76,18 @@ export default {
         // 处理策略与合同的关系
         resolvePolicyContractState (){
             this.targPolicyList.forEach(policy => {
-                var contract = this.policyContractsMap.get(policy.segmentId) || null
+                var contract = this.policyContractsMap[policy.segmentId] || null
                 policy.contractState = this.getContractState(contract)
             })
         },
         resolvePresentableDefaultContractState (){
             this.presentableList.forEach(presentable => {
                 const { resourceId, presentableName } = presentable
-                const contracts = this.resourceIdContractsMap.get(resourceId) || []
-                console.log(presentableName, contracts)
+                const contracts = this.resourceIdContractsMap[resourceId] || []
+                
                 const defaultContract = contracts[0] || null
                 presentable.contractState = this.getContractState(defaultContract)
             })
-        },
-        // 处理ResourceId与合同的映射关系
-        resolveResourceIdContractMap(){
-
         },
         // 重新部分参数
         reInitialData (){
@@ -118,15 +114,17 @@ export default {
         },
         // 合同与策略的关系
         policyContractsMap(){
-            var map = new Map()
-            this.contracts.forEach(contract => map.set(contract.segmentId, contract))
+            var map = {}
+            this.contracts.forEach(contract => {
+                map[contract.segmentId] = contract
+            })
             return map
         },
         // 合同与策略的关系
         resourceIdContractsMap(){
-            var map = new Map()
+            var map = {}
             this.contracts.forEach(contract => {
-                var arr = map.get(contract.resourceId) || []
+                var arr = map[contract.resourceId] || []
                 arr.push(contract)
                 map.set(contract.resourceId, arr)
             })
@@ -164,7 +162,7 @@ export default {
         
     },
     destroyed (){
-        console.log('destroyed ---')
+        
     }
 }
 </script>

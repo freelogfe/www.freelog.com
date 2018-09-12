@@ -162,6 +162,8 @@
         // },
       hideAuthDialog (){
         this.shouldShowAuthDialog = false
+        this.shouldShowAuthDialog = false
+        this.isShowSingleContract = false
         this.$emit('close', '{}')
       },
       showSingleAuthDialog (presentable, contractIDs = []){

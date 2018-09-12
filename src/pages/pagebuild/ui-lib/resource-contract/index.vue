@@ -66,7 +66,7 @@
         </div>
         <div class="rcb-footer">
             <button class="btn-normal btn-cancel" @click="cancelSign">取消</button>
-            <button type="button" class="btn-normal btn-sign" :class="{'disabled': isActPolicySigned}">签约</button>
+            <button type="button" class="btn-normal btn-sign" :class="{'disabled': isActPolicySigned}" @click="signContract">签约</button>
         </div>
     </div>
 </template>
@@ -82,6 +82,7 @@ let eventComponentMap = {
     title: '签署'
   }
 }
+import Vue from 'vue'
 
 import compiler from '@freelog/presentable-policy-compiler'
 import ContractContent from '../contract-info-detail/content.vue'
@@ -98,8 +99,11 @@ export default {
             type: Object
         },
         policyContractsMap: {
-            type: Map,
+            type: Object,
         },
+        getContractState: {
+            type: Function,
+        }
     },
     data (){
         return {
@@ -112,18 +116,23 @@ export default {
             modalTitle: '',
             showEventExecModal: false,
             userinfos: {},
-            isShowContractContent: false
+            isShowContractContent: false,
+            isUpdateView: 1,
         }
     },
     methods: {
+        // 处理策略与合同状态的关系
+        resolvePolicyContractStateMap (){
+            this.policyList.forEach(policy => {
+                var contract = this.policyContractsMap[policy.segmentId] || null
+                policy.contractState = this.getContractState(contract)
+            })
+        },
         exchangePolicy (index){
             this.actPolicyIndex = index
         },
         addRemark (){
             this.isAddRemark = true
-        },
-        cancelSign (){
-            this.$emit('cancel-sign')
         },
         fillSpace(line) {
             return line.replace(/^(\s+)/g, function ($) {
@@ -146,11 +155,25 @@ export default {
             this.eventComponent = eventComConfig.type
             this.modalTitle = eventComConfig.title
             this.showEventExecModal = true
+        },
+        cancelSign (){
+            this.$emit('cancel-sign')
+        },
+        signContract (){
+            Promise.resolve()
+                .then(res => {
+                    const contract = this.policyContractsMap['afdb749ac116c5b536976b2f7e614547']
+                    this.policyContractsMap['acd09a8f3c5a83dc653205c6a8bd5616'] = contract
+                    this.resolvePolicyContractStateMap()
+                    // 更新policy与contract的映射关系后，强制刷新
+                    this.$forceUpdate()
+                })
         }
     },
     computed: {
         actPolicy (){
-            return this.policyList[this.actPolicyIndex]
+            var policy = this.policyList[this.actPolicyIndex]
+            return policy
         },
         isActPolicySigned (){
             return this.actPolicy && this.actPolicy.contractState.type != 'nosign'
@@ -165,7 +188,7 @@ export default {
             return this.presentable.policy
         },
         selectedContract (){
-            var contract = this.policyContractsMap.get(this.actPolicy.segmentId)
+            var contract = this.policyContractsMap[this.actPolicy.segmentId]
             if(contract){
                 contract.partyOneInfo = {
                     nodeName:  this.presentable.nodeName,
@@ -185,15 +208,12 @@ export default {
             })
             return text
         },
-        // 点击取消
-        cancelSgin ( ){
-            this.$emit('close-dislog')
-        }
     },
     components: {
         ContractContent, FeDialog, TransactionEvent, LicenseEvent
     },
     beforeMount (){
+        this.resolvePolicyContractStateMap()
         if(userinfos == null){
             QI.fetch('/v1/userinfos/current')
                 .then(resp => resp.json())
@@ -203,8 +223,9 @@ export default {
                         this.isShowContractContent = true
                     }
                 })
-        }
-        
+        }else{
+            this.isShowContractContent = true
+        }    
     }
 }
 </script>
@@ -275,7 +296,7 @@ export default {
         &.btn-cancel{ color: #666; }
         &.btn-sign{ 
             border: 1px solid #CECECE; border-radius: 4px; color: #333; 
-            &.disabled{ border: 1px solid #CECECE; border-radius: 4px; background: #F9F9F9; color: #999; }
+            &.disabled{ border: 1px solid #CECECE; border-radius: 4px; background: #F9F9F9; color: #999; pointer-events: none; }
         }
         
     }

@@ -9,7 +9,12 @@
                     v-if="contractState.type != 'active'"
                 >{{contractState.tagName}}</span>    
             </div>
-            <resource-contract :presentable="presentable" :policyContractsMap="policyContractsMap" @cancel-sign="cancelSgin"></resource-contract>
+            <resource-contract 
+                :presentable="presentable" 
+                :policyContractsMap="policyContractsMap" 
+                @cancel-sign="cancelSgin"
+                :getContractState='getContractState'>
+            </resource-contract>
         </div>
     </div>
 </template>
@@ -52,13 +57,6 @@ export default {
                 }
             }
         },
-        // 处理策略与合同的关系
-        resolvePolicyContractMap (){
-            this.policyList.forEach(policy => {
-                var contract = this.policyContractsMap.get(policy.segmentId) || null
-                policy.contractState = this.getContractState(contract)
-            })
-        },
         // 重新部分参数
         reInitialData (){
             Promise.all(this.contractIDs.map(contractId => {
@@ -80,12 +78,11 @@ export default {
                 this.isFetchedContracts = true
                 this.contracts = contracts
                 this.defaultContract = this.contracts.length ? this.contracts[0] : null
-                this.resolvePolicyContractMap()
             })
         },
         // 点击取消
         cancelSgin ( ){
-            this.$emit('close-dislog')
+            this.$emit('close-dialog')
         }
     },
     computed: {
@@ -107,8 +104,10 @@ export default {
         },
         // 合同与策略的关系
         policyContractsMap(){
-            var map = new Map()
-            this.contracts.forEach(contract => map.set(contract.segmentId, contract))
+            var map = {}
+            this.contracts.forEach(contract => {
+                map[contract.segmentId] = contract
+            })
             return map
         }
     },
