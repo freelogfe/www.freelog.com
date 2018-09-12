@@ -1,170 +1,165 @@
 <template>
   <div class="assets-wrap">
-    <el-row>
-      <el-col :span="6" v-for="(account, index) in accounts" :key="index">
-        <el-card class="account-card" :body-style="cardStyle">
-          <p class="account-card-info">
-            <label>币种</label>
-            {{account.showDetail.name}}</p>
-          <p class="account-card-info">
-            <label>账户地址</label>
-            <el-tooltip class="item" effect="dark" :content="account.accountId" placement="top"
-                        v-if="account.accountId">
-              <clip-board v-model="account.accountId"
-                          @copyDone="copyDoneHandler">
-                <a href="javascript:;">
-                  <i class="el-icon-fa-clipboard"></i>
-                </a>
-              </clip-board>
-            </el-tooltip>
-            <span v-else>账户不存在</span>
-          </p>
-          <p class="account-card-info">
-            <label>账户余额</label><span>{{account.balance|humanizeCurrency}} {{account.showDetail.abbr}}</span>
-          </p>
-          <p class="account-card-info" v-if="account.status===1">
-            <el-dropdown @command="handleCommand">
-                                          <span class="el-dropdown-link">
-                                            账户操作<i class="el-icon-arrow-down el-icon--right"></i>
-                                          </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item :command="{type: 'detail',data:account}">
-                  详情
-                </el-dropdown-item>
-                <el-dropdown-item :command="{type: 'pay',data:account}">
-                  去转账
-                </el-dropdown-item>
-                <el-dropdown-item :command="{type: 'download',data:account}">下载keystore
-                </el-dropdown-item>
-                <el-dropdown-item :command="{type: 'clear',data:account}">清除下载keystore
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </p>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card class="account-card" :body-style="cardStyle">
-          <a href="/pages/account/create.html" class="add-account-btn">
-            <p><i class="el-icon-plus"></i></p>
-            <p>添加账户</p>
-          </a>
-        </el-card>
-      </el-col>
-    </el-row>
+    <div class="account-list-wrap">
+      <ul class="account-list">
+        <li class="account-item" v-for="account in accounts">
+          <div class="account-type-name">{{account.name}}账户</div>
+          <div class="account-info-wrap">
+            <div class="account-info clearfix" v-if="account.accountId">
+              <div class="left-side-content">
+                <div class="account-balance">
+                  <span>{{account.balance | humanizeCurrency(account.currencyConfig.abbr)}}</span>
+                  <i>{{account.showAbbr}}</i>
+                </div>
+                <div>
+                  <div class="acc-digest-info"><label>账户名</label><span class="account-detail-content">{{account.accountName}}</span>
+                  </div>
+                  <div class="acc-digest-info"><label>账户ID</label><span class="account-detail-content">{{account.accountId}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="rt-side-content">
+                <ul class="account-actions clearfix">
+                  <li class="account-action-item" @click="accountActionHandler(action.action, account)"
+                      v-for="action in accountActions">
+                    <i class="acc-act-icon" :class="[action.icon]"></i>
+                    <p>{{action.title}}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="no-account-wrap" v-else>
+              您还没有{{account.name}}账户，
+              <el-button type="text" @click="gotoCreateAccountHandler(account)">去创建+</el-button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
-  import AccountTypes from '@/config/account-types'
-  import ClipBoard from '@/components/Clipboard/index.vue'
+  import AccountTypes, {currentTypes} from '@/config/account-types'
 
   export default {
-    name: 'account-list',
+    name: 'my-accounts',
 
     data() {
       return {
-        cardStyle: {
-          padding: '5px',
-          'min-height': '150px',
-          display: 'flex',
-          'justify-content': 'center',
-          'align-items': 'center',
-          'flex-wrap': 'wrap',
-        },
-        accounts: [],
+        accounts: [
+          {
+            name: '人民币',
+            currencyType: currentTypes.fcny
+          }, {
+            name: '美元',
+            currencyType: currentTypes.fusd
+          }, {
+            name: '飞致币',
+            currencyType: currentTypes.feth
+          }],
+        accountActions: [
+          {
+            title: '充值',
+            icon: 'fl-recharge-icon',
+            action: 'recharge'
+          },
+          {
+            title: '转账',
+            icon: 'fl-transfer-icon',
+            action: 'transfer'
+          },
+          {
+            title: '提现',
+            icon: 'fl-withdraw-icon',
+            action: 'withdraw'
+          },
+          {
+            title: '交易记录',
+            icon: 'fl-record-icon',
+            action: 'record'
+          },
+          {
+            title: '重置密码',
+            icon: 'fl-reset-icon',
+            action: 'reset'
+          }
+        ]
       }
     },
-    components: {
-      ClipBoard
-    },
+    components: {},
     mounted() {
       this.loadAssets()
         .then(this.formatAssets.bind(this))
         .then((accounts) => {
-          this.accounts = accounts;
+          console.log(accounts)
+          var accountsMap = {}
+          accounts.map(account => {
+            accountsMap[account.currencyType] = account
+          })
+          this.accounts = this.accounts.map(account => {
+            var accInfo = accountsMap[account.currencyType]
+            if (accInfo) {
+              Object.assign(account, accInfo)
+            }
+            return account
+          })
+
+
+          // this.gotoAccountActionView({
+          //   name: 'account-transaction-records-view',
+          //   data: this.accounts[2]
+          // })
+
         })
         .catch((err) => {
           console.log(err);
         })
     },
     methods: {
-      handleCommand(command) {
-        switch (command.type) {
-          case 'detail':
-            this.viewAccountDetail(command.data)
+      gotoCreateAccountHandler(account) {
+        this.gotoAccountActionView({
+          name: 'account-create-view',
+          data: account
+        })
+      },
+      accountActionHandler(action, account) {
+        var data = {
+          data: account
+        }
+        switch (action) {
+          case 'recharge':
+            data.name = 'account-recharge-view';
             break;
-          case 'download':
-            this.downloadKeyStore(command.data.cardNo)
+          case 'transfer':
+            data.name = 'account-transfer-view';
             break;
-          case 'clear':
-            this.clearKeyStore(command.data.cardNo)
+          case 'withdraw':
+            data.name = 'account-withdraw-view';
             break;
-          case 'pay':
-            this.gotoPayHandler(command.data)
+          case 'record':
+            data.name = 'account-transaction-records-view';
+            break;
+          case 'reset':
+            data.name = 'account-reset-pay-password-view';
             break;
         }
+
+        this.gotoAccountActionView(data)
       },
-      viewAccountDetail(account) {
-        location.href = `/pages/account/detail.html?accountId=${account.accountId}`
-      },
-      gotoPayHandler(account) {
-        location.href = `/pages/transfer.html?fromAccountId=${account.accountId}`
-      },
-      downloadFile(filename, content) {
-        var $a = document.createElement('a')
-        var blob = new Blob([content])
-        $a.download = filename
-        $a.href = URL.createObjectURL(blob)
-        document.body.appendChild($a)
-        $a.click()
-        $a.remove()
-      },
-      downloadKeyStore(address) {
-        return this.$axios.get('/v1/pay/accounts/downLoadKeyStore', {
-          params: {
-            address: address
-          }
-        }).then((res) => {
-          try {
-            var content = new Blob([JSON.stringify(res.data, null, 2)], {type: 'application/json'})
-            this.downloadFile(address, content)
-          } catch (err) {
-            this.$message.error(err)
-          }
-        }).catch((err) => {
-          console.log(err);
-        })
-      },
-      clearKeyStore(address) {
-        this.$confirm('确定清除服务器上的keystore文件？')
-          .then((_) => {
-            return this.$axios.get('/v1/pay/accounts/clearKeyStore', {
-              params: {
-                address: address
-              }
-            }).then((res) => {
-              var result = res.data
-              if (result.ret === 0 && result.errcode === 0) {
-                this.$message.success('成功清除')
-              } else {
-                this.$message.error(result.msg)
-              }
-            }).catch((err) => {
-              console.log(err);
-            })
-          }).catch((_) => {
-        })
+      gotoAccountActionView(data) {
+        this.$store.dispatch('changePanel', data)
       },
       formatAssets(accounts) {
         accounts.forEach((account) => {
-          account.showDetail = AccountTypes[account.accountType]
+          account.currencyConfig = AccountTypes[account.currencyType]
+          account.showAbbr = account.currencyConfig.abbr.toUpperCase()
+          if (account.showAbbr !== 'FETH') {
+            account.showAbbr = account.showAbbr.slice(1)
+          }
         })
 
         return accounts
-      },
-      copyDoneHandler(ret) {
-        ret ? this.$message.success('复制成功') : this.$message.error('复制失败')
       },
       loadAssets() {
         return this.$axios.get('/v1/pay/accounts').then((res) => {

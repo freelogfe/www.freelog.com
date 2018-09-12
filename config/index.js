@@ -29,6 +29,7 @@ module.exports = {
       http: 9080, //80
       https: 9443  //443
     },
+    hmr: false,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',

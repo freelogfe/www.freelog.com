@@ -1,5 +1,6 @@
 #app {
-  font-family: arial, Hiragino Sans GB, Microsoft Yahei;
+  //font-family: arial, Hiragino Sans GB, Microsoft Yahei;
+  font-family: 'Helvetica Neue', 'PingFang SC', 'microsoft yahei', arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -20,6 +21,15 @@ body {
 @import url("../../../node_modules/font-awesome/less/font-awesome");
 @import url("../../../node_modules/font-awesome/css/font-awesome.css");
 @fa-css-prefix: el-icon-fa;
+
+
+.clearfix {
+  &:after {
+    content: ' ';
+    clear: both;
+    display: block;
+  }
+}
 
 .app-footer {
   text-align: center;

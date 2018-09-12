@@ -8,7 +8,7 @@ import axios from 'axios'
 import {gotoLogin} from './utils'
 
 const instance = axios.create({
-  baseURL: '/api/',
+  // baseURL: '/api/',
   timeout: 10e3,
   // crossdomain: true,
   // withCredentials: true,
@@ -18,6 +18,9 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(config => {
+    if (!/^\/qi\//.test(config.url) && !/^\/api\//.test(config.url)) {
+      config.url = '/api' + config.url
+    }
     return config;
   },
   err => {

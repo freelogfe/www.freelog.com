@@ -57,12 +57,12 @@
       }
     },
     mounted() {
-      this.loadOrders()
-        .then(this.loadOrderDetail.bind(this))
-        .then(this.format.bind(this))
-        .then((orders) => {
-          this.orders = orders || [];
-        })
+      // this.loadOrders()
+      //   .then(this.loadOrderDetail.bind(this))
+      //   .then(this.format.bind(this))
+      //   .then((orders) => {
+      //     this.orders = orders || [];
+      //   })
     },
     methods: {
       format(orders) {
