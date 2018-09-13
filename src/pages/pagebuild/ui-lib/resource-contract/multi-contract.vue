@@ -197,15 +197,6 @@ export default {
     &.active{
         padding-left: 17px; border-left: 3px solid #3C99FC; background-color: #f4f4f4;
     }
-
-    .sc-tag{
-        font-size: 10px; border: 1px solid; padding: 0 8px; border-radius: 20px;
-
-        &.sc-tag-active{ color: #45BC7B; border-color: #45BC7B; }
-        &.sc-tag-inactive{ color: #E36161; border-color: #E36161; }
-        &.sc-tag-nosign{ color: #fff; border-color: #999; background: #999; }
-        &.sc-tag-terminate{ color: #fff; border-color: #DA6666; background: #DA6666; }
-    }
 }
 
 </style>

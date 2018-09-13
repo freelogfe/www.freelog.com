@@ -144,15 +144,6 @@ export default {
         padding: 5px 0 10px; border-bottom: 1px solid #eee;
         font-size: 16px; color: #222; font-weight: bold;
 
-        .sc-tag{
-            position: relative; top: -2px;
-            margin-left: 10px; border: 1px solid; padding: 0 8px; border-radius: 20px;font-size: 10px; 
-
-            &.sc-tag-active{ color: #45BC7B; border-color: #45BC7B; }
-            &.sc-tag-inactive{ color: #E36161; border-color: #E36161; }
-            &.sc-tag-nosign{ color: #fff; border-color: #999; background: #999; }
-            &.sc-tag-terminate{ color: #fff; border-color: #DA6666; background: #DA6666; }
-        }
     }
 }
 

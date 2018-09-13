@@ -70,3 +70,30 @@ body {
     transform: rotate(-360deg)
   }
 }
+
+// 合同状态标签
+.sc-tag, .resource-status{
+  display: inline-block;
+  border: 1px solid; padding: 0 5px; border-radius: 8px;
+  line-height: 18px; font-size: 12px; vertical-align: middle;
+  transform: scale(0.83333);
+}
+
+.sc-tag{
+  position: relative; top: -2px;
+  margin-left: 10px; 
+
+  &.sc-tag-nosign{ color: #fff; border-color: #999; background: #999; }
+  &.sc-tag-active{ color: #45BC7B; border-color: #45BC7B; }
+  &.sc-tag-inactive{ color: #E36161; border-color: #E36161; }
+  &.sc-tag-terminate{ color: #fff; border-color: #DA6666; background: #DA6666; }
+}
+
+.resource-status{
+  margin-right: 5px;
+
+  &.status-0{ color: #fff; border-color: #999; background: #999; }
+  &.status-1, &.status-2{ color: #E36161; border-color: #E36161; }
+  &.status-3 { color: #45BC7B; border-color: #45BC7B; }
+  &.status-4, &.status-5, &.status-6{ color: #fff; border-color: #DA6666; background: #DA6666; }
+}

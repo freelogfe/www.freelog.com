@@ -56,8 +56,8 @@
         </div>
         <div class="rcb-remark">
             <div class="rcb-r-left">
-                <span v-if="actPolicy.contractState.type == 'nosign'" class="rcb-add-remark" id="rcb-remak" @click="addRemark">添加备注</span>
-                <span v-else >备注</span>
+                <span v-if="actPolicy.contractState.type == 'nosign'" class="rcb-add-remark" id="rcb-remak" @click="addRemark">添加备注 <i class="el-icon-plus"></i> </span>
+                <span v-else >备注 <i class="el-icon-edit-outline"></i></span>
             </div>
             <div class="rcb-r-right">
                 <div  v-if="actPolicy.contractState.type != 'nosign'">我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！</div>
@@ -160,14 +160,19 @@ export default {
             this.$emit('cancel-sign')
         },
         signContract (){
-            Promise.resolve()
-                .then(res => {
-                    const contract = this.policyContractsMap['afdb749ac116c5b536976b2f7e614547']
-                    this.policyContractsMap['acd09a8f3c5a83dc653205c6a8bd5616'] = contract
-                    this.resolvePolicyContractStateMap()
-                    // 更新policy与contract的映射关系后，强制刷新
-                    this.$forceUpdate()
-                })
+            // Promise.resolve()
+            //     .then(res => {
+            //         const contract = this.policyContractsMap['afdb749ac116c5b536976b2f7e614547']
+            //         this.policyContractsMap['acd09a8f3c5a83dc653205c6a8bd5616'] = contract
+            //         this.resolvePolicyContractStateMap()
+            //         // 更新policy与contract的映射关系后，强制刷新
+            //         this.$forceUpdate()
+            //     })
+            this.$message({
+                type: 'error',
+                showClose: true,
+                message: '合同签约功能待开放！！！'
+            })
         }
     },
     computed: {
