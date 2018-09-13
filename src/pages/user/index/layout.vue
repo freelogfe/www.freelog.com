@@ -29,6 +29,10 @@
       showFooter: {
         type: Boolean,
         default: true
+      },
+      returnName: {
+        type: String,
+        default: 'my-accounts'
       }
     },
 
@@ -42,7 +46,7 @@
         this.goBack()
       },
       goBack() {
-        this.$store.dispatch('changePanel', 'my-accounts')
+        this.$store.dispatch('changePanel', this.returnName)
       }
     }
   }
@@ -92,7 +96,7 @@
         padding-left: 35px;
       }
 
-      .ft-btn+.ft-btn {
+      .ft-btn + .ft-btn {
         margin-left: 30px;
       }
     }

@@ -1,6 +1,6 @@
 <template>
   <div class="resource-contract-detail-view">
-    <account-layout title="资源详情" :showFooter="false">
+    <account-layout title="资源详情" :showFooter="false" return-name="my-resources">
       待开发
     </account-layout>
   </div>
