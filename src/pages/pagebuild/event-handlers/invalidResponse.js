@@ -1,9 +1,10 @@
-export default function handleInvalidResponse (inValidResponse, callback){
-    var eventName = getEventName(inValidResponse)
-    EC.trigger(eventName, inValidResponse, callback)
+export default function handleInvalidResponse ({ appUiVm }, options, callback){
+    var response = options.response
+    var eventName = getEventName(response)
+    eventCenter.trigger(eventName, options, callback)
 }
 
-function getEventName (inValidResponse){
-    const event = EC.exceptionCode[inValidResponse.errcode]
-    return (event && event.eventName) || EC.eventName.HANDLE_INVALID_AUTH
+function getEventName (response){
+    const event = eventCenter.exceptionCode[response.errcode]
+    return (event && event.eventName) || eventCenter.eventName.HANDLE_INVALID_AUTH
 }

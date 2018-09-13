@@ -11,7 +11,8 @@ const _QI = new QICore()
                 .use(new MiddlewareJWT())
 const fetch = _QI.fetch.bind(_QI)
 
-Object.defineProperty(window, 'QI', {
+window.FreelogApp = window.FreelogApp || {}
+Object.defineProperty(window.FreelogApp, 'QI', {
     enumerable: false,
     configurable: false,
     writable: false,

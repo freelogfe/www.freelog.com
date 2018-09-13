@@ -60,7 +60,7 @@ export default {
         // 重新部分参数
         reInitialData (){
             Promise.all(this.contractIDs.map(contractId => {
-                return QI.fetch(`/v1/contracts/${contractId}`)
+                return FreelogApp.QI.fetch(`/v1/contracts/${contractId}`)
                     .then(resp => resp.json())
             }))
             .then((arr) => {

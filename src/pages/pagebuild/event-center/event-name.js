@@ -1,26 +1,11 @@
 // 无效的响应
 export const HANDLE_INVALID_RESPONSE = 'HANDLE_INVALID_RESPONSE'
-export function handleInvalidResponse (inValidResponse, callback){
-    return {
-        name: HANDLE_INVALID_AUTH, inValidResponse, callback
-    }
-}
 
 // 无效授权
 export const HANDLE_INVALID_AUTH = 'HANDLE_INVALID_AUTH'
-export function handleAuthError (){
-    return {
-        name: HANDLE_INVALID_AUTH, 
-    }
-}
 
 // 跳转去登陆页面
 export const GO_TO_LOGIN = 'GO_TO_LOGIN'
-export function goToLogin (){
-    return {
-        name: GO_TO_LOGIN, 
-    }
-}
 
 // 上报错误
 export const REPORT_ERROR = 'REPORT_ERROR'

@@ -1,4 +1,5 @@
-export default function handleAuthError(response, callback){
+export default function handleAuthError({ appUiVm }, options, callback){
+    var response = options.response
     if (response && response.errcode) {
         var errorMsg = response.msg;
         var authData = response.data && response.data.data
@@ -23,7 +24,7 @@ export default function handleAuthError(response, callback){
         }
   
         if (typeof callback === 'function') {
-          EC.appUiVm.$once('close', function (data) {
+          appUiVm.$once('close', function (data) {
             callback(data)
           })
         }
@@ -31,11 +32,11 @@ export default function handleAuthError(response, callback){
 
     function _unactivatedHandler(data) {
       const contracts = authData.contracts || (authData.contract && [authData.contract]) || []
-      EC.appUiVm.showSingleAuthDialog(authData.presentableInfo, contracts)
+      appUiVm.showSingleAuthDialog(authData.presentableInfo, contracts)
     }
 
     function _unSignHandler(authData) {
-      EC.appUiVm.showSingleAuthDialog(authData.presentableInfo, [])
+      appUiVm.showSingleAuthDialog(authData.presentableInfo, [])
     }
 
 }

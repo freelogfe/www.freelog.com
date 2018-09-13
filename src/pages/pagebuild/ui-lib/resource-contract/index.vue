@@ -50,7 +50,7 @@
                 {{actPolicy.contractState && actPolicy.contractState.info}}
                 <div class="rcb-tp-sb-btn-box" v-if="actPolicy.contractState.type != 'nosign'">
                     <button class="rcb-tp-sb-default" v-if="isActPolicyDefault">默认合约</button>
-                    <button class="rcb-tp-sb-set-default" v-else>设为默认</button>
+                    <button class="rcb-tp-sb-set-default" v-else @click="setDefualtContract">设为默认</button>
                 </div>
             </div>
         </div>
@@ -141,9 +141,11 @@ export default {
                 return spaceArr.join('')
             })
         },
+        // 关闭对话框
         closeModalHandler (){
             this.showEventExecModal = false
         },
+        // 合同事件处理
         executeContractHandler(params) {
             var eventComConfig = eventComponentMap[params.type]
 
@@ -156,9 +158,11 @@ export default {
             this.modalTitle = eventComConfig.title
             this.showEventExecModal = true
         },
+        // 点击“取消” 取消签约并关闭对话框
         cancelSign (){
             this.$emit('cancel-sign')
         },
+        // 点击“签约” 执行合同签约
         signContract (){
             // Promise.resolve()
             //     .then(res => {
@@ -168,10 +172,58 @@ export default {
             //         // 更新policy与contract的映射关系后，强制刷新
             //         this.$forceUpdate()
             //     })
-            this.$message({
-                type: 'error',
-                showClose: true,
-                message: '合同签约功能待开放！！！'
+            // this.$message({
+            //     type: 'error',
+            //     showClose: true,
+            //     message: '合同签约功能待开放！！！'
+            // })
+            const { presentableId, resourceId } = this.presentable
+            const { segmentId } = this.actPolicy
+            
+            FreelogApp.QI.fetch('/v1/contracts/createUserPresentableContract', {
+                method: 'POST',
+                data: {
+                    presentableId,
+                    segmentId,
+                    targetId: presentableId
+                }
+            })
+            .then(resp => resp.json())
+            .then(res => {
+                
+                if(res.errcode == 0){
+                    let contract = res.data
+                    this.policyContractsMap[segmentId] = contract
+                    this.resolvePolicyContractStateMap()
+                    // 更新policy与contract的映射关系后，强制刷新
+                    this.$forceUpdate()
+                }else{
+                    this.$message({
+                        type: 'error',
+                        showClose: true,
+                        message: '签约失败，稍后再试！！！'
+                    })
+                }
+            })
+            
+        },
+        // 设置默认合同
+        setDefualtContract (){
+            FreelogApp.QI.fetch(`/v1/contracts/setDefault?contractId=${this.selectedContract.contractId}`, {
+                method: 'PUT',
+            })
+            .then(resp => resp.json())
+            .then(res => {
+                
+                if(res.errcode == 0){
+                    this.isActPolicyDefault = true
+                }else{
+                    this.$message({
+                        type: 'error',
+                        showClose: true,
+                        message: '设置默认合同失败，稍后再试！！！'
+                    })
+                }
             })
         }
     },
@@ -220,7 +272,7 @@ export default {
     beforeMount (){
         this.resolvePolicyContractStateMap()
         if(userinfos == null){
-            QI.fetch('/v1/userinfos/current')
+            FreelogApp.QI.fetch('/v1/userinfos/current')
                 .then(resp => resp.json())
                 .then(res => {
                     if(res.errcode == 0){

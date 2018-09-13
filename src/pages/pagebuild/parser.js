@@ -7,11 +7,15 @@ export default {
     if (!authErrorData) {
       self.loadWidgets()
     } else {
-      window.FreeLogApp.handleErrorResponse(authErrorData, (presentable) => {
-        if (presentable._contractStatus === 3) {
-          location.reload()  //后续考虑局部更新？
+      window.FreelogApp.trigger(
+        window.FreelogApp.eventNames['HANDLE_INVALID_RESPONSE'], 
+        { response: authErrorData }, 
+        (presentable) => {
+          if (presentable._contractStatus === 3) {
+            location.reload()  //后续考虑局部更新？
+          }
         }
-      });
+      )
       self.hideLoading()
     }
   },
@@ -33,7 +37,7 @@ export default {
       if (token && srcId && !vis[srcId]) {
         vis[srcId] = true
         // var url = `/api/v1/auths/presentable/subResource/${srcId}?token=${token}`
-        var p = QI.requireSubResource(srcId, token)
+        var p = FreelogApp.QI.requireSubResource(srcId, token)
         promises.push(p)
       } else {
         // console.warn('没有找到对应的组件ID')

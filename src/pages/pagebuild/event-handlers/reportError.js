@@ -1,3 +1,3 @@
-export default function reportError (error){
+export default function reportError ({ appUiVm }, options, callback){
 
 }

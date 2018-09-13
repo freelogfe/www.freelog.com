@@ -10,7 +10,7 @@
         :close-on-click-modal="false"
         :title="scTitle"
         width="790px"
-        top="40px"
+        top="5vh"
         :visible.sync="isShowSingleContract"
         :close="hideAuthDialog"
         is-destoryed-body
@@ -25,7 +25,7 @@
         :close-on-click-modal="false"
         :title="scTitle"
         width="1000px"
-        top="40px"
+        top="5vh"
         :visible.sync="isShowMultiContract"
         :close="hideAuthDialog"
       >
@@ -117,49 +117,6 @@
       this.$emit('ready', this)
     },
     methods: {
-      // refreshHandler() {
-        //   this.$refs.list.refresh()
-        // },
-        // _tabChange(data) {
-        //   //关闭tab
-        //   if (data.action === 'close') {
-        //     this._removeTab(data.tabName)
-        //   } else {
-        //     var isExisted = this.tabs.some((tab) => {
-        //       return tab.name === data.name
-        //     })
-
-        //     if (!isExisted) {
-        //       this.tabs.push(data);
-        //     }
-        //     this.activeTabName = data.name;
-        //   }
-        // },
-        // _removeTab(targetName) {
-        //   let activeName = this.activeTabName;
-        //   if (activeName === targetName) {
-        //     this.tabs.forEach((tab, index) => {
-        //       if (tab.name === targetName) {
-        //         let nextTab = this.tabs[index + 1] || this.tabs[index - 1];
-        //         if (nextTab) {
-        //           activeName = nextTab.name;
-        //         } else {
-        //           activeName = null
-        //         }
-        //       }
-        //     });
-        //   }
-
-        //   this.activeTabName = activeName || 'presentables';
-        //   this.tabs = this.tabs.filter((t) => {
-        //     return t.name !== targetName
-        //   })
-        // },
-        // _closeDialogHandler() {
-        //   this.$emit('close', {
-        //     presentableMap: this.pagebuild.presentableMap
-        //   })
-        // },
       hideAuthDialog (){
         this.shouldShowAuthDialog = false
         this.shouldShowAuthDialog = false
