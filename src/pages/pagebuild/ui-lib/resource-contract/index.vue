@@ -142,7 +142,7 @@ export default {
             })
         },
         // 关闭对话框
-        closeModalHandler (){
+        closeModalHandler ({shouldUpdate}){
             this.showEventExecModal = false
         },
         // 合同事件处理
@@ -165,18 +165,18 @@ export default {
         // 点击“签约” 执行合同签约
         signContract (){
             // Promise.resolve()
-            //     .then(res => {
-            //         const contract = this.policyContractsMap['afdb749ac116c5b536976b2f7e614547']
-            //         this.policyContractsMap['acd09a8f3c5a83dc653205c6a8bd5616'] = contract
-            //         this.resolvePolicyContractStateMap()
-            //         // 更新policy与contract的映射关系后，强制刷新
-            //         this.$forceUpdate()
-            //     })
-            // this.$message({
-            //     type: 'error',
-            //     showClose: true,
-            //     message: '合同签约功能待开放！！！'
-            // })
+                //     .then(res => {
+                //         const contract = this.policyContractsMap['afdb749ac116c5b536976b2f7e614547']
+                //         this.policyContractsMap['acd09a8f3c5a83dc653205c6a8bd5616'] = contract
+                //         this.resolvePolicyContractStateMap()
+                //         // 更新policy与contract的映射关系后，强制刷新
+                //         this.$forceUpdate()
+                //     })
+                // this.$message({
+                //     type: 'error',
+                //     showClose: true,
+                //     message: '合同签约功能待开放！！！'
+                // })
             const { presentableId, resourceId } = this.presentable
             const { segmentId } = this.actPolicy
             

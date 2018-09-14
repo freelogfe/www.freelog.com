@@ -1,5 +1,5 @@
 export default function showResourceSignDialog({ appUiVm }, options, callback){
-    const { presentableList = [], contractIDs = [] } = options
+    const { presentableList = [] } = options
     if(presentableList.length == 0) return 
 
     getContractsByPresentableList(presentableList)
