@@ -198,12 +198,15 @@ export default {
                     // 更新policy与contract的映射关系后，强制刷新
                     this.$forceUpdate()
                 }else{
-                    this.$message({
-                        type: 'error',
-                        showClose: true,
-                        message: '签约失败，稍后再试！！！'
-                    })
+                    return Promise.reject()
                 }
+            })
+            .catch(e => {
+                this.$message({
+                    type: 'error',
+                    showClose: true,
+                    message: '签约失败，稍后再试！！！'
+                })
             })
             
         },
@@ -217,13 +220,15 @@ export default {
                 
                 if(res.errcode == 0){
                     this.isActPolicyDefault = true
-                }else{
-                    this.$message({
-                        type: 'error',
-                        showClose: true,
-                        message: '设置默认合同失败，稍后再试！！！'
-                    })
+                }else{return Promise.reject()
                 }
+            })
+            .catch(e => {
+                this.$message({
+                    type: 'error',
+                    showClose: true,
+                    message: '设置默认合同失败，稍后再试！！！'
+                })
             })
         }
     },
