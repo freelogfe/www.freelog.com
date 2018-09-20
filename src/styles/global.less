@@ -1,0 +1,73 @@
+#app {
+  //font-family: arial, Hiragino Sans GB, Microsoft Yahei;
+  font-family: 'Helvetica Neue', 'PingFang SC', 'microsoft yahei', arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  background-color: #d3d3d32b;
+}
+body {
+  [class^="el-icon-fa"], [class*=" el-icon-fa"] {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome !important;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  };
+}
+
+@import url("../../node_modules/font-awesome/less/font-awesome");
+@import url("../../node_modules/font-awesome/css/font-awesome.css");
+@fa-css-prefix: el-icon-fa;
+
+
+.clearfix {
+  &:after {
+    content: ' ';
+    clear: both;
+    display: block;
+  }
+}
+
+.app-footer {
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 60px;
+
+  li {
+    display: inline-block;
+    margin: 0 20px;
+    a {
+      color: black;
+    }
+  }
+}
+
+.freelog-app-loading {
+  &:before {
+    content: ' ';
+    display: block;
+    width: 100px;
+    height: 100px;
+    background: url("../assets/img/loading-spinner.png") no-repeat;
+    animation: rotateAnim 1.5s linear infinite;
+    background-size: 100%;
+    margin-left: 49%;
+    margin-top: 49vh;
+  }
+}
+
+@keyframes rotateAnim {
+  0% {
+    transform: rotate(0)
+  }
+  50% {
+    transform: rotate(-180deg)
+  }
+  100% {
+    transform: rotate(-360deg)
+  }
+}
