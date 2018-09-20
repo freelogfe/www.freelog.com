@@ -5,9 +5,6 @@ import '@/styles/reset.css'
 import '@/styles/global.less'
 import '@/styles/element-ui.less'
 import plugins from '../../plugins'
-// import store from '../../store'
-// import router from '../../router'
-// import App from './index.vue'
 
 Vue.use(ElementUI)
 Vue.use(plugins)
