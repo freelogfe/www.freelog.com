@@ -93,7 +93,6 @@ export default {
     this.loadAssets()
       .then(this.formatAssets.bind(this))
       .then((accounts) => {
-        console.log(accounts)
         const accountsMap = {}
         accounts.forEach((account) => {
           accountsMap[account.currencyType] = account
