@@ -42,18 +42,6 @@ export default {
     }
   },
   methods: {
-    fetch (url, options = {}){
-      if(window.FreelogApp && window.FreelogApp.QI){
-        return window.FreelogApp.QI.fetch(url, options)
-          .then(resp => resp.json())
-      }
-      if(this.$axios){
-        return this.$axios({ url, ...options})
-                .then(res => res.data)
-
-      }
-      return window.fetch(url, options)
-    },
     // 根据合同获取 资源标签状态
     getContractState(contract) {
       if (contract === null) {
@@ -71,7 +59,7 @@ export default {
     },
     // 重新部分参数
     reInitialData() {
-      Promise.all(this.contractIDs.map(contractId => this.fetch(`/v1/contracts/${contractId}`)))
+      Promise.all(this.contractIDs.map(contractId => this.$axios.get(`/v1/contracts/${contractId}`).then(res => res.data)))
         .then((arr) => {
           const contracts = []
           arr.forEach((contractRes) => {

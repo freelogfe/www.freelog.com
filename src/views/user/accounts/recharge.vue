@@ -88,239 +88,239 @@
 </template>
 
 <script>
-  import AccountTypes from '@/config/account-types'
-  import AccountLayout from '../layout.vue'
+import AccountTypes from '@/config/account-types'
+import AccountLayout from '../layout.vue'
 
-  export default {
-    name: 'account-recharge-view',
+export default {
+  name: 'account-recharge-view',
 
-    data() {
-      const validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'))
-        } else {
-          if (this.createEthForm.checkPass !== '') {
-            this.$refs.createEthForm.validateField('checkPass')
-          }
-          callback()
+  data() {
+    const validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.createEthForm.checkPass !== '') {
+          this.$refs.createEthForm.validateField('checkPass')
         }
-      }
-      const validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'))
-        } else if (value !== this.createEthForm.pass) {
-          callback(new Error('两次输入密码不一致!'))
-        } else {
-          callback()
-        }
-      }
-
-      return {
-        createEthForm: {
-          pass: '',
-          checkPass: ''
-        },
-        createEthRules: {
-          pass: [
-            {required: true, message: '请输入加密密码', trigger: 'blur'},
-            {validator: validatePass, trigger: 'blur'},
-            {min: 6, message: '最少6个字符', trigger: 'blur'}
-          ],
-          checkPass: [
-            {required: true, message: '请输入确认加密密码', trigger: 'blur'},
-            {validator: validatePass2, trigger: 'change'},
-            {min: 6, message: '最少6个字符', trigger: 'blur'}
-          ]
-        },
-        shouldShowAddDialog: false,
-        addCardNo: '',
-        shouldShowCreateDialog: false,
-        amount: '',
-        cardNo: '',
-        cardClips: [],
-        renderData: this.$route.query
-      }
-    },
-
-    props: {},
-
-    components: {AccountLayout},
-
-    mounted() {
-      this.loadCardclips()
-        .then((list) => {
-          this.cardClips = list.map(this.resolveCard)
-        })
-
-      console.log(this.renderData)
-      if (this.renderData.accountId &&
-        (!this.renderData.balance || !this.renderData.accountName)) {
-        this.loadAccountInfo()
-      }
-    },
-
-    computed: {
-      navTitle() {
-        return `${this.currencyInfo.name}账户充值`
-      },
-      currencyInfo() {
-        return AccountTypes[this.renderData.currencyType]
-      },
-      rechargeMethod() {
-        let method
-        switch (this.renderData.currencyType) {
-          case 1:
-            method = '以太坊'
-            break
-          case 2:
-          case 3:
-          case 4:
-          default:
-            method = '银行'
-        }
-
-        return method
-      }
-    },
-
-    methods: {
-      // for test
-      officialTapHandler() {
-        this.$axios.post('/v1/pay/officialTap', {
-          cardNo: this.cardNo,
-          currencyType: this.renderData.currencyType
-        }).then((res) => {
-          this.$message.info(res.data.msg)
-        })
-      },
-      loadAccountInfo() {
-        this.$axios.get(`/v1/pay/accounts/${this.renderData.accountId}`)
-          .then(res => {
-            var {data} = res.data
-            if (res.data.ret === 0 && res.data.errcode === 0) {
-              Object.assign(this.renderData, data)
-              this.$forceUpdate()
-            }
-          })
-      },
-      showAddCardDialogHandler() {
-        this.shouldShowAddDialog = true
-        this.addCardNo = ''
-      },
-      addCardNoHandler() {
-        this.addCardToCardclips(this.addCardNo)
-          .then(() => {
-            this.$message.success('添加成功')
-          }).catch(this.$error.showErrorMessage)
-      },
-      resolveCard(card) {
-        card.label = `${card.bankName} | ${card.cardNo}`
-        card.value = card.cardNo
-        return card
-      },
-      loadCardclips() {
-        return this.$axios.get(`/v1/pay/cardclips?currencyType=${this.renderData.currencyType}`)
-          .then((res) => {
-            const {data} = res
-            if (this.isSuccess(data)) {
-              return data.data
-            }
-            return Promise.reject(data.msg)
-          })
-      },
-      isSuccess(data) {
-        return (data.ret === 0 && data.errcode === 0)
-      },
-      rechargeHandler() {
-        this.$axios.post('/v1/pay/recharge', {
-          accountId: this.renderData.accountId,
-          cardNo: this.cardNo,
-          amount: this.currencyInfo.unit * this.amount
-        }).then((res) => {
-          const {data} = res
-          if (data.ret === 0 && data.errcode === 0) {
-            let msg
-            switch (data.data.tradeStatus) {
-              case 1:
-                msg = '充值成功'
-                break
-              case 2:
-                msg = '充值失败'
-                break
-              case 3:
-                msg = '发起中'
-                break
-              case 4:
-                msg = '超时失败'
-                break
-              default:
-                msg = data.msg
-            }
-
-            if ([1, 3].includes(data.data.tradeStatus)) {
-              this.$message.success(msg)
-              this.$router.push('/accounts')
-              // this.$store.dispatch('changePanel', 'my-accounts')
-            } else {
-              this.$message.error(msg)
-            }
-          } else {
-            throw new Error(data.msg)
-          }
-        }).catch(this.$error.showErrorMessage)
-      },
-      handleClose(done) {
-        this.$refs.createEthForm.resetFields()
-        done()
-      },
-      showCreateEthDialog() {
-        this.shouldShowCreateDialog = true
-      },
-      createEthAccount() {
-        this.$confirm('此加密密码用于加密以太坊keystore，一旦创建后不可更改，系统不予以保存，需用户自行保存妥善！', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$refs.createEthForm.validate((valid) => {
-            if (valid) {
-              this.$axios.post('/v1/pay/helper/feather/createEthAccount', {
-                password: this.createEthForm.pass
-              }).then((res) => {
-                const {data} = res
-                if (this.isSuccess(data)) {
-                  this.addCardToCardclips(data.data.address)
-                    .then(() => {
-                      this.$message.success('创建成功')
-                    })
-                    .catch(this.$message.error)
-                } else {
-                  this.$message.error(data.msg || '创建失败')
-                }
-                this.shouldShowCreateDialog = false
-              })
-            } else {
-              console.log('error submit!!')
-            }
-          })
-        }).catch(() => {
-        })
-      },
-      addCardToCardclips(cardNo) {
-        return this.$axios.post('/v1/pay/cardclips', {
-          cardNo,
-          currencyType: this.renderData.currencyType
-        }).then((res) => {
-          const {data} = res
-          if (!this.isSuccess(data)) {
-            return Promise.reject(data.msg)
-          }
-          this.cardClips.push(this.resolveCard(data.data))
-          return data.data
-        })
+        callback()
       }
     }
+    const validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.createEthForm.pass) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
+
+    return {
+      createEthForm: {
+        pass: '',
+        checkPass: ''
+      },
+      createEthRules: {
+        pass: [
+          { required: true, message: '请输入加密密码', trigger: 'blur' },
+          { validator: validatePass, trigger: 'blur' },
+          { min: 6, message: '最少6个字符', trigger: 'blur' }
+        ],
+        checkPass: [
+          { required: true, message: '请输入确认加密密码', trigger: 'blur' },
+          { validator: validatePass2, trigger: 'change' },
+          { min: 6, message: '最少6个字符', trigger: 'blur' }
+        ]
+      },
+      shouldShowAddDialog: false,
+      addCardNo: '',
+      shouldShowCreateDialog: false,
+      amount: '',
+      cardNo: '',
+      cardClips: [],
+      renderData: this.$route.query
+    }
+  },
+
+  props: {},
+
+  components: { AccountLayout },
+
+  mounted() {
+    this.loadCardclips()
+      .then((list) => {
+        this.cardClips = list.map(this.resolveCard)
+      })
+
+    console.log(this.renderData)
+    if (this.renderData.accountId &&
+        (!this.renderData.balance || !this.renderData.accountName)) {
+      this.loadAccountInfo()
+    }
+  },
+
+  computed: {
+    navTitle() {
+      return `${this.currencyInfo.name}账户充值`
+    },
+    currencyInfo() {
+      return AccountTypes[this.renderData.currencyType]
+    },
+    rechargeMethod() {
+      let method
+      switch (this.renderData.currencyType) {
+        case 1:
+          method = '以太坊'
+          break
+        case 2:
+        case 3:
+        case 4:
+        default:
+          method = '银行'
+      }
+
+      return method
+    }
+  },
+
+  methods: {
+    // for test
+    officialTapHandler() {
+      this.$axios.post('/v1/pay/officialTap', {
+        cardNo: this.cardNo,
+        currencyType: this.renderData.currencyType
+      }).then((res) => {
+        this.$message.info(res.data.msg)
+      })
+    },
+    loadAccountInfo() {
+      this.$axios.get(`/v1/pay/accounts/${this.renderData.accountId}`)
+        .then((res) => {
+          const { data } = res.data
+          if (res.data.ret === 0 && res.data.errcode === 0) {
+            Object.assign(this.renderData, data)
+            this.$forceUpdate()
+          }
+        })
+    },
+    showAddCardDialogHandler() {
+      this.shouldShowAddDialog = true
+      this.addCardNo = ''
+    },
+    addCardNoHandler() {
+      this.addCardToCardclips(this.addCardNo)
+        .then(() => {
+          this.$message.success('添加成功')
+        }).catch(this.$error.showErrorMessage)
+    },
+    resolveCard(card) {
+      card.label = `${card.bankName} | ${card.cardNo}`
+      card.value = card.cardNo
+      return card
+    },
+    loadCardclips() {
+      return this.$axios.get(`/v1/pay/cardclips?currencyType=${this.renderData.currencyType}`)
+        .then((res) => {
+          const { data } = res
+          if (this.isSuccess(data)) {
+            return data.data
+          }
+          return Promise.reject(data.msg)
+        })
+    },
+    isSuccess(data) {
+      return (data.ret === 0 && data.errcode === 0)
+    },
+    rechargeHandler() {
+      this.$axios.post('/v1/pay/recharge', {
+        accountId: this.renderData.accountId,
+        cardNo: this.cardNo,
+        amount: this.currencyInfo.unit * this.amount
+      }).then((res) => {
+        const { data } = res
+        if (data.ret === 0 && data.errcode === 0) {
+          let msg
+          switch (data.data.tradeStatus) {
+            case 1:
+              msg = '充值成功'
+              break
+            case 2:
+              msg = '充值失败'
+              break
+            case 3:
+              msg = '发起中'
+              break
+            case 4:
+              msg = '超时失败'
+              break
+            default:
+              msg = data.msg
+          }
+
+          if ([1, 3].includes(data.data.tradeStatus)) {
+            this.$message.success(msg)
+            this.$router.push('/accounts')
+            // this.$store.dispatch('changePanel', 'my-accounts')
+          } else {
+            this.$message.error(msg)
+          }
+        } else {
+          throw new Error(data.msg)
+        }
+      }).catch(this.$error.showErrorMessage)
+    },
+    handleClose(done) {
+      this.$refs.createEthForm.resetFields()
+      done()
+    },
+    showCreateEthDialog() {
+      this.shouldShowCreateDialog = true
+    },
+    createEthAccount() {
+      this.$confirm('此加密密码用于加密以太坊keystore，一旦创建后不可更改，系统不予以保存，需用户自行保存妥善！', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$refs.createEthForm.validate((valid) => {
+          if (valid) {
+            this.$axios.post('/v1/pay/helper/feather/createEthAccount', {
+              password: this.createEthForm.pass
+            }).then((res) => {
+              const { data } = res
+              if (this.isSuccess(data)) {
+                this.addCardToCardclips(data.data.address)
+                  .then(() => {
+                    this.$message.success('创建成功')
+                  })
+                  .catch(this.$message.error)
+              } else {
+                this.$message.error(data.msg || '创建失败')
+              }
+              this.shouldShowCreateDialog = false
+            })
+          } else {
+            console.log('error submit!!')
+          }
+        })
+      }).catch(() => {
+      })
+    },
+    addCardToCardclips(cardNo) {
+      return this.$axios.post('/v1/pay/cardclips', {
+        cardNo,
+        currencyType: this.renderData.currencyType
+      }).then((res) => {
+        const { data } = res
+        if (!this.isSuccess(data)) {
+          return Promise.reject(data.msg)
+        }
+        this.cardClips.push(this.resolveCard(data.data))
+        return data.data
+      })
+    }
   }
+}
 </script>
 
 <style lang="less" scoped type="text/less">

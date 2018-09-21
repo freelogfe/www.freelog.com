@@ -110,13 +110,14 @@ export default {
       //   data: row,
       // })
 
-      const { targetId, contractId } = row
+      const { targetId, nodeInfo: { nodeId }, resourceId } = row
 
       this.$router.push({
-        path: `/resources/detail/`,
+        path: '/resources/detail/',
         query: {
+          resourceId,
           presentableId: targetId,
-          contractId
+          partyTwo: nodeId
         }
       })
     },

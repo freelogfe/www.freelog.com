@@ -60,7 +60,7 @@
                 <span v-else >备注 <i class="el-icon-edit-outline"></i></span>
             </div>
             <div class="rcb-r-right">
-                <div  v-if="actPolicy.contractState.type != 'nosign'">我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！！我是备注，暂无内容，以此文案占位！！</div>
+                <div  v-if="actPolicy.contractState.type != 'nosign'">{{targRemark}}</div>
                 <textarea v-if="actPolicy.contractState.type === 'nosign' && isAddRemark" name="rcb-remak" id="" rows="3"></textarea>
             </div>
         </div>
@@ -121,18 +121,6 @@ export default {
     }
   },
   methods: {
-    fetch (url, options = {}){
-      if(window.FreelogApp && window.FreelogApp.QI){
-        return window.FreelogApp.QI.fetch(url, options)
-          .then(resp => resp.json())
-      }
-      if(this.$axios){
-        return this.$axios({ url, ...options})
-          .then(res => res.data)
-
-      }
-      return window.fetch(url, options)
-    },
     // 处理策略与合同状态的关系
     resolvePolicyContractStateMap() {
       this.policyList.forEach((policy) => {
@@ -179,7 +167,8 @@ export default {
       const { presentableId } = this.presentable
       const { segmentId } = this.actPolicy
 
-      this.fetch('/v1/contracts/createUserPresentableContract', {
+      this.$axios({
+        url: '/v1/contracts/createUserPresentableContract',
         method: 'POST',
         data: {
           presentableId,
@@ -187,6 +176,7 @@ export default {
           targetId: presentableId
         }
       })
+        .then(res => res.data)
         .then((res) => {
           if (res.errcode === 0) {
             const contract = res.data
@@ -208,9 +198,11 @@ export default {
     },
     // 设置默认合同
     setDefualtContract() {
-      this.fetch(`/v1/contracts/setDefault?contractId=${this.selectedContract.contractId}`, {
+      this.$axios({
+        url: `/v1/contracts/setDefault?contractId=${this.selectedContract.contractId}`,
         method: 'PUT',
       })
+        .then(res => res.data)
         .then((res) => {
           if (res.errcode === 0) {
             this.isActPolicyDefault = true
@@ -265,6 +257,9 @@ export default {
       })
       return text
     },
+    targRemark() {
+      return ''
+    }
   },
   components: {
     ContractContent, FeDialog, TransactionEvent, LicenseEvent
@@ -272,7 +267,8 @@ export default {
   beforeMount() {
     this.resolvePolicyContractStateMap()
     if (userinfos === null) {
-      this.fetch('/v1/userinfos/current')
+      this.$axios.get('/v1/userinfos/current')
+        .then(res => res.data)
         .then((res) => {
           if (res.errcode === 0) {
             userinfos = res.data

@@ -4,7 +4,7 @@
 
       <single-contract
               style="width: 100%"
-              v-if="presentable && contractIDs.length"
+              v-if="isRenderContract"
               :presentable="presentable"
               :contractIDs="contractIDs"
               @close-dialog="goBack"
@@ -15,9 +15,9 @@
 </template>
 
 <script>
-  import singleContract from '@/views/pagebuild/views/resource-contract/single-contract.vue'
-  import { mapGetters } from 'vuex'
-  import AccountLayout from '../layout.vue'
+import singleContract from '@/views/pagebuild/views/resource-contract/single-contract.vue'
+import { mapGetters } from 'vuex'
+import AccountLayout from '../layout.vue'
 
 export default {
   name: 'resource-contract-detail-view',
@@ -25,7 +25,8 @@ export default {
   data() {
     return {
       presentable: null,
-      contractIDs: []
+      contractIDs: [],
+      isRenderContract: false
     }
   },
 
@@ -35,15 +36,24 @@ export default {
   components: { AccountLayout, singleContract },
 
   mounted() {
-    const { presentableId, contractId } = this.$route.query
-    this.$axios.get(`/v1/presentables/${presentableId}`)
-      .then(res => {
-        console.log('res- ', res)
-        if(res.data.errcode === 0 && res.data.data){
-          console.log('in')
-          this.presentable = res.data.data
-          this.contractIDs = [ contractId ]
+    const { resourceId, presentableId, partyTwo } = this.$route.query
+
+    Promise.all([
+      this.$axios.get(`/v1/presentables/${presentableId}`).then(res => res.data),
+      this.$axios.get(`/v1/contracts/contractRecords?resourceIds=${resourceId}&partyTwo=${partyTwo}&contentType=3`).then(res => res.data)
+    ])
+      .then(([res1, res2]) => {
+        if (res1.errcode === 0 && res1.data) {
+          this.presentable = res1.data
         }
+        if (res2.errcode === 0 && res2.data) {
+          res2.data.forEach((item) => {
+            if (presentableId === item.targetId) {
+              this.contractIDs.push(item.contractId)
+            }
+          })
+        }
+        this.isRenderContract = true
       })
   },
 
@@ -55,13 +65,13 @@ export default {
 
 
   methods: {
-    goBack (){
+    goBack() {
       this.$refs.layout.goBack()
     }
 
   },
 
-  destroyed (){
+  destroyed() {
     clearTimeout(this.timer)
   }
 }

@@ -136,8 +136,8 @@ export default {
     resourceContract,
   },
   beforeMount() {
-    Promise.all(this.contractIDs.map(contractId => window.FreelogApp.QI.fetch(`/v1/contracts/${contractId}`)
-      .then(resp => resp.json())))
+    Promise.all(this.contractIDs.map(contractId =>
+      this.$axios({ url: `/v1/contracts/${contractId}` }).then(res => res.data)))
       .then((arr) => {
         const contracts = []
         arr.forEach((contractRes) => {

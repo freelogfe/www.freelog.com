@@ -96,7 +96,7 @@ export default new Router({
       component: MyResourcesView
     },
     {
-      path: '/resources/detail',
+      // path: '/resources/detail',
       meta: { title: '资源详情' },
       component: ResourceContractDetailView
     },
