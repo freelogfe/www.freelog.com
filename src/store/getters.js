@@ -1,6 +1,5 @@
 const getters = {
-  session: state => state.user.session,
-  personal: state => state.personal
+  session: state => state.user.session
 }
 
 export default getters

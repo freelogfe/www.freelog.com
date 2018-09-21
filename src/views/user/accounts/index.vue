@@ -112,7 +112,7 @@ export default {
   methods: {
     gotoCreateAccountHandler(account) {
       this.gotoAccountActionView({
-        route: '/accounts/create',
+        route: 'accountCreate',
         query: {
           currencyType: account.currencyType
         }
@@ -120,27 +120,28 @@ export default {
     },
     accountActionHandler(action, account) {
       const data = {
-        route: '/accounts/',
+        route: 'account',
         query: {
           currencyType: account.currencyType,
           accountId: account.accountId
-        }
+        },
+        params: account
       }
       switch (action) {
         case 'recharge':
-          data.route += 'recharge'
+          data.route += 'Recharge'
           break
         case 'transfer':
-          data.route += 'transfer'
+          data.route += 'Transfer'
           break
         case 'withdraw':
-          data.route += 'withdraw'
+          data.route += 'Withdraw'
           break
         case 'record':
-          data.route += 'records'
+          data.route += 'Records'
           break
         case 'reset':
-          data.route += 'reset'
+          data.route += 'Reset'
           break
         default:
           break
@@ -149,8 +150,7 @@ export default {
       this.gotoAccountActionView(data)
     },
     gotoAccountActionView(data) {
-      this.$router.push({ path: data.route, query: data.query })
-      // this.$store.dispatch('changePanel', data)
+      this.$router.push({ name: data.route, query: data.query, params: data.params })
     },
     formatAssets(accounts) {
       accounts.forEach((account) => {

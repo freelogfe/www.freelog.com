@@ -76,11 +76,6 @@ export default {
   },
   methods: {
     rowClickHandler(row) {
-      // this.$store.dispatch('changePanel', {
-      //   name: 'resource-contract-detail-view',
-      //   data: row,
-      // })
-
       this.$router.push({ path: `/resources/detail/${row.resourceId}` })
     },
     resolveStatus(status) {

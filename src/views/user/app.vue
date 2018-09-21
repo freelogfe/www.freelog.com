@@ -1,13 +1,9 @@
 <template>
   <div id="app">
-    <!--<component :is="personal.panelName" :renderData="personal.data"></component>-->
-    <!--<router-view></router-view>-->
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 import NavTopBar from '@/components/NavTop/index.vue'
 import MyProfile from './profile/index.vue'
 import MyCollections from './collections/index.vue'
@@ -27,9 +23,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      personal: 'personal'
-    })
+
   },
 
   mounted() {

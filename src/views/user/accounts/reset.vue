@@ -5,16 +5,15 @@
                :rules="rules"
                :model="form"
                ref="formRef"
-               status-icon
                label-position="left">
         <el-form-item label="旧支付密码" prop="password">
-          <el-input size="small" type="password" v-model="form.password" style="width: 200px;"></el-input>
+          <password-input class="input-area" v-model="form.password"></password-input>
         </el-form-item>
         <el-form-item label="新支付密码" prop="newPassword">
-          <el-input size="small" type="password" v-model="form.newPassword" style="width: 200px;"></el-input>
+          <password-input class="input-area" v-model="form.newPassword"></password-input>
         </el-form-item>
         <el-form-item label="确认支付密码" prop="checkNewPassword">
-          <el-input size="small" type="password" v-model="form.checkNewPassword" style="width: 200px;"></el-input>
+          <password-input class="input-area" v-model="form.checkNewPassword"></password-input>
         </el-form-item>
       </el-form>
       <template slot="footer">
@@ -26,6 +25,7 @@
 
 
 <script>
+import PasswordInput from '@/components/PasswordInput/index.vue'
 import AccountTypes from '@/config/account-types'
 import AccountLayout from '../layout.vue'
 
@@ -90,9 +90,8 @@ export default {
     }
   },
 
-  props: {
-  },
-  components: { AccountLayout },
+  props: {},
+  components: { AccountLayout, PasswordInput },
 
   mounted() {
   },
@@ -121,7 +120,6 @@ export default {
             if (data.ret === 0 && data.errcode === 0) {
               this.$message.success('支付密码重置成功')
               this.$router.push('/accounts')
-              // this.$store.dispatch('changePanel', 'my-accounts')
             } else {
               this.$error.showErrorMessage(res.data.msg)
             }
@@ -133,5 +131,10 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less" scoped type="text/less">
+  .account-reset-pay-password-view {
+    .input-area {
+      width: 250px;
+    }
+  }
 </style>

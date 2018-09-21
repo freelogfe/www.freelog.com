@@ -138,7 +138,7 @@ export default {
       amount: '',
       cardNo: '',
       cardClips: [],
-      renderData: this.$route.query
+      renderData: Object.assign(this.$route.params, this.$route.query)
     }
   },
 
@@ -152,9 +152,8 @@ export default {
         this.cardClips = list.map(this.resolveCard)
       })
 
-    console.log(this.renderData)
     if (this.renderData.accountId &&
-        (!this.renderData.balance || !this.renderData.accountName)) {
+          (!this.renderData.balance || !this.renderData.accountName)) {
       this.loadAccountInfo()
     }
   },
@@ -199,7 +198,7 @@ export default {
           const { data } = res.data
           if (res.data.ret === 0 && res.data.errcode === 0) {
             Object.assign(this.renderData, data)
-            this.$forceUpdate()
+            // this.$forceUpdate()
           }
         })
     },
@@ -260,7 +259,6 @@ export default {
           if ([1, 3].includes(data.data.tradeStatus)) {
             this.$message.success(msg)
             this.$router.push('/accounts')
-            // this.$store.dispatch('changePanel', 'my-accounts')
           } else {
             this.$message.error(msg)
           }

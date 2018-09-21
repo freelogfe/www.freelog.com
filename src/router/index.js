@@ -50,6 +50,7 @@ export default new Router({
     },
     {
       path: '/accounts/create',
+      name: 'accountCreate',
       meta: {
         title: '创建账户'
       },
@@ -57,6 +58,7 @@ export default new Router({
     },
     {
       path: '/accounts/recharge',
+      name: 'accountRecharge',
       meta: {
         title: '账户充值'
       },
@@ -64,6 +66,7 @@ export default new Router({
     },
     {
       path: '/accounts/records',
+      name: 'accountRecords',
       meta: {
         title: '账户交易记录'
       },
@@ -71,6 +74,7 @@ export default new Router({
     },
     {
       path: '/accounts/reset',
+      name: 'accountReset',
       meta: {
         title: '账户充值密码'
       },
@@ -78,6 +82,7 @@ export default new Router({
     },
     {
       path: '/accounts/withdraw',
+      name: 'accountWithdraw',
       meta: {
         title: '账户提现'
       },
@@ -85,6 +90,7 @@ export default new Router({
     },
     {
       path: '/accounts/transfer',
+      name: 'accountTransfer',
       meta: {
         title: '账户转账'
       },
