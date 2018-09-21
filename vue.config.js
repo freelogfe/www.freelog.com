@@ -5,6 +5,8 @@ const fs = require('fs')
 const merge = require('webpack-merge')
 const isProd = process.env.NODE_ENV === 'production'
 const srcDir = path.resolve('./src');
+var minimist = require('minimist')
+var argv = minimist(process.argv.slice(2));
 
 const baseWebpackConfig = {
   resolve: {
@@ -19,8 +21,27 @@ const baseWebpackConfig = {
   plugins: [],
 };
 
+
+
+function getBaseUrl(){
+  var baseUrl
+  if (argv.beta) {
+    baseUrl = '//static.testfreelog.com'
+  } else if (isProd) {
+    baseUrl = '//static.freelog.com'
+  } else {
+    baseUrl = '/'
+  }
+
+
+  return baseUrl
+}
+
+
+console.log(getBaseUrl())
+
 module.exports = {
-  baseUrl: '/',
+  baseUrl: getBaseUrl(),
   assetsDir: 'public',
   crossorigin: 'anonymous',
   devServer: {
@@ -41,7 +62,7 @@ module.exports = {
     pagebuild: {
       entry: 'src/views/pagebuild/app.js',
       template: 'src/views/layout/pagebuild.html',
-      filename: isProd? 'pages/pagebuild.html': '/pagebuild/index.html',
+      filename: isProd? 'pages/pagebuild.html': 'pagebuild/index.html',
     }
   },
   configureWebpack: (config) => {

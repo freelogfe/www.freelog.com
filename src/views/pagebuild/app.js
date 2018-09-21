@@ -10,7 +10,7 @@ import initialEventCenter from './event-center'
 
 document.body.querySelector('#js-page-container').classList.add('freelog-app-loading')
 
-Vue({
+new Vue({
   el: '#app',
   template: '<app-view @ready="onReady"/>',
   components: { 'app-view': AppView },
