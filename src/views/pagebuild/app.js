@@ -12,8 +12,6 @@ document.body.querySelector('#js-page-container').classList.add('freelog-app-loa
 
 new Vue({
   el: '#app',
-  template: '<app-view @ready="onReady"/>',
-  components: { 'app-view': AppView },
   methods: {
     // app-view mounted
     onReady(appUiVm) {
@@ -36,6 +34,10 @@ new Vue({
       }
       this.$notify(opt)
     }
-  }
+  },
+  mounted(){
+    this.onReady(this.$children[0])
+  },
+  render: (h)=>h(AppView)
 })
 

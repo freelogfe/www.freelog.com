@@ -9,13 +9,22 @@ var minimist = require('minimist')
 var argv = minimist(process.argv.slice(2));
 
 const baseWebpackConfig = {
+  output: {
+    chunkFilename: '[name]'
+  },
   resolve: {
+
     extensions: ['.js', '.vue', '.json'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
       '@': srcDir,
       static: path.join(srcDir, 'static'),
       components: path.join(srcDir, 'components'),
+    },
+  },
+  optimization : {
+    splitChunks: {
+      chunks: 'all'
     },
   },
   plugins: [],
@@ -51,6 +60,9 @@ module.exports = {
     //   key: fs.readFileSync('./config/cert/server_ca.key'),
     //   cert: fs.readFileSync('./config/cert/server_ca.crt'),
     // }
+  },
+  css: {
+    extract: true
   },
   pages: {
     index: {
