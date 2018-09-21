@@ -21,7 +21,8 @@ export default function showResourceSignDialog({ appUiVm }, options, callback) {
 // 获取c端与节点presentable签订的合同
 function getContractsByPresentableList(presentableList) {
   const resourceIds = presentableList.map(presentable => presentable.resourceId).join(',')
+
   const userId = window.__auth_info__.__auth_user_id__
-  return window.FreelogApp.QI.fetch(`/v1/contracts/contractRecords?resourceIds=${resourceIds}&partyTwo=${userId}`)
+  return this.$axios.get(`/v1/contracts/contractRecords?resourceIds=${resourceIds}&partyTwo=${userId}`)
     .then(resp => resp.json())
 }

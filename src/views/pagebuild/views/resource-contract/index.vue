@@ -121,6 +121,18 @@ export default {
     }
   },
   methods: {
+    fetch (url, options = {}){
+      if(window.FreelogApp && window.FreelogApp.QI){
+        return window.FreelogApp.QI.fetch(url, options)
+          .then(resp => resp.json())
+      }
+      if(this.$axios){
+        return this.$axios({ url, ...options})
+          .then(res => res.data)
+
+      }
+      return window.fetch(url, options)
+    },
     // 处理策略与合同状态的关系
     resolvePolicyContractStateMap() {
       this.policyList.forEach((policy) => {
@@ -164,23 +176,10 @@ export default {
     },
     // 点击“签约” 执行合同签约
     signContract() {
-      // Promise.resolve()
-      //     .then(res => {
-      //         const contract = this.policyContractsMap['afdb749ac116c5b536976b2f7e614547']
-      //         this.policyContractsMap['acd09a8f3c5a83dc653205c6a8bd5616'] = contract
-      //         this.resolvePolicyContractStateMap()
-      //         // 更新policy与contract的映射关系后，强制刷新
-      //         this.$forceUpdate()
-      //     })
-      // this.$message({
-      //     type: 'error',
-      //     showClose: true,
-      //     message: '合同签约功能待开放！！！'
-      // })
       const { presentableId } = this.presentable
       const { segmentId } = this.actPolicy
 
-      window.FreelogApp.QI.fetch('/v1/contracts/createUserPresentableContract', {
+      this.fetch('/v1/contracts/createUserPresentableContract', {
         method: 'POST',
         data: {
           presentableId,
@@ -188,7 +187,6 @@ export default {
           targetId: presentableId
         }
       })
-        .then(resp => resp.json())
         .then((res) => {
           if (res.errcode === 0) {
             const contract = res.data
@@ -210,10 +208,9 @@ export default {
     },
     // 设置默认合同
     setDefualtContract() {
-      window.FreelogApp.QI.fetch(`/v1/contracts/setDefault?contractId=${this.selectedContract.contractId}`, {
+      this.fetch(`/v1/contracts/setDefault?contractId=${this.selectedContract.contractId}`, {
         method: 'PUT',
       })
-        .then(resp => resp.json())
         .then((res) => {
           if (res.errcode === 0) {
             this.isActPolicyDefault = true
@@ -275,8 +272,7 @@ export default {
   beforeMount() {
     this.resolvePolicyContractStateMap()
     if (userinfos === null) {
-      window.FreelogApp.QI.fetch('/v1/userinfos/current')
-        .then(resp => resp.json())
+      this.fetch('/v1/userinfos/current')
         .then((res) => {
           if (res.errcode === 0) {
             userinfos = res.data

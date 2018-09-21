@@ -29,6 +29,7 @@ const user = {
       storage.set('user_session', state.session)
     },
     [types.CHANGE_AVATAR](state, data) {
+      debugger
       if (typeof data === 'undefined') {
         state.session.avatarUrl = `${resolveAvatarUrl(state.session.userId)}&_c=${+new Date()}`
       } else {

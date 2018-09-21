@@ -110,7 +110,15 @@ export default {
       //   data: row,
       // })
 
-      this.$router.push({ path: `/resources/detail/${row.resourceId}` })
+      const { targetId, contractId } = row
+
+      this.$router.push({
+        path: `/resources/detail/`,
+        query: {
+          presentableId: targetId,
+          contractId
+        }
+      })
     },
     formatNodeDomain(domain) {
       return `${domain}.${this.host}`
