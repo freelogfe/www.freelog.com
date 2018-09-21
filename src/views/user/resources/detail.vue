@@ -1,33 +1,69 @@
 <template>
   <div class="resource-contract-detail-view">
-    <account-layout title="资源详情" :showFooter="false" return-name="/resources">
-      待开发
+    <account-layout ref="layout" title="资源详情" :showFooter="false" return-name="/resources">
+
+      <single-contract
+              style="width: 100%"
+              v-if="presentable && contractIDs.length"
+              :presentable="presentable"
+              :contractIDs="contractIDs"
+              @close-dialog="goBack"
+      ></single-contract>
     </account-layout>
+
   </div>
 </template>
 
 <script>
-import AccountLayout from '../layout.vue'
+  import singleContract from '@/views/pagebuild/views/resource-contract/single-contract.vue'
+  import { mapGetters } from 'vuex'
+  import AccountLayout from '../layout.vue'
 
 export default {
   name: 'resource-contract-detail-view',
 
   data() {
-    return {}
+    return {
+      presentable: null,
+      contractIDs: []
+    }
   },
 
   props: {
   },
 
-  components: { AccountLayout },
+  components: { AccountLayout, singleContract },
 
   mounted() {
-    console.log(this.$route.params.resourceId)
+    const { presentableId, contractId } = this.$route.query
+    this.$axios.get(`/v1/presentables/${presentableId}`)
+      .then(res => {
+        console.log('res- ', res)
+        if(res.data.errcode === 0 && res.data.data){
+          console.log('in')
+          this.presentable = res.data.data
+          this.contractIDs = [ contractId ]
+        }
+      })
   },
 
-  computed: {},
+  computed: {
+    ...mapGetters({
+      user: 'session'
+    })
+  },
 
-  methods: {}
+
+  methods: {
+    goBack (){
+      this.$refs.layout.goBack()
+    }
+
+  },
+
+  destroyed (){
+    clearTimeout(this.timer)
+  }
 }
 </script>
 
