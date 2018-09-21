@@ -1,43 +1,36 @@
 <template>
   <div id="app">
-    <el-alert title="" type="warning"
-              v-if="showUpgrade"
-              center
-              show-icon>请使用<a href="https://www.google.cn/chrome/index.html">chrome</a>访问本页面！
-    </el-alert>
-    <div v-else>
-      <fe-dialog
-        :close-on-click-modal="false"
-        :title="scTitle"
-        width="790px"
-        top="5vh"
-        :visible.sync="isShowSingleContract"
-        :close="hideAuthDialog"
-        is-destoryed-body
-      >
-        <single-contract
-          :presentable="scAuthPresentable || {}"
-          :contractIDs="scAuthContractIDs"
-          @close-dialog="hideAuthDialog"
-        ></single-contract>
-      </fe-dialog>
-      <fe-dialog
-        :close-on-click-modal="false"
-        :title="scTitle"
-        width="1000px"
-        top="5vh"
-        :visible.sync="isShowMultiContract"
-        :close="hideAuthDialog"
-      >
-        <multi-contract
-          :presentableList="scAuthPresentableList"
-          :contractIDs="scAuthContractIDs"
-          @close-dialog="hideAuthDialog"
-        ></multi-contract>
-      </fe-dialog>
+    <fe-dialog
+            :close-on-click-modal="false"
+            :title="scTitle"
+            width="790px"
+            top="5vh"
+            :visible.sync="isShowSingleContract"
+            :close="hideAuthDialog"
+            is-destoryed-body
+    >
+      <single-contract
+              :presentable="scAuthPresentable || {}"
+              :contractIDs="scAuthContractIDs"
+              @close-dialog="hideAuthDialog"
+      ></single-contract>
+    </fe-dialog>
+    <fe-dialog
+            :close-on-click-modal="false"
+            :title="scTitle"
+            width="1000px"
+            top="5vh"
+            :visible.sync="isShowMultiContract"
+            :close="hideAuthDialog"
+    >
+      <multi-contract
+              :presentableList="scAuthPresentableList"
+              :contractIDs="scAuthContractIDs"
+              @close-dialog="hideAuthDialog"
+      ></multi-contract>
+    </fe-dialog>
 
-      <tool-bar ref="toolbar"></tool-bar>
-    </div>
+    <tool-bar ref="toolbar"></tool-bar>
   </div>
 </template>
 
@@ -58,7 +51,6 @@ export default {
       scAuthPresentableList: [],
       scAuthContractIDs: [],
 
-      showUpgrade: !window.__supports,
       shouldShowAuthDialog: false,
       activeTabName: 'presentables'
     }

@@ -7,13 +7,22 @@ const isProd = process.env.NODE_ENV === 'production'
 const srcDir = path.resolve('./src');
 
 const baseWebpackConfig = {
+  output: {
+    chunkFilename: '[name]'
+  },
   resolve: {
+
     extensions: ['.js', '.vue', '.json'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
       '@': srcDir,
       static: path.join(srcDir, 'static'),
       components: path.join(srcDir, 'components'),
+    },
+  },
+  optimization : {
+    splitChunks: {
+      chunks: 'all'
     },
   },
   plugins: [],
@@ -31,6 +40,9 @@ module.exports = {
     //   cert: fs.readFileSync('./config/cert/server_ca.crt'),
     // }
   },
+  css: {
+    extract: true
+  },
   pages: {
     index: {
       entry: 'src/views/user/app.js',
@@ -41,7 +53,7 @@ module.exports = {
     pagebuild: {
       entry: 'src/views/pagebuild/app.js',
       template: 'src/views/layout/pagebuild.html',
-      filename: isProd? 'pages/pagebuild.html': '/pagebuild/index.html',
+      filename: isProd? 'pages/pagebuild.html': 'pagebuild/index.html',
     }
   },
   configureWebpack: (config) => {
