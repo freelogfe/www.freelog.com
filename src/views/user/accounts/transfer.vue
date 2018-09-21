@@ -88,7 +88,6 @@ export default {
             if (data.ret === 0 && data.errcode === 0) {
               this.$message.success('转账成功')
               this.$router.push('/accounts')
-              // this.$store.dispatch('changePanel', 'my-accounts')
             } else {
               this.$error.showErrorMessage(res)
             }

@@ -4,8 +4,9 @@
     <el-container class="app-container">
       <user-aside-nav></user-aside-nav>
       <el-main class="main-app-content" :class="[themeCls]">
-        <!--<div id="main-app"></div>-->
-        <router-view></router-view>
+        <transition name="fade">
+          <router-view></router-view>
+        </transition>
       </el-main>
     </el-container>
   </div>
@@ -14,7 +15,6 @@
 <script>
 import NavTopBar from '@/components/NavTop/index.vue'
 import UserAsideNav from '@/components/UserAsideNav/index.vue'
-import { mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -22,9 +22,6 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      personal: 'personal'
-    }),
     themeCls() {
       return this.$route.meta.theme || 'white'
     }

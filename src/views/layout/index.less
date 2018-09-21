@@ -12,4 +12,16 @@
   &.transparent {
     background-color: transparent;
   }
+
+  .fade-leave-active {
+    transition: opacity .1s ease;
+  }
+
+  .fade-enter-active {
+    transition: opacity .5s .1s ease;
+  }
+  .fade-enter, .fade-leave-active {
+    opacity: 0
+  }
 }
+

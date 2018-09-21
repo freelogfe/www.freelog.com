@@ -37,7 +37,6 @@ export default {
     },
     goBack() {
       this.$router.push('/accounts')
-      // this.$store.dispatch('changePanel', 'my-accounts')
     }
   }
 }

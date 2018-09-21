@@ -47,7 +47,6 @@ export default {
     },
     goBack() {
       this.$router.push(this.returnName)
-      // this.$store.dispatch('changePanel', this.returnName)
     }
   }
 }

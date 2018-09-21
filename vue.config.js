@@ -22,6 +22,7 @@ const baseWebpackConfig = {
 module.exports = {
   baseUrl: '/',
   assetsDir: 'public',
+  crossorigin: 'anonymous',
   devServer: {
     port: 9080,
     disableHostCheck: true,

@@ -24,129 +24,129 @@
 
 
 <script>
-  import Storage from '@/lib/storage'
+import Storage from '@/lib/storage'
 
-  export default {
-    name: 'fl-pagination',
-    data() {
-      return {
-        total: 8,
-        tableProps: {
-          data: []
-        },
-        currentPage: Storage.get(`${this.$route.fullPath}_current_page`) || 1,
-        pageSize: 10,
-        loading: false
-      }
-    },
-
-    props: {
-      pagination: {
-        type: Object,
-        default() {
-          return {
-            pageSize: 10
-          }
-        }
+export default {
+  name: 'fl-pagination',
+  data() {
+    return {
+      total: 8,
+      tableProps: {
+        data: []
       },
-      config: Object,
-      rowClickHandler: {
-        type: Function,
-        default: () => {
+      currentPage: Storage.get(`${this.$route.fullPath}_current_page`) || 1,
+      pageSize: 10,
+      loading: false
+    }
+  },
+
+  props: {
+    pagination: {
+      type: Object,
+      default() {
+        return {
+          pageSize: 10
         }
       }
     },
-
-    watch: {
-      pagination: {
-        deep: true,
-        handler() {
-          Object.assign(this.tableProps, this.config)
-          this.reload()
-        }
-      }
-    },
-
-    mounted() {
-      Object.assign(this.tableProps, this.config)
-      this.pageSize = this.pagination.pageSize || 10
-      this.load()
-    },
-    methods: {
-      loadData() {
-        if (!this.pagination.target) {
-          throw new Error('need pagination target param')
-        }
-
-        const params = {
-          page: this.currentPage,
-          pageSize: this.pageSize
-        }
-
-        if (this.pagination.params) {
-          Object.assign(params, this.pagination.params)
-        }
-
-        return this.$axios.get(this.pagination.target, {
-          params
-        }).then(res => res.data.data)
-      },
-      update(data) {
-        if (!data) return
-        this.total = data.totalItem
-        this.tableProps.data = data.dataList
-      },
-      reload() {
-        this.currentPage = 1
-        this.load()
-      },
-      load() {
-        if (this.loading) return
-
-        this.loading = true
-        this.loadData().then(this.update.bind(this))
-          .then(() => {
-            this.loading = false
-            Storage.set(`${this.$route.fullPath}_current_page`, this.currentPage)
-          })
-          .catch((err) => {
-            console.error(err)
-            this.loading = true
-          })
-      },
-      loadNextHandler() {
-        this.currentPage += 1
-        this.load()
-      },
-      loadPrevHandler() {
-        this.currentPage -= 1
-        this.load()
-      },
-      gotoLastPageHandler() {
-        this.currentPage = Math.ceil(this.total / this.pageSize)
-        this.load()
-      },
-      gotoFirstPageHandler() {
-        this.currentPage = 1
-        this.load()
-      }
-    },
-
-    computed: {
-      hasNext() {
-        return (this.currentPage * this.pageSize < this.total)
-      },
-      hasPrev() {
-        return this.currentPage > 1
-      },
-      from() {
-        return ((this.currentPage - 1) * this.pageSize) + 1
-      },
-      to() {
-        return (this.from + this.tableProps.data.length) - 1
+    config: Object,
+    rowClickHandler: {
+      type: Function,
+      default: () => {
       }
     }
+  },
+
+  watch: {
+    pagination: {
+      deep: true,
+      handler() {
+        Object.assign(this.tableProps, this.config)
+        this.reload()
+      }
+    }
+  },
+
+  mounted() {
+    Object.assign(this.tableProps, this.config)
+    this.pageSize = this.pagination.pageSize || 10
+    this.load()
+  },
+  methods: {
+    loadData() {
+      if (!this.pagination.target) {
+        throw new Error('need pagination target param')
+      }
+
+      const params = {
+        page: this.currentPage,
+        pageSize: this.pageSize
+      }
+
+      if (this.pagination.params) {
+        Object.assign(params, this.pagination.params)
+      }
+
+      return this.$axios.get(this.pagination.target, {
+        params
+      }).then(res => res.data.data)
+    },
+    update(data) {
+      if (!data) return
+      this.total = data.totalItem
+      this.tableProps.data = data.dataList
+    },
+    reload() {
+      this.currentPage = 1
+      this.load()
+    },
+    load() {
+      if (this.loading) return
+
+      this.loading = true
+      this.loadData().then(this.update.bind(this))
+        .then(() => {
+          this.loading = false
+          Storage.set(`${this.$route.fullPath}_current_page`, this.currentPage)
+        })
+        .catch((err) => {
+          console.error(err)
+          this.loading = true
+        })
+    },
+    loadNextHandler() {
+      this.currentPage += 1
+      this.load()
+    },
+    loadPrevHandler() {
+      this.currentPage -= 1
+      this.load()
+    },
+    gotoLastPageHandler() {
+      this.currentPage = Math.ceil(this.total / this.pageSize)
+      this.load()
+    },
+    gotoFirstPageHandler() {
+      this.currentPage = 1
+      this.load()
+    }
+  },
+
+  computed: {
+    hasNext() {
+      return (this.currentPage * this.pageSize < this.total)
+    },
+    hasPrev() {
+      return this.currentPage > 1
+    },
+    from() {
+      return ((this.currentPage - 1) * this.pageSize) + 1
+    },
+    to() {
+      return (this.from + this.tableProps.data.length) - 1
+    }
   }
+}
 </script>
 
 <style lang="less">

@@ -6,23 +6,19 @@
                  ref="createForm"
                  :model="form"
                  label-position="left"
-                 :rules="rules" status-icon>
+                 @validate="validateForm"
+                 :rules="rules">
           <el-form-item label="账户名称" prop="accountName">
             <el-input size="small" class="input-area" v-model="form.accountName"></el-input>
             <label class="input-tip">由2-20位字符组成</label>
           </el-form-item>
           <el-form-item label="支付密码" prop="password">
-            <el-input size="small"
-                      class="input-area"
-                      type="password"
-                      v-model="form.password"></el-input>
+            <password-input class="input-area" v-model="form.password"></password-input>
             <label class="input-tip">由6位数字组成</label>
           </el-form-item>
           <el-form-item label="确认密码" prop="checkPassword">
-            <el-input size="small"
-                      class="input-area"
-                      type="password"
-                      v-model="form.checkPassword"></el-input>
+            <password-input class="input-area" v-model="form.checkPassword"></password-input>
+            <label v-show="validPassword"><i class="valid-icon"></i></label>
           </el-form-item>
         </el-form>
       </div>
@@ -36,6 +32,7 @@
 
 <script>
 import accountTypes from '@/config/account-types'
+import PasswordInput from '@/components/PasswordInput/index.vue'
 import AccountLayout from '../layout.vue'
 
 export default {
@@ -73,6 +70,7 @@ export default {
         password: '',
         checkPassword: ''
       },
+      validPassword: false,
       rules: {
         accountName: [
           { required: true, message: '请输入账户名称', trigger: 'blur' },
@@ -99,7 +97,7 @@ export default {
     }
   },
 
-  components: { AccountLayout },
+  components: { AccountLayout, PasswordInput },
 
   mounted() {
   },
@@ -117,12 +115,16 @@ export default {
   },
 
   methods: {
+    validateForm(field, flag) {
+      if (field === 'checkPassword') {
+        this.validPassword = flag
+      }
+    },
     cancelHandler() {
       this.goBack()
     },
     goBack() {
       this.$router.push('/accounts')
-      // this.$store.dispatch('changePanel', 'my-accounts')
     },
     createHandler() {
       this.$refs.createForm.validate((valid) => {
