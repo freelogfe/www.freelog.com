@@ -36,6 +36,11 @@ module.exports = {
       template: 'src/views/layout/index.html',
       filename: isProd? 'pages/index.html': 'index.html',
       title: '个人中心',
+    },
+    pagebuild: {
+      entry: 'src/views/pagebuild/app.js',
+      template: 'src/views/layout/pagebuild.html',
+      filename: isProd? 'pages/pagebuild.html': '/pagebuild/index.html',
     }
   },
   configureWebpack: (config) => {

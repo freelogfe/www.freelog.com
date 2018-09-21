@@ -76,7 +76,7 @@ export default {
       })
       return result
     },
-    viewDetailHandler(data) {
+    viewDetailHandler() {
       // window.location.href = `/pages/trade/detail.html?contractId=${data.contractId}`
     },
     loadResource(resourceId) {

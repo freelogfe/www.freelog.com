@@ -1,4 +1,4 @@
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'nav-top-bar',
@@ -70,7 +70,7 @@ export default {
       this.$axios.get('/v1/passport/logout').then(() => {
         this.$vuex.dispatch('userLogout').then(() => {
           setTimeout(() => {
-            var redirect = encodeURIComponent(window.location.href)
+            const redirect = encodeURIComponent(window.location.href)
             window.location.replace(`//console.${window.G_FreelogConfig.mainDomain}/user/login?redirect=${redirect}`)
           }, 20)
         })
