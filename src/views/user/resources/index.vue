@@ -105,11 +105,6 @@ export default {
 
   methods: {
     rowClickHandler(row) {
-      // this.$store.dispatch('changePanel', {
-      //   name: 'resource-contract-detail-view',
-      //   data: row,
-      // })
-
       const { targetId, nodeInfo: { nodeId }, resourceId } = row
 
       this.$router.push({

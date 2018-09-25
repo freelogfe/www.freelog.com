@@ -10,10 +10,12 @@ var argv = minimist(process.argv.slice(2));
 
 const baseWebpackConfig = {
   output: {
-    chunkFilename: '[name]'
+    filename: (chunkData) => {
+      console.log(chunkData.chunk)
+      return chunkData.chunk.name === 'main' ? '[name].js': '[name]/[name].js';
+    },
   },
   resolve: {
-
     extensions: ['.js', '.vue', '.json'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
@@ -24,13 +26,11 @@ const baseWebpackConfig = {
   },
   optimization : {
     splitChunks: {
-      chunks: 'all'
+      chunks: 'async'
     },
   },
   plugins: [],
 };
-
-
 
 function getBaseUrl(){
   var baseUrl
@@ -45,9 +45,6 @@ function getBaseUrl(){
 
   return baseUrl
 }
-
-
-console.log(getBaseUrl())
 
 module.exports = {
   baseUrl: getBaseUrl(),
@@ -74,7 +71,7 @@ module.exports = {
     pagebuild: {
       entry: 'src/views/pagebuild/app.js',
       template: 'src/views/layout/pagebuild.html',
-      filename: isProd? 'pages/pagebuild.html': 'pagebuild/index.html',
+      filename: isProd? 'pages/pagebuild.html': 'pagebuild/index.html'
     }
   },
   configureWebpack: (config) => {
