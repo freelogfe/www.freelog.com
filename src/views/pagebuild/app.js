@@ -35,9 +35,9 @@ new Vue({
       this.$notify(opt)
     }
   },
-  mounted(){
+  mounted() {
     this.onReady(this.$children[0])
   },
-  render: (h)=>h(AppView)
+  render: (h) => h(AppView)
 })
 

@@ -6,7 +6,9 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint --fix",
-    "dev": "npm run serve"
+    "dev": "npm run serve",
+    "pb": "vue-cli-service serve --pb",
+    "buildpb": "vue-cli-service build --pb"
   },
   "dependencies": {
     "@freelog/presentable-policy-compiler": "0.0.11",
