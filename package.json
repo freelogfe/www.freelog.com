@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build:beta": "vue-cli-service build --beta",
     "lint": "vue-cli-service lint --fix",
     "dev": "npm run serve",
     "pb": "vue-cli-service serve --pb",
@@ -29,6 +30,7 @@
     "@vue/eslint-config-airbnb": "^3.0.3",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
+    "minimist": "^1.2.0",
     "pug": "^2.0.3",
     "pug-loader": "^2.4.0",
     "pug-plain-loader": "^1.0.0",

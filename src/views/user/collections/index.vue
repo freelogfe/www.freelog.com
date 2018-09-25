@@ -76,7 +76,16 @@ export default {
   },
   methods: {
     rowClickHandler(row) {
-      this.$router.push({ path: `/resources/detail/${row.resourceId}` })
+      console.log('row', row)
+      // const { targetId, nodeInfo: { nodeId }, resourceId } = row
+      // this.$router.push({
+      //   path: '/resources/detail/',
+      //   query: {
+      //     resourceId,
+      //     presentableId: targetId,
+      //     partyTwo: nodeId
+      //   }
+      // })
     },
     resolveStatus(status) {
       let text

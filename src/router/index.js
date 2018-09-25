@@ -12,6 +12,7 @@ import AccountResetPayPasswordView from '@/views/user/accounts/reset.vue'
 import AccountWithdrawView from '@/views/user/accounts/withdraw.vue'
 import AccountTransferView from '@/views/user/accounts/transfer.vue'
 import ResourceContractDetailView from '@/views/user/resources/detail.vue'
+import ErrorView from '@/views/error/index.vue'
 
 const scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
@@ -34,7 +35,7 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   scrollBehavior,
-  base: process.env.BASE_URL,
+  base: '/',
   routes: [
     {
       path: '/',
@@ -117,22 +118,13 @@ export default new Router({
       component: MyCollectionsView
     },
     {
-      path: '*',
+      path: '/*',
       meta: {
         requiresAuth: false,
-        title: 'not found'
+        title: 'not found',
+        error: true
       },
-      redirect: '/',
-      // component: Views.layout,
-      children: [{
-        name: '404',
-        path: '',
-        meta: {
-          requiresAuth: false,
-          title: '404'
-        }
-        // component: Views.error
-      }]
+      component: ErrorView,
     }
     // {
     //   path: '/about',
