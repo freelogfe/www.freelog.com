@@ -7,6 +7,7 @@ const isProd = process.env.NODE_ENV === 'production'
 const srcDir = path.resolve('./src');
 var minimist = require('minimist')
 var argv = minimist(process.argv.slice(2));
+const hashStr = isProd ? '[hash].' : ''
 
 const baseWebpackConfig = {
   output: {
@@ -46,7 +47,40 @@ function getBaseUrl(){
   return baseUrl
 }
 
-module.exports = {
+module.exports = argv['pb'] ? {
+  baseUrl: isProd ? '//static.freelog.com/public/pagebuild' : 'public/pagebuild',
+  outputDir: 'dist/pagebuild',
+  css: {
+    extract: true,
+  },
+  devServer: {
+    port: 9080,
+    disableHostCheck: true
+  },
+  filenameHashing: isProd,
+  pages: {
+    pagebuild: {
+      entry: 'src/views/pagebuild/app.js',
+      title: '个人中心',
+    }
+  },
+  configureWebpack: {
+    output: {
+      filename:  `js/pagebuild.${hashStr}js`,
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        name:'chunk-vendors'
+      }
+    },
+    resolve: {
+      alias: {
+        'vue$': 'vue/dist/vue.esm.js',
+      }
+    }
+  }
+} : {
   baseUrl: getBaseUrl(),
   assetsDir: 'public',
   crossorigin: 'anonymous',
