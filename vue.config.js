@@ -9,31 +9,7 @@ var minimist = require('minimist')
 var argv = minimist(process.argv.slice(2));
 const hashStr = isProd ? '[hash].' : ''
 
-const baseWebpackConfig = {
-  output: {
-    filename: (chunkData) => {
-      console.log(chunkData.chunk)
-      return chunkData.chunk.name === 'main' ? '[name].js': '[name]/[name].js';
-    },
-  },
-  resolve: {
-    extensions: ['.js', '.vue', '.json'],
-    alias: {
-      vue$: 'vue/dist/vue.esm.js',
-      '@': srcDir,
-      static: path.join(srcDir, 'static'),
-      components: path.join(srcDir, 'components'),
-    },
-  },
-  optimization : {
-    splitChunks: {
-      chunks: 'async'
-    },
-  },
-  plugins: [],
-};
-
-function getBaseUrl(){
+function getBaseUrl() {
   var baseUrl
   if (argv.beta) {
     baseUrl = '//static.testfreelog.com'
@@ -42,45 +18,10 @@ function getBaseUrl(){
   } else {
     baseUrl = '/'
   }
-
-
   return baseUrl
 }
 
-module.exports = argv['pb'] ? {
-  baseUrl: isProd ? '//static.freelog.com/public/pagebuild' : 'public/pagebuild',
-  outputDir: 'dist/pagebuild',
-  css: {
-    extract: true,
-  },
-  devServer: {
-    port: 9080,
-    disableHostCheck: true
-  },
-  filenameHashing: isProd,
-  pages: {
-    pagebuild: {
-      entry: 'src/views/pagebuild/app.js',
-      title: '个人中心',
-    }
-  },
-  configureWebpack: {
-    output: {
-      filename:  `js/pagebuild.${hashStr}js`,
-    },
-    optimization: {
-      splitChunks: {
-        chunks: 'all',
-        name:'chunk-vendors'
-      }
-    },
-    resolve: {
-      alias: {
-        'vue$': 'vue/dist/vue.esm.js',
-      }
-    }
-  }
-} : {
+module.exports = {
   baseUrl: getBaseUrl(),
   assetsDir: 'public',
   crossorigin: 'anonymous',
@@ -95,28 +36,64 @@ module.exports = argv['pb'] ? {
   css: {
     extract: true
   },
+  filenameHashing: isProd,
   pages: {
     index: {
       entry: 'src/views/user/app.js',
       template: 'src/views/layout/index.html',
-      filename: isProd? 'pages/index.html': 'index.html',
+      filename: isProd ? 'pages/index.html' : 'index.html',
       title: '个人中心',
     },
     pagebuild: {
       entry: 'src/views/pagebuild/app.js',
       template: 'src/views/layout/pagebuild.html',
-      filename: isProd? 'pages/pagebuild.html': 'pagebuild/index.html'
+      filename: isProd ? 'pages/pagebuild.html' : 'pagebuild/index.html'
     }
   },
-  configureWebpack: (config) => {
-    merge(config, baseWebpackConfig);
-    if (process.env.NODE_ENV === 'production') {
-      // mutate config for production...
-      // config.output.publicPath = '//static.testfreelog.com/public'
-    } else {
-      // mutate for development...
-    }
+  configureWebpack: {
+    output: {
+      filename: `[name].${hashStr}js`,
+      chunkFilename: `[name].${hashStr}js`,
+    },
+    resolve: {
+      extensions: ['.js', '.vue', '.json'],
+      alias: {
+        vue$: 'vue/dist/vue.esm.js',
+        '@': srcDir,
+        static: path.join(srcDir, 'static'),
+        components: path.join(srcDir, 'components'),
+      },
+    },
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          vendors: {
+            name: `chunk-vendors`,
+            test: /[\\/]node_modules[\\/]/,
+            priority: -10,
+            chunks: 'initial'
+          },
+          common: {
+            name: `chunk-common`,
+            minChunks: 2,
+            priority: -20,
+            chunks: 'initial',
+            reuseExistingChunk: true
+          }
+        },
+      }
+    },
+    plugins: []
   },
+  // configureWebpack: (config) => {
+  //   merge(config, baseWebpackConfig);
+  //   if (process.env.NODE_ENV === 'production') {
+  //     // mutate config for production...
+  //   } else {
+  //     // mutate for development...
+  //   }
+  //   console.log(config)
+  // },
   chainWebpack: config => {
 
   }
