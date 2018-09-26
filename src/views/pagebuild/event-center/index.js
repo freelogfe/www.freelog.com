@@ -13,6 +13,13 @@ export default function initialEventCenter(options) {
     trigger,
     exceptionCode,
     eventNames,
+    getErrorInfo(error) {
+      return exceptionCode[error.errcode] || {
+        desc: `未定义的错误[${error.errcode}]`,
+        tip: '上报错误',
+        eventName: 'REPORT_ERROR',
+      }
+    }
   })
 
   // 注册监听事件：

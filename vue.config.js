@@ -52,8 +52,8 @@ module.exports = {
   },
   configureWebpack: {
     output: {
-      filename: `[name].${hashStr}js`,
-      chunkFilename: `[name].${hashStr}js`,
+      // filename: `js/[name].${hashStr}js`,
+      // chunkFilename: `[name].${hashStr}js`,
     },
     resolve: {
       extensions: ['.js', '.vue', '.json'],
