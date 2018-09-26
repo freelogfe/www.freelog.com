@@ -25,7 +25,9 @@
                 <resource-contract
                     :presentable="selectedPresentable"
                     :policyContractsMap="policyContractsMap"
-                    @cancel-sign="cancelSgin">
+                    @cancel-sign="cancelSgin"
+                    @update-default-contract="updateDefaultContract"
+                >
                 </resource-contract>
             </div>
         </div>
@@ -55,6 +57,10 @@ export default {
     }
   },
   methods: {
+    updateDefaultContract (contract){
+      this.resolvePolicyContractState()
+      this.$forceUpdate()
+    },
     selectedResource(index) {
       this.selectedIndex = index
       this.resolvePolicyContractState()
@@ -165,7 +171,7 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang='less' scoped type="text/less">
 
 .cutoff-line{ position: relative; top: -20px; height: 1px; margin: 0 -20px; background: #ddd; }
 .sc-content{

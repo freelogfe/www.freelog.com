@@ -7,7 +7,6 @@ import PageBuildeParser from './parser'
 
 import initialEventCenter from './event-center'
 
-
 document.body.querySelector('#js-page-container').classList.add('freelog-app-loading')
 
 new Vue({

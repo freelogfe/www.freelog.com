@@ -16,7 +16,7 @@
                             aria-label="Close"
                             v-if="showClose"
                             @click="handleClose">
-                            <i class="fe-model-close">X</i>
+                            <i class="fe-model-close">&times;</i>
                         </button>
                     </div>
                     <div class="fe-dialog-body" v-if="rendered"><slot></slot></div>
@@ -174,10 +174,10 @@ export default {
     padding: 20px;
 
     h3{ font-size: 16px; color: #222; }
-    .fe-model-close{ color: #999; }
+    .fe-model-close{ color: #999; font-style: normal; font-size: 28px; }
 }
 .fe-dialog-header-btn{
-    position: absolute; top: 20px; right: 20px;
+    position: absolute; top: 12px; right: 20px;
     padding: 0; border: none; outline: none;
     background: transparent; cursor: pointer; font-size: 16px;
  }

@@ -8,8 +8,8 @@ export default {
       password: '',
       fromAccountId: '',
       showError: false,
-      accountSecUrl: `//www.${window.G_FreelogConfig.mainDomain}/pages/account/security.html`,
-      createPayAccountUrl: `//www.${window.G_FreelogConfig.mainDomain}/pages/account/create.html`
+      accountSecUrl: `//www.${window.FreelogApp.Env.mainDomain}/pages/account/security.html`,
+      createPayAccountUrl: `//www.${window.FreelogApp.Env.mainDomain}/pages/account/create.html`
     }
   },
   props: {

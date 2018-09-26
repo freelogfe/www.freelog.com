@@ -71,7 +71,7 @@ export default {
         this.$vuex.dispatch('userLogout').then(() => {
           setTimeout(() => {
             const redirect = encodeURIComponent(window.location.href)
-            window.location.replace(`//console.${window.G_FreelogConfig.mainDomain}/user/login?redirect=${redirect}`)
+            window.location.replace(`//console.${window.FreelogApp.Env.mainDomain}/user/login?redirect=${redirect}`)
           }, 20)
         })
       })

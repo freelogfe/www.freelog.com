@@ -3,7 +3,7 @@ export default {
   data() {
     return {
       hidden: true,
-      profileUrl: `//www.${window.G_FreelogConfig.mainDomain}/profile`
+      profileUrl: `//www.${window.FreelogApp.Env.mainDomain}/profile`
     }
   },
   mounted() {
