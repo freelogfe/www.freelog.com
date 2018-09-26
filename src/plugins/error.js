@@ -6,8 +6,6 @@ const Error = {
       return
     }
 
-    console.error(err)
-
     let msg
     if (typeof err === 'string') {
       msg = err

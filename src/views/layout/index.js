@@ -9,9 +9,4 @@ import plugins from '../../plugins'
 Vue.use(ElementUI)
 Vue.use(plugins)
 
-window.G_FreelogConfig = {
-  isTest: /\.testfreelog\.com$/.test(window.location.host)
-}
-window.G_FreelogConfig.mainDomain = window.G_FreelogConfig.isTest ? 'testfreelog.com' : 'freelog.com'
-
 export default Vue

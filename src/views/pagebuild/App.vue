@@ -105,5 +105,4 @@ export default {
 
 <style lang="less">
   @import "./pagebuild.less";
-
 </style>

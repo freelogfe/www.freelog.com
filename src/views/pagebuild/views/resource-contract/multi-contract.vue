@@ -165,7 +165,7 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
+<style lang='less' scoped type="text/less">
 
 .cutoff-line{ position: relative; top: -20px; height: 1px; margin: 0 -20px; background: #ddd; }
 .sc-content{

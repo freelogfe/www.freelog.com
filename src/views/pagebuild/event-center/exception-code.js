@@ -7,7 +7,7 @@ const noLogin = {
   tip: '去登录',
   eventName: GO_TO_LOGIN
 }
-const exceptionCode = {
+const exceptionCodes = {
   301: {
     desc: '资源合同未激活',
     tip: '去通知节点',
@@ -69,4 +69,4 @@ const exceptionCode = {
 }
 
 
-export default exceptionCode
+export default exceptionCodes
