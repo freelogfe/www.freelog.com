@@ -37,6 +37,7 @@ export default {
     return {
       resourceName: '暗黑风格音乐播放器插件',
       defaultContract: null,
+      contractState: null,  // 资源标签状态
       contracts: [],
       isFetchedContracts: false
     }
@@ -75,6 +76,7 @@ export default {
           this.isFetchedContracts = true
           this.contracts = contracts
           this.defaultContract = this.contracts.length ? this.contracts[0] : null
+          this.contractState = this.getContractState(this.defaultContract)
         })
     },
     // 点击取消
@@ -94,10 +96,6 @@ export default {
     // 策略集合
     policyList() {
       return this.presentable.policy
-    },
-    // 资源标签状态
-    contractState() {
-      return this.getContractState(this.defaultContract)
     },
     // 合同与策略的关系
     policyContractsMap() {

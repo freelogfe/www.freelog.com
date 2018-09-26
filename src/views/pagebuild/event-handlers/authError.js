@@ -31,7 +31,8 @@ export default function handleAuthError({ appUiVm }, options, callback) {
 
   function _unactivatedHandler() {
     const contracts = authData.contracts || (authData.contract && [authData.contract]) || []
-    appUiVm.showSingleAuthDialog(authData.presentableInfo, contracts)
+    const contractsIDs = contracts.map(item => item.contractId)
+    appUiVm.showSingleAuthDialog(authData.presentableInfo, contractsIDs)
   }
 
   function _unSignHandler() {

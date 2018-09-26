@@ -181,6 +181,7 @@ export default {
           if (res.errcode === 0) {
             const contract = res.data
             this.policyContractsMap[segmentId] = contract
+            this.$emit('updateDefaultContract', )
             this.resolvePolicyContractStateMap()
             // 更新policy与contract的映射关系后，强制刷新
             this.$forceUpdate()
@@ -316,7 +317,7 @@ export default {
         .rcb-tp-sb-btn-box{ position: absolute; top: 0; right: 9px; }
         .rcb-tp-sb-default, .rcb-tp-sb-set-default{
             width: 100px; border-radius: 20px;
-            background: #4396F0; font-size: 14px; line-height: 30px;
+            background: #4396F0; font-size: 14px; line-height: 30px; cursor: pointer;
         }
         .rcb-tp-sb-default{ color: #fff; }
         .rcb-tp-sb-set-default{ border: 1px solid #4396F0; background: #fff; color: #4396F0; }
@@ -331,11 +332,11 @@ export default {
     display: flex; height: 64px; margin-top: 30px; font-size: 14px; color: #222; font-weight: bold;
 
     .rcb-add-remark{ color: #3C99FC; }
-    .rcb-r-left{ width: 78px; }
+    .rcb-r-left{ width: 78px; cursor: pointer; }
     .rcb-r-right{
         flex: 1;
 
-        textarea { box-sizing: border-box; width: 100%; padding: 10px; border-radius: 4px; }
+        textarea { resize: none; box-sizing: border-box; width: 100%; padding: 10px; border-radius: 4px; outline: 0; }
     }
 }
 

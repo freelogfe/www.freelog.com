@@ -1,7 +1,7 @@
 
 import { Error } from '@/plugins/error'
 import Vue from 'vue'
-import exceptionCode from './exception-code'
+import exceptionCodes from './exception-code'
 import eventSet from './event-map'
 
 export default function initialEventCenter(options) {
@@ -11,10 +11,10 @@ export default function initialEventCenter(options) {
   window.FreelogApp = window.FreelogApp || {}
   window.FreelogApp = Object.assign(window.FreelogApp, {
     trigger,
-    exceptionCode,
+    exceptionCodes,
     eventNames,
     getErrorInfo(error) {
-      return exceptionCode[error.errcode] || {
+      return exceptionCodes[error.errcode] || {
         desc: `未定义的错误[${error.errcode}]`,
         tip: '上报错误',
         eventName: 'REPORT_ERROR',

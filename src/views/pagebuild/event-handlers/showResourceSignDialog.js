@@ -23,6 +23,6 @@ function getContractsByPresentableList(presentableList) {
   const resourceIds = presentableList.map(presentable => presentable.resourceId).join(',')
 
   const userId = window.__auth_info__.__auth_user_id__
-  return this.$axios.get(`/v1/contracts/contractRecords?resourceIds=${resourceIds}&partyTwo=${userId}`)
+  return window.FreelogApp.QI.fetch(`/v1/contracts/contractRecords?resourceIds=${resourceIds}&partyTwo=${userId}`)
     .then(resp => resp.json())
 }
