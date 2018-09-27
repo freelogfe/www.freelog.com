@@ -7,6 +7,7 @@ const noLogin = {
   tip: '去登录',
   eventName: GO_TO_LOGIN
 }
+
 const exceptionCodes = {
   301: {
     desc: '资源合同未激活',

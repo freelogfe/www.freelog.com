@@ -6,7 +6,7 @@
             width="790px"
             top="5vh"
             :visible.sync="isShowSingleContract"
-            :close="hideAuthDialog"
+            @close="hideAuthDialog"
             is-destoryed-body
     >
       <single-contract
@@ -21,7 +21,7 @@
             width="1000px"
             top="5vh"
             :visible.sync="isShowMultiContract"
-            :close="hideAuthDialog"
+            @close="hideAuthDialog"
     >
       <multi-contract
               :presentableList="scAuthPresentableList"
@@ -40,6 +40,7 @@ import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
 import ToolBar from '@/components/ToolBar/index.vue'
 import multiContract from './views/resource-contract/multi-contract.vue'
 import singleContract from './views/resource-contract/single-contract.vue'
+import AppCenter from './event-center'
 
 export default {
   data() {
@@ -75,6 +76,7 @@ export default {
       this.shouldShowAuthDialog = false
       this.shouldShowAuthDialog = false
       this.isShowSingleContract = false
+
       this.$emit('close', '{}')
     },
     showSingleAuthDialog(presentable, contractIDs = []) {

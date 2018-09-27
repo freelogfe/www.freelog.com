@@ -15,37 +15,19 @@ import {
   SHOW_SIGN_DIALOG
 } from './event-name'
 
-const eventSet = [
+const EventsMap = {
   // 无效的响应
-  {
-    name: HANDLE_INVALID_RESPONSE,
-    handler: handleInvalidResponse
-  },
+  [HANDLE_INVALID_RESPONSE]: handleInvalidResponse,
   // 无效授权
-  {
-    name: HANDLE_INVALID_AUTH,
-    handler: handleAuthError
-  },
+  [HANDLE_INVALID_AUTH]: handleAuthError,
   // 跳转去登陆页面
-  {
-    name: GO_TO_LOGIN,
-    handler: goToLogin
-  },
+  [GO_TO_LOGIN]: goToLogin,
   // 通知节点
-  {
-    name: NOTIFY_NODE,
-    handler: notifyNode
-  },
+  [NOTIFY_NODE]: notifyNode,
   // 上报错误
-  {
-    name: REPORT_ERROR,
-    handler: reportError
-  },
+  [REPORT_ERROR]: reportError,
   // 显示"资源签约"模对话框
-  {
-    name: SHOW_SIGN_DIALOG,
-    handler: showResourceSignDialog
-  },
-]
+  [SHOW_SIGN_DIALOG]: showResourceSignDialog
+}
 
-export default eventSet
+export default EventsMap
