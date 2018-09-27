@@ -1,6 +1,5 @@
 <template>
   <div class="contract-detail-content-wrapper">
-
     <div v-html="segmentDetail" @click="cmdHandler"></div>
   </div>
 </template>

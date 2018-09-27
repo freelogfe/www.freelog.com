@@ -7,7 +7,6 @@
 " target="_blank">去设置</a>
     </el-alert>
 
-
     <el-form label-position="left" label-width="80px" :model="data" v-if="data">
       <el-form-item label="资源名称">
         {{data.resource.resourceName}}

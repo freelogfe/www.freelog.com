@@ -20,14 +20,14 @@
             :title="scTitle"
             width="1000px"
             top="5vh"
-            :visible.sync="isShowMultiContract"
+            :visible.sync="isShowMultiContracts"
             @close="hideAuthDialog"
     >
-      <multi-contract
+      <multi-contracts
               :presentableList="scAuthPresentableList"
               :contractIDs="scAuthContractIDs"
               @close-dialog="hideAuthDialog"
-      ></multi-contract>
+      ></multi-contracts>
     </fe-dialog>
 
     <tool-bar ref="toolbar"></tool-bar>
@@ -38,7 +38,7 @@
 <script>
 import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
 import ToolBar from '@/components/ToolBar/index.vue'
-import multiContract from './views/resource-contract/multi-contract.vue'
+import multiContracts from './views/resource-contract/multi-contracts.vue'
 import singleContract from './views/resource-contract/single-contract.vue'
 import AppCenter from './event-center'
 
@@ -47,7 +47,7 @@ export default {
     return {
       scTitle: `资源签约&nbsp;&nbsp;&nbsp;&nbsp;${window.location.hostname}`,
       isShowSingleContract: false,
-      isShowMultiContract: false,
+      isShowMultiContracts: false,
       scAuthPresentable: null,
       scAuthPresentableList: [],
       scAuthContractIDs: [],
@@ -58,7 +58,7 @@ export default {
   },
   components: {
     FeDialog,
-    multiContract,
+    multiContracts,
     singleContract,
     ToolBar
   },
@@ -85,7 +85,7 @@ export default {
 
       this.shouldShowAuthDialog = true
       this.isShowSingleContract = true
-      this.isShowMultiContract = false
+      this.isShowMultiContracts = false
     },
     showMultiAuthDialog(presentableList, contractIDs = []) {
       this.scAuthPresentableList = presentableList
@@ -93,7 +93,7 @@ export default {
 
       this.shouldShowAuthDialog = true
       this.isShowSingleContract = false
-      this.isShowMultiContract = true
+      this.isShowMultiContracts = true
     },
     showToolBar() {
       this.$refs.toolbar.show()

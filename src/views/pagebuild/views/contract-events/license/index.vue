@@ -18,7 +18,8 @@
     </el-form>
   </div>
 </template>
-<style media="screen" scoped>
+
+<style scoped>
   .license-window {
     height: 300px;
     overflow: auto;
@@ -34,6 +35,7 @@
     text-align: center;
   }
 </style>
+
 <script type="text/javascript">
 import LicenseEvent from './index'
 
