@@ -1,6 +1,6 @@
 <template>
-  <transition name="dialog-fade" @after-leave="afterLeave">
-    <div v-show="visible">
+  <transition name="dialogfade" @after-leave="afterLeave">
+    <div v-show="visible" style="position: relative;z-index: 10000;">
       <div class="fe-dialog-wrapper" @click.self="handleWrapperClick">
         <div
                 class="fe-dialog"
@@ -29,7 +29,6 @@
       </div>
       <div class="fe-dialog-mask"></div>
     </div>
-
   </transition>
 </template>
 
@@ -136,60 +135,35 @@
       if (this.visible) {
         this.rendered = true
       } else if (this.isDestoryedBody) {
-        this.rendered = false
+        this.timer = setTimeout(() => {
+          this.rendered = false
+        }, 800)
       }
     },
     destroyed() {
-
+      clearTimeout(this.timer)
     }
   }
 </script>
 
 <style lang="less" scoped type="text/less">
-  /*.dialog-fade-enter-active {*/
-    /*transition: all .3s ease;*/
-  /*}*/
-
-  /*.dialog-fade-enter-active, .dialog-fade-leave-active {*/
-    /*transition: opacity 2s;*/
-  /*}*/
-
-
-  /*.dialog-fade-leave-active {*/
-    /*transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);*/
-  /*}*/
-
-  /*.dialog-fade-enter, .dialog-fade-leave-to {*/
-    /*transform: translateY(30px);*/
-    /*opacity: 0;*/
-  /*}*/
-
-
-  .dialog-fade-enter-active {
-    transition: all .3s ease-out .35s;
+  .dialogfade-enter-active {
+    transition: all .3s ease;
   }
 
-  .dialog-fade-leave-active {
-    transition: all .3s ease-in;
+  .dialogfade-leave-active {
+    transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
   }
 
-  .dialog-fade-leave-to {
-    transform: translateX(-300px);
-    opacity: 0;
-    height: 0;
-  }
-
-  .dialog-fade-enter {
-    transform: translateX(300px);
+  .dialogfade-enter, .dialogfade-leave-to {
     opacity: 0;
   }
-
 
   .fe-dialog-mask {
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 999;
+    z-index: 9999;
     width: 100%;
     height: 100%;
     opacity: .5;
@@ -202,7 +176,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 10000;
     overflow: auto;
     overscroll-behavior-y: contain;
   }
