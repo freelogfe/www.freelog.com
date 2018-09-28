@@ -79,6 +79,7 @@
 <script>
 
   import compiler from '@freelog/presentable-policy-compiler'
+  import {highlightPolicy} from '@freelog/resource-policy-lang/lib/presentablePolicyHighlight'
   import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
   import ContractContent from '../contract-info-detail/content.vue'
 
@@ -261,6 +262,35 @@
           const html = this.fillSpace(line)
           text += `<p>${html}</p>`
         })
+    //     text = highlightPolicy(`
+    //       for NODES:
+    // escrow account acct
+    // exp(a) = 10*a
+    // exp2(a,b) = a + (b * 10)
+    // custom event acceptor.abcd
+    //
+    // initial:
+    //     proceed to signed on accepting agreement 0x1234
+    // signed:
+    //     proceed to auth on acct exceed 5+5 feather
+    // auth:
+    //     presentable
+    //     active
+    //     proceed to settlement on end of day
+    // settlement:
+    //     proceed to auth on receiving exp(presented_last_cycle) to $abcd1234
+    //     proceed to refund on acceptor.abcd
+    //     proceed to confiscation on end of day
+    // confiscation:
+    //     acct.confiscable
+    //     proceed to finish on acct.confiscated
+    // refund:
+    //     acct.refundable
+    //     proceed to finish on acct.refunded
+    // finish:
+    //     terminate
+    //     `)
+    //     console.log(text)
         return text
       },
       targRemark() {
@@ -341,16 +371,16 @@
   .rcb-tab-pane {
     position: relative;
     overflow-y: scroll;
-    height: 282px;
-    padding-bottom: 46px;
+    /*height: 282px;*/
+    /*padding-bottom: 46px;*/
     border: 1px solid #CECECE;
     border-radius: 4px;
 
     .rcb-tp-status-bar {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      /*position: absolute;*/
+      /*left: 0;*/
+      /*right: 0;*/
+      /*bottom: 0;*/
       height: 46px;
       padding: 0 10px;
       border-top: 1px solid #CECECE;
@@ -383,6 +413,8 @@
   }
 
   .rcb-tp-contract-content {
+    overflow: auto;
+    height: 252px;
     padding: 15px;
     font-size: 16px;
     line-height: 1.4;
