@@ -27,17 +27,18 @@ export default {
     return $page.querySelectorAll('.js-wc-widget')
   },
   loadWidgets() {
+    if (!window.__auth_info__) {
+      console.error('no auth info output')
+    }
     const self = this
     const $widgets = this.getWidgets()
     const promises = []
     const vis = {}
     Array.from($widgets).forEach((widget) => {
-      const token = widget.getAttribute('data-widget-token')
       const srcId = widget.getAttribute('data-widget-src')
-      if (token && srcId && !vis[srcId]) {
+      if (srcId && !vis[srcId]) {
         vis[srcId] = true
-        // var url = `/api/v1/auths/presentable/subResource/${srcId}?token=${token}`
-        const p = window.FreelogApp.QI.requireSubResource(srcId, token)
+        const p = window.FreelogApp.QI.requireSubResource(srcId)
         promises.push(p)
       } else {
         // console.warn('没有找到对应的组件ID')

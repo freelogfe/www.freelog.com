@@ -11,14 +11,29 @@ import * as helpers from './utils/helpers'
 export default function createApi(fetch) {
   const resourceLoadedState = new Map()
   const resourceIDsMap = new Map()
-  window.__auth_info__ = window.__auth_info__ || { __auth_user_id__: 10008, __auth_node_id__: 10017 }
+  window.__auth_info__ = window.__auth_info__ || {__auth_user_id__: 10008, __auth_node_id__: 10017}
   const nodeId = window.__auth_info__.__auth_node_id__
+
+  function initTokens() {
+    if (!window.__auth_info__) return
+    const token = window.__auth_info__.__page_build_sub_resource_auth_token
+    const rids = window.__auth_info__.__page_build_sub_resource_ids || []
+
+    if (rids.length && token) {
+      rids.forEach(rid => {
+        resourceIDsMap.set(rid, token)
+      })
+    }
+  }
+
+
+  initTokens()
 
   return {
     // 获取节点的presentables列表
     fetchPresentablesList(params = {}) {
-      params = Object.assign({ nodeId }, params)
-      return fetch('/v1/presentables', { data: params })
+      params = Object.assign({nodeId}, params)
+      return fetch('/v1/presentables', {data: params})
         .then(resp => resp.json())
     },
     // 获取单个presentable的详情
@@ -36,23 +51,27 @@ export default function createApi(fetch) {
         .then(resp => resp.json())
     },
     fetchSubResource(resourceId) {
-      return this.resolveResourceUrl({ resourceId })
+      return this.resolveResourceUrl({resourceId})
         .then(resourceUrl => fetch(resourceUrl))
     },
     requireSubResource(resourceId, token) {
       function loadResource(res, type) {
-        const file = new File([res], `${resourceId}`, { type })
+        const file = new File([res], `${resourceId}`, {type})
         const url = window.URL.createObjectURL(file)
         switch (type) {
           case 'text/javascript': {
             return helpers.createScript(url)
-              .then(() => resourceLoadedState.set(resourceId, true))
+              .then((mod) => {
+                resourceLoadedState.set(resourceId, true)
+                return mod
+              })
           }
           case 'text/css': {
             return helpers.createCssLink(url)
               .then(() => resourceLoadedState.set(resourceId, true))
           }
-          default: throw new Error('wrong type!')
+          default:
+            throw new Error('wrong type!')
         }
       }
 
@@ -88,7 +107,7 @@ export default function createApi(fetch) {
           throw new Error(res)
         })
     },
-    resolveResourceUrl({ presentableId, resourceId }) {
+    resolveResourceUrl({presentableId, resourceId}) {
       if (resourceId) {
         let token = resourceIDsMap.get(resourceId)
         if (token) {
@@ -107,7 +126,7 @@ export default function createApi(fetch) {
             })
         }
       } else if (presentableId) {
-        return `/api/v1/auths/presentable/${presentableId}?nodeId=${nodeId}`
+        return Promise.resolve(`/api/v1/auths/presentable/${presentableId}?nodeId=${nodeId}`)
       }
       throw new Error('no found token!')
     }
@@ -116,8 +135,8 @@ export default function createApi(fetch) {
   function _fetchPresentableResource(target, params = {}) {
     const url = `/v1/auths/presentable/${target}`
 
-    params = Object.assign({ nodeId }, params)
-    return fetch(url, { data: params })
+    params = Object.assign({nodeId}, params)
+    return fetch(url, {data: params})
       .then((resp) => {
         const headers = resp.headers
         const rids = headers.get('freelog-sub-resourceids')

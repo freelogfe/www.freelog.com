@@ -2,7 +2,7 @@
   <div class="crop-image-wrap">
     <slot></slot>
     <el-dialog :visible.sync="show"
-               width="30%"
+               width="550px"
                :before-close="handleClose">
       <div class="crop-image-bd">
         <div class="crop-img-container">

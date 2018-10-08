@@ -262,34 +262,34 @@
           const html = this.fillSpace(line)
           text += `<p>${html}</p>`
         })
-    //     text = highlightPolicy(`
-    //       for NODES:
-    // escrow account acct
-    // exp(a) = 10*a
-    // exp2(a,b) = a + (b * 10)
-    // custom event acceptor.abcd
-    //
-    // initial:
-    //     proceed to signed on accepting agreement 0x1234
-    // signed:
-    //     proceed to auth on acct exceed 5+5 feather
-    // auth:
-    //     presentable
-    //     active
-    //     proceed to settlement on end of day
-    // settlement:
-    //     proceed to auth on receiving exp(presented_last_cycle) to $abcd1234
-    //     proceed to refund on acceptor.abcd
-    //     proceed to confiscation on end of day
-    // confiscation:
-    //     acct.confiscable
-    //     proceed to finish on acct.confiscated
-    // refund:
-    //     acct.refundable
-    //     proceed to finish on acct.refunded
-    // finish:
-    //     terminate
-    //     `)
+        text = highlightPolicy(`
+          for NODES:
+    escrow account acct
+    exp(a) = 10*a
+    exp2(a,b) = a + (b * 10)
+    custom event acceptor.abcd
+
+    initial:
+        proceed to signed on accepting agreement 0x1234
+    signed:
+        proceed to auth on acct exceed 5+5 feather
+    auth:
+        presentable
+        active
+        proceed to settlement on end of day
+    settlement:
+        proceed to auth on receiving exp(presented_last_cycle) to $abcd1234
+        proceed to refund on acceptor.abcd
+        proceed to confiscation on end of day
+    confiscation:
+        acct.confiscable
+        proceed to finish on acct.confiscated
+    refund:
+        acct.refundable
+        proceed to finish on acct.refunded
+    finish:
+        terminate
+        `)
     //     console.log(text)
         return text
       },
@@ -430,6 +430,7 @@
 
     .rcb-add-remark {
       color: #3C99FC;
+      cursor: pointer;
     }
     .rcb-r-left {
       width: 78px;
@@ -442,6 +443,8 @@
         width: 100%;
         padding: 10px;
         border-radius: 4px;
+        outline: none;
+        resize: none;
       }
     }
   }

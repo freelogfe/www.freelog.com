@@ -1,7 +1,7 @@
 export function createScript(url, type) {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script')
-    script.type = type || 'module'
+    // script.type = type || 'module'
     script.src = url
     script.onload = resolve
     script.onerror = reject

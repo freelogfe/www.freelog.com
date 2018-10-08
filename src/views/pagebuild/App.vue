@@ -6,6 +6,7 @@
             width="790px"
             top="5vh"
             :visible.sync="isShowSingleContract"
+            :beforeClose="beforeClose"
             @close="hideAuthDialog"
             is-destoryed-body
     >
@@ -78,6 +79,10 @@ export default {
       this.isShowSingleContract = false
 
       this.$emit('close', '{}')
+    },
+    beforeClose(done){
+      console.log('beforeClose')
+      done()
     },
     showSingleAuthDialog(presentable, contractIDs = []) {
       this.scAuthPresentable = presentable

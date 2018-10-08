@@ -24,7 +24,6 @@
 
 
 <script>
-import Storage from '@/lib/storage'
 
 export default {
   name: 'fl-pagination',
@@ -34,7 +33,7 @@ export default {
       tableProps: {
         data: []
       },
-      currentPage: Storage.get(`${this.$route.fullPath}_current_page`) || 1,
+      currentPage: window.sessionStorage.getItem(`${this.$route.fullPath}_current_page`) || 1,
       pageSize: 10,
       loading: false
     }
@@ -107,7 +106,7 @@ export default {
       this.loadData().then(this.update.bind(this))
         .then(() => {
           this.loading = false
-          Storage.set(`${this.$route.fullPath}_current_page`, this.currentPage)
+          window.sessionStorage.setItem(`${this.$route.fullPath}_current_page`, this.currentPage)
         })
         .catch((err) => {
           console.error(err)
