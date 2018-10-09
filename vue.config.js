@@ -5,16 +5,16 @@ const fs = require('fs')
 const merge = require('webpack-merge')
 const isProd = process.env.NODE_ENV === 'production'
 const srcDir = path.resolve('./src');
+const config = require('./config')
 var minimist = require('minimist')
 var argv = minimist(process.argv.slice(2));
-const hashStr = isProd ? '[hash].' : ''
 
 function getBaseUrl() {
   var baseUrl
   if (argv.beta) {
-    baseUrl = '//static.testfreelog.com'
+    baseUrl = config.build.assetsTestDomain
   } else if (isProd) {
-    baseUrl = '//static.freelog.com'
+    baseUrl = config.build.assetsDomain
   } else {
     baseUrl = '/'
   }
@@ -40,13 +40,13 @@ module.exports = {
   pages: {
     index: {
       entry: 'src/views/user/app.js',
-      template: 'src/views/layout/index.html',
+      template: 'src/views/layout/index.pug',
       filename: isProd ? 'pages/index.html' : 'index.html',
       title: '个人中心',
     },
     pagebuild: {
       entry: 'src/views/pagebuild/app.js',
-      template: 'src/views/layout/pagebuild.html',
+      template: 'src/views/layout/pagebuild.pug',
       filename: isProd ? 'pages/pagebuild.html' : 'pagebuild/index.html'
     }
   },
@@ -92,7 +92,6 @@ module.exports = {
   //   } else {
   //     // mutate for development...
   //   }
-  //   console.log(config)
   // },
   chainWebpack: config => {
 

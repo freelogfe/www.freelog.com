@@ -1,4 +1,4 @@
-import {Error} from '@/plugins/error'
+import { Error } from '@/plugins/error'
 import Vue from 'vue'
 import exceptionCodes from './exception-code'
 import eventsMap from './event-map'
@@ -15,7 +15,7 @@ class AppCenter {
 
   initEnv() {
     const win = window
-    var isTest = /\.testfreelog\.com$/.test(win.location.host)
+    const isTest = /\.testfreelog\.com$/.test(win.location.host)
     win.FreelogApp.Env = win.FreelogApp.Env || {}
 
     Object.assign(win.FreelogApp.Env, {
@@ -52,7 +52,7 @@ class AppCenter {
         callback = opts.callback
       }
 
-      callback = callback || function () {
+      callback = callback || function cb() {
       }
 
       const handler = eventsMap[name]
@@ -61,7 +61,7 @@ class AppCenter {
           if (!self.options.appUiVm) {
             throw new Error('not set app ui instance')
           }
-          handler({appUiVm: self.options.appUiVm}, opts, callback)
+          handler({ appUiVm: self.options.appUiVm }, opts, callback)
         } catch (err) {
           Error.showErrorMessage(err)
         }
@@ -75,7 +75,7 @@ class AppCenter {
     Object.assign(this.options, options)
   }
 
-  emit(...args){
+  emit(...args) {
     this.$eventBus.$emit(...args)
   }
 }

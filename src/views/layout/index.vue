@@ -13,32 +13,32 @@
 </template>
 
 <script>
-  import NavTopBar from '@/components/NavTop/index.vue'
-  import UserAsideNav from '@/components/UserAsideNav/index.vue'
+import NavTopBar from '@/components/NavTop/index.vue'
+import UserAsideNav from '@/components/UserAsideNav/index.vue'
 
-  export default {
-    data() {
-      return {}
-    },
+export default {
+  data() {
+    return {}
+  },
 
-    computed: {
-      themeCls() {
-        return this.$route.meta.theme || 'white'
-      },
-      isError() {
-        return (typeof this.$route.meta.error === 'undefined') ? false : this.$route.meta.error
-      }
+  computed: {
+    themeCls() {
+      return this.$route.meta.theme || 'white'
     },
+    isError() {
+      return (typeof this.$route.meta.error === 'undefined') ? false : this.$route.meta.error
+    }
+  },
 
-    mounted() {
-    },
-    components: {
-      NavTopBar,
-      UserAsideNav
-    },
+  mounted() {
+  },
+  components: {
+    NavTopBar,
+    UserAsideNav
+  },
 
-    methods: {}
-  }
+  methods: {}
+}
 </script>
 <style lang="less" scoped>
   @import "index.less";
