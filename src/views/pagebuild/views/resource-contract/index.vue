@@ -78,191 +78,191 @@
 
 <script>
 
-  import compiler from '@freelog/presentable-policy-compiler'
-  import {highlightPolicy} from '@freelog/resource-policy-lang/lib/presentablePolicyHighlight'
-  import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
-  import ContractContent from '../contract-info-detail/content.vue'
+import compiler from '@freelog/presentable-policy-compiler'
+import { highlightPolicy } from '@freelog/resource-policy-lang/lib/presentablePolicyHighlight'
+import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
+import ContractContent from '../contract-info-detail/content.vue'
 
-  import LicenseEvent from '../contract-events/license/index.vue'
-  import TransactionEvent from '../contract-events/transaction/index.vue'
+import LicenseEvent from '../contract-events/license/index.vue'
+import TransactionEvent from '../contract-events/transaction/index.vue'
 
 
-  const eventComponentMap = {
-    transaction: {
-      type: 'transaction-event',
-      title: '支付'
-    },
-    signing: {
-      type: 'license-event',
-      title: '签署'
-    }
+const eventComponentMap = {
+  transaction: {
+    type: 'transaction-event',
+    title: '支付'
+  },
+  signing: {
+    type: 'license-event',
+    title: '签署'
   }
+}
 
-  let userinfos = null
-  export default {
-    props: {
-      presentable: {
-        type: Object
-      },
-      policyContractsMap: {
-        type: Object,
-      },
-      getContractState: {
-        type: Function,
-      }
+let userinfos = null
+export default {
+  props: {
+    presentable: {
+      type: Object
     },
-    data() {
-      return {
-        resourceIntro: '音乐播放器是一种用于播放各种音乐文件的多媒体播放软件。它涵盖了各种音乐格式的播放工具，比如：MP3播放器，WMA播放器，MP4播放器等。它们不仅界面美观，而且操作简单，带你进入一个完美的音乐空间。',
-        actPolicyIndex: 0,
-        isActPolicyDefault: false,
-        isAddRemark: false,
-        selectedContractEvent: '',
-        eventComponent: '',
-        modalTitle: '',
-        showEventExecModal: false,
-        userinfos: {},
-        isShowContractContent: false,
-        isUpdateView: 1,
-      }
+    policyContractsMap: {
+      type: Object,
     },
-    methods: {
-      // 处理策略与合同状态的关系
-      resolvePolicyContractStateMap() {
-        this.policyList.forEach((policy) => {
-          const contract = this.policyContractsMap[policy.segmentId] || null
-          policy.contractState = this.getContractState(contract)
-        })
-      },
-      exchangePolicy(index) {
-        this.actPolicyIndex = index
-      },
-      addRemark() {
-        this.isAddRemark = true
-      },
-      fillSpace(line) {
-        return line.replace(/^(\s+)/g, ($) => {
-          const spaceArr = new Array($.length)
-          spaceArr.fill('&nbsp;&nbsp;')
-          return spaceArr.join('')
-        })
-      },
-      // 关闭对话框
-      closeModalHandler() {
-        this.showEventExecModal = false
-      },
-      // 合同事件处理
-      executeContractHandler(params) {
-        const eventComConfig = eventComponentMap[params.type]
+    getContractState: {
+      type: Function,
+    }
+  },
+  data() {
+    return {
+      resourceIntro: '音乐播放器是一种用于播放各种音乐文件的多媒体播放软件。它涵盖了各种音乐格式的播放工具，比如：MP3播放器，WMA播放器，MP4播放器等。它们不仅界面美观，而且操作简单，带你进入一个完美的音乐空间。',
+      actPolicyIndex: 0,
+      isActPolicyDefault: false,
+      isAddRemark: false,
+      selectedContractEvent: '',
+      eventComponent: '',
+      modalTitle: '',
+      showEventExecModal: false,
+      userinfos: {},
+      isShowContractContent: false,
+      isUpdateView: 1,
+    }
+  },
+  methods: {
+    // 处理策略与合同状态的关系
+    resolvePolicyContractStateMap() {
+      this.policyList.forEach((policy) => {
+        const contract = this.policyContractsMap[policy.segmentId] || null
+        policy.contractState = this.getContractState(contract)
+      })
+    },
+    exchangePolicy(index) {
+      this.actPolicyIndex = index
+    },
+    addRemark() {
+      this.isAddRemark = true
+    },
+    fillSpace(line) {
+      return line.replace(/^(\s+)/g, ($) => {
+        const spaceArr = new Array($.length)
+        spaceArr.fill('&nbsp;&nbsp;')
+        return spaceArr.join('')
+      })
+    },
+    // 关闭对话框
+    closeModalHandler() {
+      this.showEventExecModal = false
+    },
+    // 合同事件处理
+    executeContractHandler(params) {
+      const eventComConfig = eventComponentMap[params.type]
 
-        this.selectedContractEvent = {
-          event: params,
-          contract: this.selectedContract,
-          resource: Object.assign(this.presentable, this.presentable.resourceInfo)
+      this.selectedContractEvent = {
+        event: params,
+        contract: this.selectedContract,
+        resource: Object.assign(this.presentable, this.presentable.resourceInfo)
+      }
+      this.eventComponent = eventComConfig.type
+      this.modalTitle = eventComConfig.title
+      this.showEventExecModal = true
+    },
+    // 点击“取消” 取消签约并关闭对话框
+    cancelSign() {
+      this.$emit('cancel-sign')
+    },
+    // 点击“签约” 执行合同签约
+    signContract() {
+      const { presentableId } = this.presentable
+      const { segmentId } = this.actPolicy
+
+      this.$axios({
+        url: '/v1/contracts/createUserPresentableContract',
+        method: 'POST',
+        data: {
+          presentableId,
+          segmentId,
+          targetId: presentableId
         }
-        this.eventComponent = eventComConfig.type
-        this.modalTitle = eventComConfig.title
-        this.showEventExecModal = true
-      },
-      // 点击“取消” 取消签约并关闭对话框
-      cancelSign() {
-        this.$emit('cancel-sign')
-      },
-      // 点击“签约” 执行合同签约
-      signContract() {
-        const {presentableId} = this.presentable
-        const {segmentId} = this.actPolicy
-
-        this.$axios({
-          url: '/v1/contracts/createUserPresentableContract',
-          method: 'POST',
-          data: {
-            presentableId,
-            segmentId,
-            targetId: presentableId
+      })
+        .then(res => res.data)
+        .then((res) => {
+          if (res.errcode === 0) {
+            const contract = res.data
+            this.policyContractsMap[segmentId] = contract
+            this.resolvePolicyContractStateMap()
+            // 更新policy与contract的映射关系后，强制刷新
+            this.$forceUpdate()
+            this.$emit('update-default-contract', contract)
+          } else {
+            throw new Error()
           }
         })
-          .then(res => res.data)
-          .then((res) => {
-            if (res.errcode === 0) {
-              const contract = res.data
-              this.policyContractsMap[segmentId] = contract
-              this.resolvePolicyContractStateMap()
-              // 更新policy与contract的映射关系后，强制刷新
-              this.$forceUpdate()
-              this.$emit('update-default-contract', contract)
-            } else {
-              throw new Error()
-            }
+        .catch(() => {
+          this.$message({
+            type: 'error',
+            showClose: true,
+            message: '签约失败，稍后再试！！！'
           })
-          .catch(() => {
-            this.$message({
-              type: 'error',
-              showClose: true,
-              message: '签约失败，稍后再试！！！'
-            })
-          })
-      },
-      // 设置默认合同
-      setDefualtContract() {
-        this.$axios({
-          url: `/v1/contracts/setDefault?contractId=${this.selectedContract.contractId}`,
-          method: 'PUT',
         })
-          .then(res => res.data)
-          .then((res) => {
-            if (res.errcode === 0) {
-              this.isActPolicyDefault = true
-            } else {
-              throw new Error()
-            }
-          })
-          .catch(() => {
-            this.$message({
-              type: 'error',
-              showClose: true,
-              message: '设置默认合同失败，稍后再试！！！'
-            })
-          })
-      }
     },
-    computed: {
-      actPolicy() {
-        const policy = this.policyList[this.actPolicyIndex]
-        return policy
-      },
-      isActPolicySigned() {
-        return this.actPolicy && this.actPolicy.contractState.type !== 'nosign'
-      },
-      resourceId() {
-        return this.presentable.resourceId
-      },
-      resourceType() {
-        return this.presentable.resourceInfo.resourceType
-      },
-      policyList() {
-        return this.presentable.policy
-      },
-      selectedContract() {
-        const contract = this.policyContractsMap[this.actPolicy.segmentId]
-        if (contract) {
-          contract.partyOneInfo = {
-            nodeName: this.presentable.nodeName,
-            ownerUserId: this.presentable.userId
+    // 设置默认合同
+    setDefualtContract() {
+      this.$axios({
+        url: `/v1/contracts/setDefault?contractId=${this.selectedContract.contractId}`,
+        method: 'PUT',
+      })
+        .then(res => res.data)
+        .then((res) => {
+          if (res.errcode === 0) {
+            this.isActPolicyDefault = true
+          } else {
+            throw new Error()
           }
-          contract.partyTwoInfo = userinfos
-        }
-
-        return contract
-      },
-      actSegmentText() {
-        const lines = compiler.beautify(this.actPolicy.segmentText).split(/\n/)
-        let text = ''
-        lines.forEach((line) => {
-          const html = this.fillSpace(line)
-          text += `<p>${html}</p>`
         })
-        text = highlightPolicy(`
+        .catch(() => {
+          this.$message({
+            type: 'error',
+            showClose: true,
+            message: '设置默认合同失败，稍后再试！！！'
+          })
+        })
+    }
+  },
+  computed: {
+    actPolicy() {
+      const policy = this.policyList[this.actPolicyIndex]
+      return policy
+    },
+    isActPolicySigned() {
+      return this.actPolicy && this.actPolicy.contractState.type !== 'nosign'
+    },
+    resourceId() {
+      return this.presentable.resourceId
+    },
+    resourceType() {
+      return this.presentable.resourceInfo.resourceType
+    },
+    policyList() {
+      return this.presentable.policy
+    },
+    selectedContract() {
+      const contract = this.policyContractsMap[this.actPolicy.segmentId]
+      if (contract) {
+        contract.partyOneInfo = {
+          nodeName: this.presentable.nodeName,
+          ownerUserId: this.presentable.userId
+        }
+        contract.partyTwoInfo = userinfos
+      }
+
+      return contract
+    },
+    actSegmentText() {
+      const lines = compiler.beautify(this.actPolicy.segmentText).split(/\n/)
+      let text = ''
+      lines.forEach((line) => {
+        const html = this.fillSpace(line)
+        text += `<p>${html}</p>`
+      })
+      text = highlightPolicy(`
           for NODES:
     escrow account acct
     exp(a) = 10*a
@@ -290,32 +290,32 @@
     finish:
         terminate
         `)
-    //     console.log(text)
-        return text
-      },
-      targRemark() {
-        return ''
-      }
+      //     console.log(text)
+      return text
     },
-    components: {
-      ContractContent, FeDialog, TransactionEvent, LicenseEvent
-    },
-    beforeMount() {
-      this.resolvePolicyContractStateMap()
-      if (userinfos === null) {
-        this.$axios.get('/v1/userinfos/current')
-          .then(res => res.data)
-          .then((res) => {
-            if (res.errcode === 0) {
-              userinfos = res.data
-              this.isShowContractContent = true
-            }
-          })
-      } else {
-        this.isShowContractContent = true
-      }
+    targRemark() {
+      return ''
+    }
+  },
+  components: {
+    ContractContent, FeDialog, TransactionEvent, LicenseEvent
+  },
+  beforeMount() {
+    this.resolvePolicyContractStateMap()
+    if (userinfos === null) {
+      this.$axios.get('/v1/userinfos/current')
+        .then(res => res.data)
+        .then((res) => {
+          if (res.errcode === 0) {
+            userinfos = res.data
+            this.isShowContractContent = true
+          }
+        })
+    } else {
+      this.isShowContractContent = true
     }
   }
+}
 </script>
 
 <style lang="less" scoped type="text/less">

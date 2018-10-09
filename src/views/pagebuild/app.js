@@ -9,14 +9,14 @@ import AppCenter from './event-center'
 
 document.body.querySelector('#js-page-container').classList.add('freelog-app-loading')
 
-new Vue({
+export default new Vue({
   el: '#app',
   methods: {
     // app-view mounted
     onReady(appUiVm) {
       this.appUiVm = appUiVm
 
-      AppCenter.setOptions({appUiVm})
+      AppCenter.setOptions({ appUiVm })
       appUiVm.$on('close', () => {
       })
 
@@ -27,6 +27,6 @@ new Vue({
   mounted() {
     this.onReady(this.$children[0])
   },
-  render: (h) => h(AppView)
+  render: h => h(AppView)
 })
 

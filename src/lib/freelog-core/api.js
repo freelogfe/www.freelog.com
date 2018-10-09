@@ -10,7 +10,7 @@ import * as helpers from './utils/helpers'
 
 export default function createApi(fetch) {
   const resourceLoadedState = new Map()
-  const resourceIDsMap = new Map()
+  const resourceTokensMap = new Map()
   window.__auth_info__ = window.__auth_info__ || {__auth_user_id__: 10008, __auth_node_id__: 10017}
   const nodeId = window.__auth_info__.__auth_node_id__
 
@@ -20,12 +20,11 @@ export default function createApi(fetch) {
     const rids = window.__auth_info__.__page_build_sub_resource_ids || []
 
     if (rids.length && token) {
-      rids.forEach(rid => {
-        resourceIDsMap.set(rid, token)
+      rids.forEach((rid) => {
+        resourceTokensMap.set(rid, token)
       })
     }
   }
-
 
   initTokens()
 
@@ -54,36 +53,22 @@ export default function createApi(fetch) {
       return this.resolveResourceUrl({resourceId})
         .then(resourceUrl => fetch(resourceUrl))
     },
+    /**
+     * js/css/json
+     * @param resourceId
+     * @param token
+     * @returns {*}
+     */
     requireSubResource(resourceId, token) {
-      function loadResource(res, type) {
-        const file = new File([res], `${resourceId}`, {type})
-        const url = window.URL.createObjectURL(file)
-        switch (type) {
-          case 'text/javascript': {
-            return helpers.createScript(url)
-              .then((mod) => {
-                resourceLoadedState.set(resourceId, true)
-                return mod
-              })
-          }
-          case 'text/css': {
-            return helpers.createCssLink(url)
-              .then(() => resourceLoadedState.set(resourceId, true))
-          }
-          default:
-            throw new Error('wrong type!')
-        }
-      }
-
       // 已经加载的资源不再加载
-      if (resourceLoadedState.get(resourceId)) return Promise.resolve()
-      let type = ''
+      if (resourceLoadedState.get(resourceId)) return Promise.resolve(resourceLoadedState.get(resourceId))
+      let type
       let promise = null
 
       if (token) {
         const resourceUrl = `/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`
         promise = fetch(resourceUrl)
-        resourceIDsMap.set(resourceId, token)
+        resourceTokensMap.set(resourceId, token)
       } else {
         promise = this.fetchSubResource(resourceId)
       }
@@ -93,23 +78,27 @@ export default function createApi(fetch) {
           const contentType = resp.headers.get('content-type')
           if (/css/.test(contentType)) {
             type = 'text/css'
-            return resp.text()
           } else if (/javascript/.test(contentType)) {
             type = 'text/javascript'
-            return resp.text()
           }
-          return resp.json()
+
+          return type ? resp.text() : resp.json()
         })
-        .then((res) => {
-          if (typeof res.errcode === 'undefined') {
-            return loadResource.call(this, res, type)
+        .then((data) => {
+          if (typeof data.errcode === 'undefined') {
+            if (typeof data === 'object') {
+              resourceLoadedState.set(resourceId, data)
+              return data
+            } else {
+              return helpers.injectCodeResource(data, type).then(() => resourceLoadedState.set(resourceId, true))
+            }
           }
-          throw new Error(res)
+          throw new Error(data)
         })
     },
     resolveResourceUrl({presentableId, resourceId}) {
       if (resourceId) {
-        let token = resourceIDsMap.get(resourceId)
+        let token = resourceTokensMap.get(resourceId)
         if (token) {
           return Promise.resolve(`/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`)
         }
@@ -118,7 +107,7 @@ export default function createApi(fetch) {
           return _fetchPresentableResource(`${presentableId}`)
             .then(resp => resp.json())
             .then(() => {
-              token = resourceIDsMap.get(resourceId)
+              token = resourceTokensMap.get(resourceId)
               if (token) {
                 return `/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`
               }
@@ -144,7 +133,7 @@ export default function createApi(fetch) {
 
         if (rids && token) {
           rids.split(',').forEach((id) => {
-            resourceIDsMap.set(id, token)
+            resourceTokensMap.set(id, token)
           })
         }
 

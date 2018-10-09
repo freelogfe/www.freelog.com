@@ -41,7 +41,6 @@ import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
 import ToolBar from '@/components/ToolBar/index.vue'
 import multiContracts from './views/resource-contract/multi-contracts.vue'
 import singleContract from './views/resource-contract/single-contract.vue'
-import AppCenter from './event-center'
 
 export default {
   data() {
@@ -80,7 +79,7 @@ export default {
 
       this.$emit('close', '{}')
     },
-    beforeClose(done){
+    beforeClose(done) {
       console.log('beforeClose')
       done()
     },
