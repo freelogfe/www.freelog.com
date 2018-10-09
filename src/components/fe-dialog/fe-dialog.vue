@@ -10,7 +10,7 @@
         >
           <div class="fe-dialog-header">
             <slot name="title">
-              <h3 class="fe-dialog-title" v-html="title"></h3>
+              <h3 class="fe-dialog-title" v-html="title" :style="{textAlign: titleTextAlign}"></h3>
             </slot>
             <button type="button" class="fe-dialog-header-btn"
                     aria-label="Close"
@@ -44,6 +44,10 @@
       title: {
         type: String,
         default: ''
+      },
+      titleTextAlign: {
+        type: String,
+        default: 'left'
       },
       closeOnClickDialog: {
         type: Boolean,
@@ -201,14 +205,14 @@
     .fe-model-close {
       color: #999;
       font-style: normal;
-      font-size: 28px;
+      font-size: 22px;
     }
 
   }
 
   .fe-dialog-header-btn {
     position: absolute;
-    top: 12px;
+    top: 16px;
     right: 20px;
     padding: 0;
     border: none;

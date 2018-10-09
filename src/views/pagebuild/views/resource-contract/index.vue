@@ -51,7 +51,7 @@
         {{actPolicy.contractState && actPolicy.contractState.info}}
         <div class="rcb-tp-sb-btn-box" v-if="actPolicy.contractState.type != 'nosign'">
           <button class="rcb-tp-sb-default" v-if="isActPolicyDefault">默认合约</button>
-          <button class="rcb-tp-sb-set-default" v-else @click="setDefualtContract">设为默认</button>
+          <button class="rcb-tp-sb-set-default" v-else @click="showSetDefaultContractComfrim">设为默认</button>
         </div>
       </div>
     </div>
@@ -69,10 +69,41 @@
     </div>
     <div class="rcb-footer">
       <button class="btn-normal btn-cancel" @click="cancelSign">取消</button>
-      <button type="button" class="btn-normal btn-sign" :class="{'disabled': isActPolicySigned}" @click="signContract">
+      <button type="button" class="btn-normal btn-sign" :class="{'disabled': isActPolicySigned}" @click="showSignComfirm">
         签约
       </button>
     </div>
+
+    <fe-dialog
+            title-text-align="center"
+            :close-on-click-modal="false"
+            title="提示"
+            width="440px"
+            top="25vh"
+            :visible.sync="isShowComfirm"
+            is-destoryed-body
+            @close="comfirmCancel"
+    >
+      <div class="rcb-comfirm-cont">
+        <div class="comfirm-set-default-contract" v-if="comfirmType === 'set-default-contract'">
+          将当前合约设置为默认合约？
+        </div>
+        <div class="comfirm-sign-contract" v-if="comfirmType === 'sign-contract'">
+          <div class="csn-presentable-name"><span>资源名称</span>{{presentableName}}</div>
+          <div class="csn-policy-name">确认以  {{actPolicy.policyName}}  签约合约？</div>
+          <div class="csn-set-default">
+            <i>+</i>
+            将此合约设定为默认合约
+          </div>
+        </div>
+      </div>
+      <div slot="footer">
+        <div class="rcb-comfirm-btn-box">
+          <button class="cbb-btn cbb-cancel" @click="comfirmCancel">取消</button>
+          <button class="cbb-btn cbb-sure" @click="comfirmSure">确认</button>
+        </div>
+      </div>
+    </fe-dialog>
   </div>
 </template>
 
@@ -85,7 +116,6 @@
 
   import LicenseEvent from '../contract-events/license/index.vue'
   import TransactionEvent from '../contract-events/transaction/index.vue'
-
 
   const eventComponentMap = {
     transaction: {
@@ -113,7 +143,9 @@
     },
     data() {
       return {
-        resourceIntro: '音乐播放器是一种用于播放各种音乐文件的多媒体播放软件。它涵盖了各种音乐格式的播放工具，比如：MP3播放器，WMA播放器，MP4播放器等。它们不仅界面美观，而且操作简单，带你进入一个完美的音乐空间。',
+        isShowComfirm: false,
+        comfirmType: '',
+        resourceIntro: '',
         actPolicyIndex: 0,
         isActPolicyDefault: false,
         isAddRemark: false,
@@ -164,11 +196,13 @@
         this.modalTitle = eventComConfig.title
         this.showEventExecModal = true
       },
-      // 点击“取消” 取消签约并关闭对话框
+      // 取消签约并关闭对话框
       cancelSign() {
-        this.$emit('cancel-sign')
+
+        this.showSignComfirm()
+        // this.$emit('cancel-sign')
       },
-      // 点击“签约” 执行合同签约
+      // 执行合同签约
       signContract() {
         const {presentableId} = this.presentable
         const {segmentId} = this.actPolicy
@@ -224,7 +258,35 @@
               message: '设置默认合同失败，稍后再试！！！'
             })
           })
+      },
+      // 显示confirm 弹窗
+      showComfirm(type) {
+        this.isShowComfirm = true
+        this.comfirmType = type
+      },
+      comfirmCancel() {
+        this.isShowComfirm = false
+      },
+      comfirmSure() {
+        this.isShowComfirm = false
+        switch (this.comfirmType) {
+          case 'set-default-contract': {
+            this.setDefualtContract()
+            break
+          }
+          case 'sign-contract': {
+            this.signContract()
+            break
+          }
+        }
+      },
+      showSetDefaultContractComfrim() {
+        this.showComfirm('set-default-contract')
+      },
+      showSignComfirm() {
+        this.showComfirm('sign-contract')
       }
+
     },
     computed: {
       actPolicy() {
@@ -239,6 +301,10 @@
       },
       resourceType() {
         return this.presentable.resourceInfo.resourceType
+      },
+      // 节点资源名称
+      presentableName() {
+        return this.presentable.presentableName
       },
       policyList() {
         return this.presentable.policy
@@ -377,10 +443,7 @@
     border-radius: 4px;
 
     .rcb-tp-status-bar {
-      /*position: absolute;*/
-      /*left: 0;*/
-      /*right: 0;*/
-      /*bottom: 0;*/
+      position: relative;
       height: 46px;
       padding: 0 10px;
       border-top: 1px solid #CECECE;
@@ -467,6 +530,65 @@
         border: 1px solid #CECECE;
         border-radius: 4px;
         color: #333;
+        &.disabled {
+          border: 1px solid #CECECE;
+          border-radius: 4px;
+          background: #F9F9F9;
+          color: #999;
+          pointer-events: none;
+        }
+      }
+
+    }
+  }
+
+  .rcb-comfirm-cont{
+    margin-bottom: 20px;
+    text-align: center;
+
+    .comfirm-set-default-contract{
+      font-size: 16px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .csn-presentable-name{
+      margin-bottom: 30px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .csn-policy-name{
+      margin-bottom: 30px;
+      font-size: 16px;
+      color: #222;
+    }
+
+    .csn-set-default{
+      font-size: 14px;
+      color: #c6c6c6;
+    }
+
+  }
+
+  .rcb-comfirm-btn-box{
+    text-align: center;
+
+    .cbb-btn {
+      padding: 6px 20px;
+      font-size: 14px;
+      border: none;
+      outline: 0;
+      cursor: pointer;
+
+      &.cbb-cancel {
+        color: #666;
+      }
+      &.cbb-sure {
+        border: 1px solid #CECECE;
+        border-radius: 4px;
+        color: #333;
+
         &.disabled {
           border: 1px solid #CECECE;
           border-radius: 4px;

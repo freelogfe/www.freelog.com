@@ -1,6 +1,7 @@
 export default function handleInvalidResponse(vmOptions, options, callback) {
   const response = options.response
   const eventName = getEventName(response)
+  console.log(eventName, response.errcode)
   window.FreelogApp.trigger(eventName, options, callback)
 }
 
