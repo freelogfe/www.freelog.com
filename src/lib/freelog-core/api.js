@@ -8,123 +8,70 @@
  */
 import * as helpers from './utils/helpers'
 
-export default function createApi(fetch) {
-  const resourceLoadedState = new Map()
-  const resourceTokensMap = new Map()
-  window.__auth_info__ = window.__auth_info__ || { __auth_user_id__: 10008, __auth_node_id__: 10017 }
-  const nodeId = window.__auth_info__.__auth_node_id__
+class APIGenerator {
+  constructor(options) {
+    this.fetch = options.fetch
+    this.resourceLoadedState = new Map()
+    this.resourceTokensMap = new Map()
+    window.__auth_info__ = window.__auth_info__ || { __auth_user_id__: 10008, __auth_node_id__: 10017 }
+    this.nodeId = __auth_info__.__auth_node_id__
+    this.initTokens()
+  }
 
-  function initTokens() {
+  initTokens() {
     if (!window.__auth_info__) return
     const token = window.__auth_info__.__page_build_sub_resource_auth_token
     const rids = window.__auth_info__.__page_build_sub_resource_ids || []
 
     if (rids.length && token) {
       rids.forEach((rid) => {
-        resourceTokensMap.set(rid, token)
+        this.setResourceToken(rid, token)
       })
     }
   }
 
-  initTokens()
-
-  return {
-    // 获取节点的presentables列表
-    fetchPresentablesList(params = {}) {
-      params = Object.assign({ nodeId }, params)
-      return fetch('/v1/presentables', { data: params })
-        .then(resp => resp.json())
-    },
-    // 获取单个presentable的详情
-    fetchPresentableInfo(presentableId) {
-      return fetch(`/v1/presentables/${presentableId}`)
-        .then(resp => resp.json())
-    },
-    // 获取节点资源的数据内容
-    fetchPresentableResourceData(presentableId, params) {
-      return _fetchPresentableResource(`${presentableId}`, params)
-    },
-    // 获取节点资源的详情信息
-    fetchPresentableResourceInfo(presentableId, params) {
-      return _fetchPresentableResource(`${presentableId}.info`, params)
-        .then(resp => resp.json())
-    },
-    fetchSubResource(resourceId) {
-      return this.resolveResourceUrl({ resourceId })
-        .then(resourceUrl => fetch(resourceUrl))
-    },
-    /**
-     * js/css/json
-     * @param resourceId
-     * @param token
-     * @returns {*}
-     */
-    requireSubResource(resourceId, token) {
-      // 已经加载的资源不再加载
-      if (resourceLoadedState.get(resourceId)) return Promise.resolve(resourceLoadedState.get(resourceId))
-      let type
-      let promise = null
-
-      if (token) {
-        const resourceUrl = `/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`
-        promise = fetch(resourceUrl)
-        resourceTokensMap.set(resourceId, token)
-      } else {
-        promise = this.fetchSubResource(resourceId)
-      }
-
-      return promise
-        .then((resp) => {
-          const contentType = resp.headers.get('content-type')
-          if (/css/.test(contentType)) {
-            type = 'text/css'
-          } else if (/javascript/.test(contentType)) {
-            type = 'text/javascript'
-          }
-
-          return type ? resp.text() : resp.json()
-        })
-        .then((data) => {
-          if (typeof data.errcode === 'undefined') {
-            if (typeof data === 'object') {
-              resourceLoadedState.set(resourceId, data)
-              return data
-            }
-            return helpers.injectCodeResource(data, type).then(() => resourceLoadedState.set(resourceId, true))
-          }
-          throw new Error(data)
-        })
-    },
-    resolveResourceUrl({ presentableId, resourceId }) {
-      if (resourceId) {
-        let token = resourceTokensMap.get(resourceId)
-        if (token) {
-          return Promise.resolve(`/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`)
-        }
-
-        if (presentableId) {
-          return _fetchPresentableResource(`${presentableId}`)
-            .then(resp => resp.json())
-            .then(() => {
-              token = resourceTokensMap.get(resourceId)
-              if (token) {
-                return `/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`
-              }
-              throw new Error('no found token!')
-            })
-        }
-      } else if (presentableId) {
-        return Promise.resolve(`/api/v1/auths/presentable/${presentableId}?nodeId=${nodeId}`)
-      }
-      throw new Error('no found token!')
-    }
+  getResourceToken(resourceId) {
+    return this.resourceTokensMap.get(resourceId)
   }
 
-  function _fetchPresentableResource(target, params = {}) {
+  setResourceToken(resourceId, token) {
+    this.resourceTokensMap.set(resourceId, token)
+  }
+
+  getResourceLoaderState(resourceId) {
+    return this.resourceLoadedState.get(resourceId)
+  }
+
+  setResourceLoaderState(resourceId, data) {
+    this.resourceLoadedState.set(resourceId, data)
+  }
+
+  getSubResourceUrl(resourceId, token) {
+    return `/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`
+  }
+
+  getPresentableUrl(presentableId) {
+    return `/api/v1/auths/presentable/${presentableId}?nodeId=${this.nodeId}`
+  }
+
+  // 获取节点的presentables列表
+  fetchPresentablesList(params = {}) {
+    params = Object.assign({ nodeId }, params)
+    return fetch('/v1/presentables', { data: params })
+      .then(resp => resp.json())
+  }
+
+  // 获取单个presentable的详情
+  fetchPresentableInfo(presentableId) {
+    return fetch(`/v1/presentables/${presentableId}`)
+      .then(resp => resp.json())
+  }
+
+  fetchPresentableResource(target, params = {}) {
     const url = `/v1/auths/presentable/${target}`
 
-    params = Object.assign({ nodeId }, params)
-    return fetch(url, { data: params })
+    params = Object.assign({ nodeId: this.nodeId }, params)
+    return this.fetch(url, { data: params })
       .then((resp) => {
         const headers = resp.headers
         const rids = headers.get('freelog-sub-resourceids')
@@ -132,12 +79,129 @@ export default function createApi(fetch) {
 
         if (rids && token) {
           rids.split(',').forEach((id) => {
-            resourceTokensMap.set(id, token)
+            this.setResourceToken(id, token)
           })
         }
 
         return resp
       })
+  }
+
+  // 获取节点资源的数据内容
+  fetchPresentableResourceData(presentableId, params) {
+    return this.fetchPresentableResource(`${presentableId}`, params)
+  }
+
+  // 获取节点资源的详情信息
+  fetchPresentableResourceInfo(presentableId, params) {
+    return this.fetchPresentableResource(`${presentableId}.info`, params)
+      .then(resp => resp.json())
+  }
+
+  fetchSubResource(resourceId) {
+    return this.resolveResourceUrl({ resourceId })
+      .then(resourceUrl => fetch(resourceUrl))
+  }
+
+  /**
+   * js/css/json
+   * @param resourceId
+   * @param token
+   * @returns {*}
+   */
+  requireSubResource(resourceId, token) {
+    // 已经加载的资源不再加载
+    if (this.getResourceLoaderState(resourceId)) {
+      return Promise.resolve(this.getResourceLoaderState(resourceId))
+    }
+
+    let type
+    let promise = null
+
+    if (token) {
+      const resourceUrl = this.getSubResourceUrl(resourceId, token)
+      promise = fetch(resourceUrl)
+      this.setResourceToken(resourceId, token)
+    } else {
+      promise = this.fetchSubResource(resourceId)
+    }
+
+    return promise
+      .then((resp) => {
+        const contentType = resp.headers.get('content-type')
+        if (/css/.test(contentType)) {
+          type = 'text/css'
+        } else if (/javascript/.test(contentType)) {
+          type = 'text/javascript'
+        }
+
+        return type ? resp.text() : resp.json()
+      })
+      .then((data) => {
+        if (typeof data.errcode === 'undefined') {
+          if (typeof data === 'object') {
+            this.setResourceLoaderState(resourceId, data)
+            return data
+          }
+          return helpers.injectCodeResource(data, type)
+            .then(() => this.setResourceLoaderState(resourceId, data))
+        }
+        throw new Error(data)
+      })
+  }
+
+  resolveResourceUrl({ presentableId, resourceId }) {
+    if (resourceId) {
+      let token = this.getResourceToken(resourceId)
+      if (token) {
+        return Promise.resolve(this.getSubResourceUrl(resourceId, token))
+      }
+
+      if (presentableId) {
+        return this.fetchPresentableResource(`${presentableId}`)
+          .then(resp => resp.json())
+          .then(() => {
+            token = this.getResourceToken(resourceId)
+            if (token) {
+              return this.getSubResourceUrl(resourceId, token)
+            }
+            throw new Error('no found token!')
+          })
+      }
+    } else if (presentableId) {
+      return Promise.resolve(this.getPresentableUrl(presentableId))
+    }
+    throw new Error('no found token!')
+  }
+
+}
+
+export default function createApi(fetch) {
+
+  var apiGen = new APIGenerator({ fetch })
+
+  return {
+    fetchPresentablesList() {
+      return apiGen.fetchPresentablesList.apply(apiGen, arguments)
+    },
+    fetchPresentableInfo() {
+      return apiGen.fetchPresentableInfo.apply(apiGen, arguments)
+    },
+    fetchPresentableResourceData() {
+      return apiGen.fetchPresentableResourceData.apply(apiGen, arguments)
+    },
+    fetchPresentableResourceInfo() {
+      return apiGen.fetchPresentableResourceInfo.apply(apiGen, arguments)
+    },
+    fetchSubResource() {
+      return apiGen.fetchSubResource.apply(apiGen, arguments)
+    },
+    requireSubResource() {
+      return apiGen.requireSubResource.apply(apiGen, arguments)
+    },
+    resolveResourceUrl() {
+      return apiGen.resolveResourceUrl.apply(apiGen, arguments)
+    }
   }
 }
 
