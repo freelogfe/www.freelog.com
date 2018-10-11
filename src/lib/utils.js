@@ -35,7 +35,8 @@ function gotoCacheScrollTop() {
 
 function gotoLogin(redirect) {
   cacheScrollTop()
-  let loginUrl = `//console.${window.G_FreelogConfig.mainDomain}/user/login`
+
+  let loginUrl = `//console.${window.FreelogApp.Env.mainDomain}/user/login`
   if (redirect) {
     loginUrl += `?redirect=${encodeURIComponent(redirect)}`
   }

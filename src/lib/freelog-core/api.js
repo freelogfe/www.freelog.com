@@ -11,7 +11,7 @@ import * as helpers from './utils/helpers'
 export default function createApi(fetch) {
   const resourceLoadedState = new Map()
   const resourceTokensMap = new Map()
-  window.__auth_info__ = window.__auth_info__ || {__auth_user_id__: 10008, __auth_node_id__: 10017}
+  window.__auth_info__ = window.__auth_info__ || { __auth_user_id__: 10008, __auth_node_id__: 10017 }
   const nodeId = window.__auth_info__.__auth_node_id__
 
   function initTokens() {
@@ -31,8 +31,8 @@ export default function createApi(fetch) {
   return {
     // 获取节点的presentables列表
     fetchPresentablesList(params = {}) {
-      params = Object.assign({nodeId}, params)
-      return fetch('/v1/presentables', {data: params})
+      params = Object.assign({ nodeId }, params)
+      return fetch('/v1/presentables', { data: params })
         .then(resp => resp.json())
     },
     // 获取单个presentable的详情
@@ -50,7 +50,7 @@ export default function createApi(fetch) {
         .then(resp => resp.json())
     },
     fetchSubResource(resourceId) {
-      return this.resolveResourceUrl({resourceId})
+      return this.resolveResourceUrl({ resourceId })
         .then(resourceUrl => fetch(resourceUrl))
     },
     /**
@@ -89,14 +89,13 @@ export default function createApi(fetch) {
             if (typeof data === 'object') {
               resourceLoadedState.set(resourceId, data)
               return data
-            } else {
-              return helpers.injectCodeResource(data, type).then(() => resourceLoadedState.set(resourceId, true))
             }
+            return helpers.injectCodeResource(data, type).then(() => resourceLoadedState.set(resourceId, true))
           }
           throw new Error(data)
         })
     },
-    resolveResourceUrl({presentableId, resourceId}) {
+    resolveResourceUrl({ presentableId, resourceId }) {
       if (resourceId) {
         let token = resourceTokensMap.get(resourceId)
         if (token) {
@@ -124,8 +123,8 @@ export default function createApi(fetch) {
   function _fetchPresentableResource(target, params = {}) {
     const url = `/v1/auths/presentable/${target}`
 
-    params = Object.assign({nodeId}, params)
-    return fetch(url, {data: params})
+    params = Object.assign({ nodeId }, params)
+    return fetch(url, { data: params })
       .then((resp) => {
         const headers = resp.headers
         const rids = headers.get('freelog-sub-resourceids')

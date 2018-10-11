@@ -27,7 +27,10 @@ module.exports = {
   crossorigin: 'anonymous',
   devServer: {
     port: 9080,
+    inline: false,
     disableHostCheck: true,
+    historyApiFallback: true,
+    hot: false,
     // https: {
     //   key: fs.readFileSync('./config/cert/server_ca.key'),
     //   cert: fs.readFileSync('./config/cert/server_ca.crt'),
@@ -42,11 +45,12 @@ module.exports = {
       entry: 'src/views/user/app.js',
       template: 'src/views/layout/index.pug',
       filename: isProd ? 'pages/index.html' : 'index.html',
-      title: '个人中心',
+      title: 'freelog个人中心',
     },
     pagebuild: {
       entry: 'src/views/pagebuild/app.js',
       template: 'src/views/layout/pagebuild.pug',
+      title: 'freelog',
       filename: isProd ? 'pages/pagebuild.html' : 'pagebuild/index.html'
     }
   },

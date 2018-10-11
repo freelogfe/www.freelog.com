@@ -1,6 +1,6 @@
 // webpack import config https://webpack.js.org/api/module-methods/#import-
 //
-//鉴于es module兼容性问题，暂时不适用此加载方案
+// 鉴于es module兼容性问题，暂时不适用此加载方案
 // function _createScript(url, type) {
 //   return new Promise((resolve, reject) => {
 //     const script = document.createElement('script')
@@ -52,7 +52,7 @@ export function createCssLink(href, type) {
 
 export function injectCodeResource(res, type, filename) {
   filename = filename || +new Date()
-  const file = new File([res], `${filename}`, {type})
+  const file = new File([res], `${filename}`, { type })
   const url = window.URL.createObjectURL(file)
   switch (type) {
     case 'text/javascript': {
