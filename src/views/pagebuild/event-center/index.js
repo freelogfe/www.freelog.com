@@ -2,6 +2,7 @@ import { Error } from '@/plugins/error'
 import Vue from 'vue'
 import exceptionCodes from './exception-code'
 import eventsMap from './event-map'
+import * as eventNames from './event-name'
 
 class AppCenter {
   constructor(options) {
@@ -9,27 +10,12 @@ class AppCenter {
     win.FreelogApp = win.FreelogApp || {}
     this.options = options || {}
     this.$eventBus = new Vue()
-    this.initEnv()
     this.initApp()
-  }
-
-  initEnv() {
-    const win = window
-    const isTest = /\.testfreelog\.com$/.test(win.location.host)
-    win.FreelogApp.Env = win.FreelogApp.Env || {}
-
-    Object.assign(win.FreelogApp.Env, {
-      nodeId: win.__auth_info__.__auth_node_id__,
-      userId: win.__auth_info__.__auth_user_id__,
-      isTest,
-      mainDomain: isTest ? 'testfreelog.com' : 'freelog.com'
-    })
   }
 
   initApp() {
     const win = window
     const self = this
-    const eventNames = Object.keys(eventsMap)
 
     Object.assign(win.FreelogApp, {
       trigger,

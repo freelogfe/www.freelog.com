@@ -3,6 +3,7 @@
   </div>
 </template>
 
+
 <script>
 import NavTopBar from '@/components/NavTop/index.vue'
 import MyProfile from './profile/index.vue'
