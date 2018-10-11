@@ -23,14 +23,18 @@
         >{{item.policyName + (item.contractState.type !== 'nosign' ? '(已签约)': '')}}
         </li>
       </ul>
+      <div class="rcb-contract-record" :class="{'disabled': !isHasContractRecord}" @click="toggleContractRecordBox"></div>
     </div>
     <div class="rcb-tab-pane">
       <div class="rcb-tp-contract-content">
-        <contract-content
-                v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent"
-                :data="selectedContract"
-                @execute="executeContractHandler"></contract-content>
-        <div v-else v-html="actSegmentText"></div>
+        <!--<contract-content-->
+                <!--v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent"-->
+                <!--:data="selectedContract"-->
+                <!--@execute="executeContractHandler"></contract-content>-->
+        <contract-detail :contract="selectedContract"></contract-detail>
+        <!--<div v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent" v-html="actSegmentText">-->
+        <!--</div>-->
+        <!--<div v-else v-html="actSegmentText"></div>-->
         <el-dialog
                 :title="modalTitle"
                 ref="eventDialog"
@@ -53,6 +57,24 @@
           <button class="rcb-tp-sb-default" v-if="isActPolicyDefault">默认合约</button>
           <button class="rcb-tp-sb-set-default" v-else @click="showSetDefaultContractComfrim">设为默认</button>
         </div>
+      </div>
+      <div class="rcb-tp-contract-record" :class="{'opened': isOpenContractRecordBox}">
+        <table>
+          <thead>
+            <tr>
+              <th>合约ID</th>
+              <th>策略名称</th>
+              <th>签约时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in contractRecords" :key="'record-'+index">
+              <td>{{item.contractId}}</td>
+              <td>{{item.policyName}}</td>
+              <td>{{item.signDate}}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <div class="rcb-remark">
@@ -89,8 +111,8 @@
           将当前合约设置为默认合约？
         </div>
         <div class="comfirm-sign-contract" v-if="comfirmType === 'sign-contract'">
-          <div class="csn-presentable-name"><span>资源名称</span>{{presentableName}}</div>
-          <div class="csn-policy-name">确认以  {{actPolicy.policyName}}  签约合约？</div>
+          <div class="csn-presentable-name"><span>资源名称</span>&nbsp;&nbsp;&nbsp;&nbsp;{{presentableName}}</div>
+          <div class="csn-policy-name">确认以&nbsp;&nbsp;&nbsp;&nbsp;{{actPolicy.policyName}}&nbsp;&nbsp;&nbsp;&nbsp;签约合约？</div>
           <div class="csn-set-default">
             <i>+</i>
             将此合约设定为默认合约
@@ -110,8 +132,8 @@
 <script>
 
   import compiler from '@freelog/presentable-policy-compiler'
-  import {highlightPolicy} from '@freelog/resource-policy-lang/lib/presentablePolicyHighlight'
   import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
+  import ContractDetail from '../contract-detail/index'
   import ContractContent from '../contract-info-detail/content.vue'
 
   import LicenseEvent from '../contract-events/license/index.vue'
@@ -156,6 +178,7 @@
         userinfos: {},
         isShowContractContent: false,
         isUpdateView: 1,
+        isOpenContractRecordBox: false,
       }
     },
     methods: {
@@ -198,9 +221,7 @@
       },
       // 取消签约并关闭对话框
       cancelSign() {
-
-        this.showSignComfirm()
-        // this.$emit('cancel-sign')
+        this.$emit('cancel-sign')
       },
       // 执行合同签约
       signContract() {
@@ -264,6 +285,9 @@
         this.isShowComfirm = true
         this.comfirmType = type
       },
+      toggleContractRecordBox() {
+        this.isOpenContractRecordBox = !this.isOpenContractRecordBox
+      },
       comfirmCancel() {
         this.isShowComfirm = false
       },
@@ -289,6 +313,15 @@
 
     },
     computed: {
+      isHasContractRecord() {
+        return false
+      },
+      contractRecords() {
+        return [
+          { contractId: '2345ythdnhfgkto87jhddfbg', policyName: '授权策略1', signDate: '2018-09-10 12:00' },
+          { contractId: '2345yfsfsfsffso87jhddfbg', policyName: '授权策略2', signDate: '2018-09-10 12:00' },
+        ]
+      },
       actPolicy() {
         const policy = this.policyList[this.actPolicyIndex]
         return policy
@@ -328,35 +361,7 @@
           const html = this.fillSpace(line)
           text += `<p>${html}</p>`
         })
-        text = highlightPolicy(`
-          for NODES:
-    escrow account acct
-    exp(a) = 10*a
-    exp2(a,b) = a + (b * 10)
-    custom event acceptor.abcd
 
-    initial:
-        proceed to signed on accepting agreement 0x1234
-    signed:
-        proceed to auth on acct exceed 5+5 feather
-    auth:
-        presentable
-        active
-        proceed to settlement on end of day
-    settlement:
-        proceed to auth on receiving exp(presented_last_cycle) to $abcd1234
-        proceed to refund on acceptor.abcd
-        proceed to confiscation on end of day
-    confiscation:
-        acct.confiscable
-        proceed to finish on acct.confiscated
-    refund:
-        acct.refundable
-        proceed to finish on acct.refunded
-    finish:
-        terminate
-        `)
-    //     console.log(text)
         return text
       },
       targRemark() {
@@ -364,7 +369,7 @@
       }
     },
     components: {
-      ContractContent, FeDialog, TransactionEvent, LicenseEvent
+      ContractContent, FeDialog, TransactionEvent, LicenseEvent, ContractDetail
     },
     beforeMount() {
       this.resolvePolicyContractStateMap()
@@ -416,7 +421,10 @@
   }
 
   .rcb-tab-box {
+    position: relative;
     margin-top: 20px;
+
+    ul{ margin-right: 30px; }
 
     .rcb-tab-item {
       display: inline-block;
@@ -432,6 +440,26 @@
         color: #222;
       }
     }
+
+    .rcb-contract-record{
+      position: absolute;
+      top: 6px;
+      right: 5px;
+      width: 20px;
+      height: 20px;
+      background-image: url('../../../../assets/img/normal-record.png');
+      cursor: pointer;
+
+      &:hover{
+        background-image: url('../../../../assets/img/hover:click-record.png');
+      }
+    }
+
+    .rcb-contract-record.disabled{
+      background-image: url('../../../../assets/img/disable-record.png');
+      pointer-events: none;
+    }
+
   }
 
   .rcb-tab-pane {
@@ -441,6 +469,46 @@
     /*padding-bottom: 46px;*/
     border: 1px solid #CECECE;
     border-radius: 4px;
+
+    .rcb-tp-contract-record{
+      display: none;
+      box-sizing: border-box;
+      overflow: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      background: #F3F5F5;
+      color: #222;
+
+      &.opened{
+        display: block;
+      }
+
+      table{
+        width: 100%;
+
+        thead{
+          border-bottom: 1px solid #CECECE;
+        }
+
+        th{
+          padding-bottom: 10px;
+        }
+
+        td{
+          padding: 20px 0;
+        }
+
+        tbody{
+          tr{
+            border-bottom: 1px solid #eee;
+          }
+        }
+      }
+    }
 
     .rcb-tp-status-bar {
       position: relative;
@@ -471,6 +539,7 @@
         border: 1px solid #4396F0;
         background: #fff;
         color: #4396F0;
+        cursor: pointer;
       }
     }
   }
@@ -543,7 +612,6 @@
   }
 
   .rcb-comfirm-cont{
-    margin-bottom: 20px;
     text-align: center;
 
     .comfirm-set-default-contract{
@@ -553,14 +621,15 @@
     }
 
     .csn-presentable-name{
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       font-size: 16px;
       color: #333;
     }
 
     .csn-policy-name{
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       font-size: 16px;
+      font-weight: bold;
       color: #222;
     }
 
