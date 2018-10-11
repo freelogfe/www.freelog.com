@@ -51,7 +51,7 @@
         {{actPolicy.contractState && actPolicy.contractState.info}}
         <div class="rcb-tp-sb-btn-box" v-if="actPolicy.contractState.type != 'nosign'">
           <button class="rcb-tp-sb-default" v-if="isActPolicyDefault">默认合约</button>
-          <button class="rcb-tp-sb-set-default" v-else @click="setDefualtContract">设为默认</button>
+          <button class="rcb-tp-sb-set-default" v-else @click="showSetDefaultContractComfrim">设为默认</button>
         </div>
       </div>
     </div>
@@ -69,200 +69,266 @@
     </div>
     <div class="rcb-footer">
       <button class="btn-normal btn-cancel" @click="cancelSign">取消</button>
-      <button type="button" class="btn-normal btn-sign" :class="{'disabled': isActPolicySigned}" @click="signContract">
+      <button type="button" class="btn-normal btn-sign" :class="{'disabled': isActPolicySigned}" @click="showSignComfirm">
         签约
       </button>
     </div>
+
+    <fe-dialog
+            title-text-align="center"
+            :close-on-click-modal="false"
+            title="提示"
+            width="440px"
+            top="25vh"
+            :visible.sync="isShowComfirm"
+            is-destoryed-body
+            @close="comfirmCancel"
+    >
+      <div class="rcb-comfirm-cont">
+        <div class="comfirm-set-default-contract" v-if="comfirmType === 'set-default-contract'">
+          将当前合约设置为默认合约？
+        </div>
+        <div class="comfirm-sign-contract" v-if="comfirmType === 'sign-contract'">
+          <div class="csn-presentable-name"><span>资源名称</span>{{presentableName}}</div>
+          <div class="csn-policy-name">确认以  {{actPolicy.policyName}}  签约合约？</div>
+          <div class="csn-set-default">
+            <i>+</i>
+            将此合约设定为默认合约
+          </div>
+        </div>
+      </div>
+      <div slot="footer">
+        <div class="rcb-comfirm-btn-box">
+          <button class="cbb-btn cbb-cancel" @click="comfirmCancel">取消</button>
+          <button class="cbb-btn cbb-sure" @click="comfirmSure">确认</button>
+        </div>
+      </div>
+    </fe-dialog>
   </div>
 </template>
 
 <script>
 
-import compiler from '@freelog/presentable-policy-compiler'
-import { highlightPolicy } from '@freelog/resource-policy-lang/lib/presentablePolicyHighlight'
-import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
-import ContractContent from '../contract-info-detail/content.vue'
+  import compiler from '@freelog/presentable-policy-compiler'
+  import {highlightPolicy} from '@freelog/resource-policy-lang/lib/presentablePolicyHighlight'
+  import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
+  import ContractContent from '../contract-info-detail/content.vue'
 
-import LicenseEvent from '../contract-events/license/index.vue'
-import TransactionEvent from '../contract-events/transaction/index.vue'
+  import LicenseEvent from '../contract-events/license/index.vue'
+  import TransactionEvent from '../contract-events/transaction/index.vue'
 
-
-const eventComponentMap = {
-  transaction: {
-    type: 'transaction-event',
-    title: '支付'
-  },
-  signing: {
-    type: 'license-event',
-    title: '签署'
+  const eventComponentMap = {
+    transaction: {
+      type: 'transaction-event',
+      title: '支付'
+    },
+    signing: {
+      type: 'license-event',
+      title: '签署'
+    }
   }
-}
 
-let userinfos = null
-export default {
-  props: {
-    presentable: {
-      type: Object
-    },
-    policyContractsMap: {
-      type: Object,
-    },
-    getContractState: {
-      type: Function,
-    }
-  },
-  data() {
-    return {
-      resourceIntro: '音乐播放器是一种用于播放各种音乐文件的多媒体播放软件。它涵盖了各种音乐格式的播放工具，比如：MP3播放器，WMA播放器，MP4播放器等。它们不仅界面美观，而且操作简单，带你进入一个完美的音乐空间。',
-      actPolicyIndex: 0,
-      isActPolicyDefault: false,
-      isAddRemark: false,
-      selectedContractEvent: '',
-      eventComponent: '',
-      modalTitle: '',
-      showEventExecModal: false,
-      userinfos: {},
-      isShowContractContent: false,
-      isUpdateView: 1,
-    }
-  },
-  methods: {
-    // 处理策略与合同状态的关系
-    resolvePolicyContractStateMap() {
-      this.policyList.forEach((policy) => {
-        const contract = this.policyContractsMap[policy.segmentId] || null
-        policy.contractState = this.getContractState(contract)
-      })
-    },
-    exchangePolicy(index) {
-      this.actPolicyIndex = index
-    },
-    addRemark() {
-      this.isAddRemark = true
-    },
-    fillSpace(line) {
-      return line.replace(/^(\s+)/g, ($) => {
-        const spaceArr = new Array($.length)
-        spaceArr.fill('&nbsp;&nbsp;')
-        return spaceArr.join('')
-      })
-    },
-    // 关闭对话框
-    closeModalHandler() {
-      this.showEventExecModal = false
-    },
-    // 合同事件处理
-    executeContractHandler(params) {
-      const eventComConfig = eventComponentMap[params.type]
-
-      this.selectedContractEvent = {
-        event: params,
-        contract: this.selectedContract,
-        resource: Object.assign(this.presentable, this.presentable.resourceInfo)
+  let userinfos = null
+  export default {
+    props: {
+      presentable: {
+        type: Object
+      },
+      policyContractsMap: {
+        type: Object,
+      },
+      getContractState: {
+        type: Function,
       }
-      this.eventComponent = eventComConfig.type
-      this.modalTitle = eventComConfig.title
-      this.showEventExecModal = true
     },
-    // 点击“取消” 取消签约并关闭对话框
-    cancelSign() {
-      this.$emit('cancel-sign')
+    data() {
+      return {
+        isShowComfirm: false,
+        comfirmType: '',
+        resourceIntro: '',
+        actPolicyIndex: 0,
+        isActPolicyDefault: false,
+        isAddRemark: false,
+        selectedContractEvent: '',
+        eventComponent: '',
+        modalTitle: '',
+        showEventExecModal: false,
+        userinfos: {},
+        isShowContractContent: false,
+        isUpdateView: 1,
+      }
     },
-    // 点击“签约” 执行合同签约
-    signContract() {
-      const { presentableId } = this.presentable
-      const { segmentId } = this.actPolicy
+    methods: {
+      // 处理策略与合同状态的关系
+      resolvePolicyContractStateMap() {
+        this.policyList.forEach((policy) => {
+          const contract = this.policyContractsMap[policy.segmentId] || null
+          policy.contractState = this.getContractState(contract)
+        })
+      },
+      exchangePolicy(index) {
+        this.actPolicyIndex = index
+      },
+      addRemark() {
+        this.isAddRemark = true
+      },
+      fillSpace(line) {
+        return line.replace(/^(\s+)/g, ($) => {
+          const spaceArr = new Array($.length)
+          spaceArr.fill('&nbsp;&nbsp;')
+          return spaceArr.join('')
+        })
+      },
+      // 关闭对话框
+      closeModalHandler() {
+        this.showEventExecModal = false
+      },
+      // 合同事件处理
+      executeContractHandler(params) {
+        const eventComConfig = eventComponentMap[params.type]
 
-      this.$axios({
-        url: '/v1/contracts/createUserPresentableContract',
-        method: 'POST',
-        data: {
-          presentableId,
-          segmentId,
-          targetId: presentableId
+        this.selectedContractEvent = {
+          event: params,
+          contract: this.selectedContract,
+          resource: Object.assign(this.presentable, this.presentable.resourceInfo)
         }
-      })
-        .then(res => res.data)
-        .then((res) => {
-          if (res.errcode === 0) {
-            const contract = res.data
-            this.policyContractsMap[segmentId] = contract
-            this.resolvePolicyContractStateMap()
-            // 更新policy与contract的映射关系后，强制刷新
-            this.$forceUpdate()
-            this.$emit('update-default-contract', contract)
-          } else {
-            throw new Error()
+        this.eventComponent = eventComConfig.type
+        this.modalTitle = eventComConfig.title
+        this.showEventExecModal = true
+      },
+      // 取消签约并关闭对话框
+      cancelSign() {
+
+        this.showSignComfirm()
+        // this.$emit('cancel-sign')
+      },
+      // 执行合同签约
+      signContract() {
+        const {presentableId} = this.presentable
+        const {segmentId} = this.actPolicy
+
+        this.$axios({
+          url: '/v1/contracts/createUserPresentableContract',
+          method: 'POST',
+          data: {
+            presentableId,
+            segmentId,
+            targetId: presentableId
           }
         })
-        .catch(() => {
-          this.$message({
-            type: 'error',
-            showClose: true,
-            message: '签约失败，稍后再试！！！'
+          .then(res => res.data)
+          .then((res) => {
+            if (res.errcode === 0) {
+              const contract = res.data
+              this.policyContractsMap[segmentId] = contract
+              this.resolvePolicyContractStateMap()
+              // 更新policy与contract的映射关系后，强制刷新
+              this.$forceUpdate()
+              this.$emit('update-default-contract', contract)
+            } else {
+              throw new Error()
+            }
           })
+          .catch(() => {
+            this.$message({
+              type: 'error',
+              showClose: true,
+              message: '签约失败，稍后再试！！！'
+            })
+          })
+      },
+      // 设置默认合同
+      setDefualtContract() {
+        this.$axios({
+          url: `/v1/contracts/setDefault?contractId=${this.selectedContract.contractId}`,
+          method: 'PUT',
         })
-    },
-    // 设置默认合同
-    setDefualtContract() {
-      this.$axios({
-        url: `/v1/contracts/setDefault?contractId=${this.selectedContract.contractId}`,
-        method: 'PUT',
-      })
-        .then(res => res.data)
-        .then((res) => {
-          if (res.errcode === 0) {
-            this.isActPolicyDefault = true
-          } else {
-            throw new Error()
+          .then(res => res.data)
+          .then((res) => {
+            if (res.errcode === 0) {
+              this.isActPolicyDefault = true
+            } else {
+              throw new Error()
+            }
+          })
+          .catch(() => {
+            this.$message({
+              type: 'error',
+              showClose: true,
+              message: '设置默认合同失败，稍后再试！！！'
+            })
+          })
+      },
+      // 显示confirm 弹窗
+      showComfirm(type) {
+        this.isShowComfirm = true
+        this.comfirmType = type
+      },
+      comfirmCancel() {
+        this.isShowComfirm = false
+      },
+      comfirmSure() {
+        this.isShowComfirm = false
+        switch (this.comfirmType) {
+          case 'set-default-contract': {
+            this.setDefualtContract()
+            break
           }
-        })
-        .catch(() => {
-          this.$message({
-            type: 'error',
-            showClose: true,
-            message: '设置默认合同失败，稍后再试！！！'
-          })
-        })
-    }
-  },
-  computed: {
-    actPolicy() {
-      const policy = this.policyList[this.actPolicyIndex]
-      return policy
-    },
-    isActPolicySigned() {
-      return this.actPolicy && this.actPolicy.contractState.type !== 'nosign'
-    },
-    resourceId() {
-      return this.presentable.resourceId
-    },
-    resourceType() {
-      return this.presentable.resourceInfo.resourceType
-    },
-    policyList() {
-      return this.presentable.policy
-    },
-    selectedContract() {
-      const contract = this.policyContractsMap[this.actPolicy.segmentId]
-      if (contract) {
-        contract.partyOneInfo = {
-          nodeName: this.presentable.nodeName,
-          ownerUserId: this.presentable.userId
+          case 'sign-contract': {
+            this.signContract()
+            break
+          }
         }
-        contract.partyTwoInfo = userinfos
+      },
+      showSetDefaultContractComfrim() {
+        this.showComfirm('set-default-contract')
+      },
+      showSignComfirm() {
+        this.showComfirm('sign-contract')
       }
 
-      return contract
     },
-    actSegmentText() {
-      const lines = compiler.beautify(this.actPolicy.segmentText).split(/\n/)
-      let text = ''
-      lines.forEach((line) => {
-        const html = this.fillSpace(line)
-        text += `<p>${html}</p>`
-      })
-      text = highlightPolicy(`
+    computed: {
+      actPolicy() {
+        const policy = this.policyList[this.actPolicyIndex]
+        return policy
+      },
+      isActPolicySigned() {
+        return this.actPolicy && this.actPolicy.contractState.type !== 'nosign'
+      },
+      resourceId() {
+        return this.presentable.resourceId
+      },
+      resourceType() {
+        return this.presentable.resourceInfo.resourceType
+      },
+      // 节点资源名称
+      presentableName() {
+        return this.presentable.presentableName
+      },
+      policyList() {
+        return this.presentable.policy
+      },
+      selectedContract() {
+        const contract = this.policyContractsMap[this.actPolicy.segmentId]
+        if (contract) {
+          contract.partyOneInfo = {
+            nodeName: this.presentable.nodeName,
+            ownerUserId: this.presentable.userId
+          }
+          contract.partyTwoInfo = userinfos
+        }
+
+        return contract
+      },
+      actSegmentText() {
+        const lines = compiler.beautify(this.actPolicy.segmentText).split(/\n/)
+        let text = ''
+        lines.forEach((line) => {
+          const html = this.fillSpace(line)
+          text += `<p>${html}</p>`
+        })
+        text = highlightPolicy(`
           for NODES:
     escrow account acct
     exp(a) = 10*a
@@ -290,32 +356,32 @@ export default {
     finish:
         terminate
         `)
-      //     console.log(text)
-      return text
+    //     console.log(text)
+        return text
+      },
+      targRemark() {
+        return ''
+      }
     },
-    targRemark() {
-      return ''
-    }
-  },
-  components: {
-    ContractContent, FeDialog, TransactionEvent, LicenseEvent
-  },
-  beforeMount() {
-    this.resolvePolicyContractStateMap()
-    if (userinfos === null) {
-      this.$axios.get('/v1/userinfos/current')
-        .then(res => res.data)
-        .then((res) => {
-          if (res.errcode === 0) {
-            userinfos = res.data
-            this.isShowContractContent = true
-          }
-        })
-    } else {
-      this.isShowContractContent = true
+    components: {
+      ContractContent, FeDialog, TransactionEvent, LicenseEvent
+    },
+    beforeMount() {
+      this.resolvePolicyContractStateMap()
+      if (userinfos === null) {
+        this.$axios.get('/v1/userinfos/current')
+          .then(res => res.data)
+          .then((res) => {
+            if (res.errcode === 0) {
+              userinfos = res.data
+              this.isShowContractContent = true
+            }
+          })
+      } else {
+        this.isShowContractContent = true
+      }
     }
   }
-}
 </script>
 
 <style lang="less" scoped type="text/less">
@@ -377,10 +443,7 @@ export default {
     border-radius: 4px;
 
     .rcb-tp-status-bar {
-      /*position: absolute;*/
-      /*left: 0;*/
-      /*right: 0;*/
-      /*bottom: 0;*/
+      position: relative;
       height: 46px;
       padding: 0 10px;
       border-top: 1px solid #CECECE;
@@ -467,6 +530,65 @@ export default {
         border: 1px solid #CECECE;
         border-radius: 4px;
         color: #333;
+        &.disabled {
+          border: 1px solid #CECECE;
+          border-radius: 4px;
+          background: #F9F9F9;
+          color: #999;
+          pointer-events: none;
+        }
+      }
+
+    }
+  }
+
+  .rcb-comfirm-cont{
+    margin-bottom: 20px;
+    text-align: center;
+
+    .comfirm-set-default-contract{
+      font-size: 16px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .csn-presentable-name{
+      margin-bottom: 30px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .csn-policy-name{
+      margin-bottom: 30px;
+      font-size: 16px;
+      color: #222;
+    }
+
+    .csn-set-default{
+      font-size: 14px;
+      color: #c6c6c6;
+    }
+
+  }
+
+  .rcb-comfirm-btn-box{
+    text-align: center;
+
+    .cbb-btn {
+      padding: 6px 20px;
+      font-size: 14px;
+      border: none;
+      outline: 0;
+      cursor: pointer;
+
+      &.cbb-cancel {
+        color: #666;
+      }
+      &.cbb-sure {
+        border: 1px solid #CECECE;
+        border-radius: 4px;
+        color: #333;
+
         &.disabled {
           border: 1px solid #CECECE;
           border-radius: 4px;
