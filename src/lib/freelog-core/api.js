@@ -56,14 +56,18 @@ class APIGenerator {
 
   // 获取节点的presentables列表
   fetchPresentablesList(params = {}) {
-    params = Object.assign({ nodeId }, params)
-    return fetch('/v1/presentables', { data: params })
+    params = Object.assign({ nodeId: this.nodeId }, params)
+    return this.fetch('/v1/presentables', { data: params })
       .then(resp => resp.json())
   }
 
   // 获取单个presentable的详情
   fetchPresentableInfo(presentableId) {
-    return fetch(`/v1/presentables/${presentableId}`)
+    return this.fetch(`/v1/presentables/${presentableId}`)
+      .then(resp => {
+        console.log(JSON.stringify(resp))
+        return resp
+      })
       .then(resp => resp.json())
   }
 
@@ -146,7 +150,7 @@ class APIGenerator {
           return helpers.injectCodeResource(data, type)
             .then(() => this.setResourceLoaderState(resourceId, data))
         }
-        throw new Error(data)
+        throw new Error(JSON.stringify(data))
       })
   }
 

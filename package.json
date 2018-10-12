@@ -28,9 +28,12 @@
     "@vue/cli-plugin-eslint": "^3.0.3",
     "@vue/cli-service": "^3.0.3",
     "@vue/eslint-config-airbnb": "^3.0.3",
+    "chai": "^4.2.0",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "minimist": "^1.2.0",
+    "mocha": "^5.2.0",
+    "puppeteer": "^1.9.0",
     "vue-cli-plugin-pug": "^1.0.7",
     "vue-template-compiler": "^2.5.17",
     "webpack-merge": "^4.1.4"
