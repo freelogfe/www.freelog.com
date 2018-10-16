@@ -31,10 +31,8 @@
                 <!--v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent"-->
                 <!--:data="selectedContract"-->
                 <!--@execute="executeContractHandler"></contract-content>-->
-        <contract-detail :contract="selectedContract"></contract-detail>
-        <!--<div v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent" v-html="actSegmentText">-->
-        <!--</div>-->
-        <!--<div v-else v-html="actSegmentText"></div>-->
+        <contract-detail v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent" :contract="selectedContract"></contract-detail>
+        <pre class="policy-text" v-else>{{actBeautifulPolityText}}</pre>
         <el-dialog
                 :title="modalTitle"
                 ref="eventDialog"
@@ -131,7 +129,7 @@
 
 <script>
 
-  import compiler from '@freelog/presentable-policy-compiler'
+  import { beautify } from '@freelog/resource-policy-lang'
   import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
   import ContractDetail from '../contract-detail/index'
   import ContractContent from '../contract-info-detail/content.vue'
@@ -194,13 +192,6 @@
       },
       addRemark() {
         this.isAddRemark = true
-      },
-      fillSpace(line) {
-        return line.replace(/^(\s+)/g, ($) => {
-          const spaceArr = new Array($.length)
-          spaceArr.fill('&nbsp;&nbsp;')
-          return spaceArr.join('')
-        })
       },
       // 关闭对话框
       closeModalHandler() {
@@ -354,15 +345,8 @@
 
         return contract
       },
-      actSegmentText() {
-        const lines = compiler.beautify(this.actPolicy.segmentText).split(/\n/)
-        let text = ''
-        lines.forEach((line) => {
-          const html = this.fillSpace(line)
-          text += `<p>${html}</p>`
-        })
-
-        return text
+      actBeautifulPolityText() {
+        return beautify(this.actPolicy.policyText)
       },
       targRemark() {
         return ''
@@ -550,6 +534,10 @@
     padding: 15px;
     font-size: 16px;
     line-height: 1.4;
+
+    .policy-text{
+      color: #999;
+    }
   }
 
   .rcb-remark {
