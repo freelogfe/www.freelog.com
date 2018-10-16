@@ -8,7 +8,7 @@
     "build:beta": "vue-cli-service build --beta",
     "lint": "vue-cli-service lint --fix",
     "dev": "npm run serve --title=www.freelog.com",
-    "test": "mocha ./test/*"
+    "test": "mocha 'test/**/*.test.js'"
   },
   "dependencies": {
     "@freelog/presentable-policy-compiler": "0.0.11",
