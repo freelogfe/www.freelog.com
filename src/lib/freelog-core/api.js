@@ -64,10 +64,6 @@ class APIGenerator {
   // 获取单个presentable的详情
   fetchPresentableInfo(presentableId) {
     return this.fetch(`/v1/presentables/${presentableId}`)
-      .then(resp => {
-        console.log(JSON.stringify(resp))
-        return resp
-      })
       .then(resp => resp.json())
   }
 
