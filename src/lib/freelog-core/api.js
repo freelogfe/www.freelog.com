@@ -115,6 +115,7 @@ class APIGenerator {
    */
   requireSubResource(resourceId, token) {
     // 已经加载的资源不再加载
+
     if (this.getResourceLoaderState(resourceId)) {
       return Promise.resolve(this.getResourceLoaderState(resourceId))
     }
@@ -175,6 +176,7 @@ class APIGenerator {
     } else if (presentableId) {
       return Promise.resolve(this.getPresentableUrl(presentableId))
     }
+
     throw new Error('no found token!')
   }
 

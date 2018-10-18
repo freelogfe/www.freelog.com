@@ -32,9 +32,9 @@
                 <!--:data="selectedContract"-->
                 <!--@execute="executeContractHandler"></contract-content>-->
         <contract-detail :contract="selectedContract"></contract-detail>
-        <!--<div v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent" v-html="actSegmentText">-->
+        <!--<div v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent" v-html="actpolicyText">-->
         <!--</div>-->
-        <!--<div v-else v-html="actSegmentText"></div>-->
+        <!--<div v-else v-html="actPolicyText"></div>-->
         <el-dialog
                 :title="modalTitle"
                 ref="eventDialog"
@@ -354,8 +354,8 @@
 
         return contract
       },
-      actSegmentText() {
-        const lines = compiler.beautify(this.actPolicy.segmentText).split(/\n/)
+      actPolicyText() {
+        const lines = compiler.beautify(this.actPolicy.policyText).split(/\n/)
         let text = ''
         lines.forEach((line) => {
           const html = this.fillSpace(line)

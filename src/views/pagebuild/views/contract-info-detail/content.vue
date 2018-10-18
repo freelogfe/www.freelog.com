@@ -177,7 +177,7 @@ export default {
       return html
     },
     parseContract(detail) {
-      const lines = compiler.beautify(detail.policySegment.segmentText).split(/\n/)
+      const lines = compiler.beautify(detail.policySegment.policyText).split(/\n/)
       let text = ''
       lines.forEach((line) => {
         let html = this.fillSpace(line)
