@@ -13,7 +13,8 @@
     "test:exit": "node test/exit.js"
   },
   "gitHooks": {
-    "pre-push": "node scripts/deploy.js"
+    "pre-push": "node scripts/deploy.js",
+    "pre-commit": "echo 'test'g"
   },
   "dependencies": {
     "@freelog/presentable-policy-compiler": "0.0.11",

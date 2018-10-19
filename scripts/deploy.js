@@ -62,7 +62,4 @@ process.on('uncaughtException', function (err) {
   logger.error(err.stderr.toString())
 })
 
-
-console.log('deploy')
-
 run()
