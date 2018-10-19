@@ -88,10 +88,15 @@ export default {
 
       return this.$axios.get(this.pagination.target, {
         params
-      }).then(res => res.data.data)
+      }).then((res) => {
+        if (res.data.ret === 0 && res.data.errcode === 0) {
+          return res.data.data
+        }
+        throw new Error(res.data.msg)
+      })
     },
     update(data) {
-      if (!data) return
+      if (!data || !data.dataList) return
       this.total = data.totalItem
       this.tableProps.data = data.dataList
     },
@@ -109,7 +114,7 @@ export default {
           window.sessionStorage.setItem(`${this.$route.fullPath}_current_page`, this.currentPage)
         })
         .catch((err) => {
-          console.error(err)
+          this.$error.showErrorMessage(err)
           this.loading = true
         })
     },

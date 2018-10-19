@@ -34,120 +34,120 @@
 
 
 <script>
-  export default {
-    name: 'fe-dialog',
-    props: {
-      visible: {
-        type: Boolean,
-        default: false,
-      },
-      title: {
-        type: String,
-        default: ''
-      },
-      titleTextAlign: {
-        type: String,
-        default: 'left'
-      },
-      closeOnClickDialog: {
-        type: Boolean,
-        default: true
-      },
-      showClose: {
-        type: Boolean,
-        default: true
-      },
-      width: String,
-      customClass: {
-        type: String,
-        default: ''
-      },
-      top: {
-        type: String,
-        default: '10vh'
-      },
-      beforeClose: Function,
-      center: {
-        type: Boolean,
-        default: false
-      },
-      isDestoryedBody: {
-        type: Boolean,
-        default: false
-      }
+export default {
+  name: 'fe-dialog',
+  props: {
+    visible: {
+      type: Boolean,
+      default: false,
     },
-    data() {
-      return {
-        closed: false,
-        rendered: false,
-      }
+    title: {
+      type: String,
+      default: ''
     },
-    watch: {
-      visible(val) {
-        if (val) {
-          this.closed = false
-          this.$emit('open')
-          //   this.$el.addEventListener('scroll', this.updatePopper)
-          this.$nextTick(() => {
-            this.$refs.dialog.scrollTop = 0
-          })
-        } else if (!this.closed) {
-          this.$emit('close')
-        }
-      }
+    titleTextAlign: {
+      type: String,
+      default: 'left'
     },
-    computed: {
-      style() {
-        const style = {}
-        if (!this.fullscreen) {
-          style.marginTop = this.top
-          if (this.width) {
-            style.width = this.width
-          }
-        }
-        return style
-      }
+    closeOnClickDialog: {
+      type: Boolean,
+      default: true
     },
-    methods: {
-      handleWrapperClick() {
-        // if (!this.closeOnClickDialog) return
-        this.handleClose()
-      },
-      handleClose() {
-        if (typeof this.beforeClose === 'function') {
-          this.beforeClose(this.hide)
-        } else {
-          this.hide()
-        }
-      },
-      hide(cancel) {
-        if (cancel !== false) {
-          this.$emit('update:visible', false)
-          this.$emit('close')
-          this.closed = true
-        }
-      },
-      afterLeave() {
-        this.$emit('closed')
-      }
+    showClose: {
+      type: Boolean,
+      default: true
     },
-    mounted() {
-      this.rendered = this.visible
+    width: String,
+    customClass: {
+      type: String,
+      default: ''
     },
-    updated() {
-      // 是否卸载body-slot
-      if (this.visible) {
-        this.rendered = true
-      } else if (this.isDestoryedBody) {
-        this.timer = setTimeout(() => {
-          this.rendered = false
-        }, 800)
-      }
+    top: {
+      type: String,
+      default: '10vh'
     },
-    destroyed() {
-      clearTimeout(this.timer)
+    beforeClose: Function,
+    center: {
+      type: Boolean,
+      default: false
+    },
+    isDestoryedBody: {
+      type: Boolean,
+      default: false
     }
+  },
+  data() {
+    return {
+      closed: false,
+      rendered: false,
+    }
+  },
+  watch: {
+    visible(val) {
+      if (val) {
+        this.closed = false
+        this.$emit('open')
+        //   this.$el.addEventListener('scroll', this.updatePopper)
+        this.$nextTick(() => {
+          this.$refs.dialog.scrollTop = 0
+        })
+      } else if (!this.closed) {
+        this.$emit('close')
+      }
+    }
+  },
+  computed: {
+    style() {
+      const style = {}
+      if (!this.fullscreen) {
+        style.marginTop = this.top
+        if (this.width) {
+          style.width = this.width
+        }
+      }
+      return style
+    }
+  },
+  methods: {
+    handleWrapperClick() {
+      // if (!this.closeOnClickDialog) return
+      this.handleClose()
+    },
+    handleClose() {
+      if (typeof this.beforeClose === 'function') {
+        this.beforeClose(this.hide)
+      } else {
+        this.hide()
+      }
+    },
+    hide(cancel) {
+      if (cancel !== false) {
+        this.$emit('update:visible', false)
+        this.$emit('close')
+        this.closed = true
+      }
+    },
+    afterLeave() {
+      this.$emit('closed')
+    }
+  },
+  mounted() {
+    this.rendered = this.visible
+  },
+  updated() {
+    // 是否卸载body-slot
+    if (this.visible) {
+      this.rendered = true
+    } else if (this.isDestoryedBody) {
+      this.timer = setTimeout(() => {
+        this.rendered = false
+      }, 800)
+    }
+  },
+  destroyed() {
+    clearTimeout(this.timer)
   }
+}
 </script>
 
 <style lang="less" scoped type="text/less">

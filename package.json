@@ -5,16 +5,15 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:beta": "vue-cli-service build --beta",
+    "build:prod": "vue-cli-service build --target=prod",
+    "build:beta": "vue-cli-service build --target=beta",
     "lint": "vue-cli-service lint --fix",
     "dev": "npm run serve --title=www.freelog.com",
     "test": "mocha 'test/**/*.test.js'",
     "test:exit": "node test/exit.js"
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run test:exit"
-    }
+  "gitHooks": {
+    "pre-push": "node scripts/deploy.js"
   },
   "dependencies": {
     "@freelog/presentable-policy-compiler": "0.0.11",
@@ -35,15 +34,19 @@
     "@vue/cli-plugin-eslint": "^3.0.3",
     "@vue/cli-service": "^3.0.3",
     "@vue/eslint-config-airbnb": "^3.0.3",
+    "ali-oss": "^6.0.1",
     "chai": "^4.2.0",
+    "consola": "^1.4.4",
     "husky": "^1.1.2",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
     "minimist": "^1.2.0",
     "mocha": "^5.2.0",
+    "ora": "^3.0.0",
     "puppeteer": "^1.9.0",
     "vue-cli-plugin-pug": "^1.0.7",
     "vue-template-compiler": "^2.5.17",
+    "walk": "^2.3.14",
     "webpack-merge": "^4.1.4"
   }
 }
