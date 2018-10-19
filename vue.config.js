@@ -5,11 +5,11 @@ const srcDir = path.resolve('./src');
 const config = require('./config')
 var minimist = require('minimist')
 var argv = minimist(process.argv.slice(2));
-const isProd = argv.target === 'prod' || process.env.NODE_ENV === 'production'
+const isProd = argv.env === 'prod' || process.env.NODE_ENV === 'production'
 
 function getBaseUrl() {
   var baseUrl
-  if (argv.target === 'beta') {
+  if (argv.env === 'beta') {
     baseUrl = config.build.assetsTestDomain
   } else if (isProd) {
     baseUrl = config.build.assetsDomain
