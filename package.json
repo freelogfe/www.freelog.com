@@ -12,9 +12,10 @@
     "test": "mocha 'test/**/*.test.js'",
     "test:exit": "node test/exit.js"
   },
-  "gitHooks": {
-    "pre-push": "node scripts/deploy.js",
-    "pre-commit": "echo 'test'g"
+  "husky": {
+    "hooks": {
+      "pre-push": "node scripts/deploy.js"
+    }
   },
   "dependencies": {
     "@freelog/presentable-policy-compiler": "0.0.11",
