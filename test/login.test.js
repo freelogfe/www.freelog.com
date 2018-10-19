@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer')
-const PageWindown = require('./pageWindown')
+const PageWindown = require('./pageWindow')
 var expect = require('chai').expect
 
 describe('test login', () => {

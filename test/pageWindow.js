@@ -12,7 +12,7 @@ class PageWindow {
     assert(url, 'require url parameter')
     this.url = url
     co(async () => {
-      await this.init(url)
+      await this.init()
     })
   }
 
@@ -22,8 +22,9 @@ class PageWindow {
       await this.browser.close();
     }
 
+    this.url = url
     co(async () => {
-      await this.init(url)
+      await this.init()
     })
   }
 

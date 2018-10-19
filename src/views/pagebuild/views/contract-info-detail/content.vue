@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import compiler from '@freelog/presentable-policy-compiler'
+import { beautify } from '@freelog/resource-policy-lang'
 
 const contractEventsMap = {
   transaction() {
@@ -177,7 +177,7 @@ export default {
       return html
     },
     parseContract(detail) {
-      const lines = compiler.beautify(detail.policySegment.policyText).split(/\n/)
+      const lines = beautify(detail.policySegment.segmentText).split(/\n/)
       let text = ''
       lines.forEach((line) => {
         let html = this.fillSpace(line)

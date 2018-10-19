@@ -28,13 +28,11 @@
     <div class="rcb-tab-pane">
       <div class="rcb-tp-contract-content">
         <!--<contract-content-->
-                <!--v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent"-->
-                <!--:data="selectedContract"-->
-                <!--@execute="executeContractHandler"></contract-content>-->
-        <contract-detail :contract="selectedContract"></contract-detail>
-        <!--<div v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent" v-html="actpolicyText">-->
-        <!--</div>-->
-        <!--<div v-else v-html="actPolicyText"></div>-->
+        <!--v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent"-->
+        <!--:data="selectedContract"-->
+        <!--@execute="executeContractHandler"></contract-content>-->
+        <contract-detail v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent" :contract="selectedContract"></contract-detail>
+        <pre class="policy-text" v-else>{{actBeautifulPolityText}}</pre>
         <el-dialog
                 :title="modalTitle"
                 ref="eventDialog"
@@ -61,18 +59,18 @@
       <div class="rcb-tp-contract-record" :class="{'opened': isOpenContractRecordBox}">
         <table>
           <thead>
-            <tr>
-              <th>合约ID</th>
-              <th>策略名称</th>
-              <th>签约时间</th>
-            </tr>
+          <tr>
+            <th>合约ID</th>
+            <th>策略名称</th>
+            <th>签约时间</th>
+          </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in contractRecords" :key="'record-'+index">
-              <td>{{item.contractId}}</td>
-              <td>{{item.policyName}}</td>
-              <td>{{item.signDate}}</td>
-            </tr>
+          <tr v-for="(item, index) in contractRecords" :key="'record-'+index">
+            <td>{{item.contractId}}</td>
+            <td>{{item.policyName}}</td>
+            <td>{{item.signDate}}</td>
+          </tr>
           </tbody>
         </table>
       </div>
@@ -130,263 +128,241 @@
 </template>
 
 <script>
-
-import compiler from '@freelog/presentable-policy-compiler'
-import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
-import ContractDetail from '../contract-detail/index'
-import ContractContent from '../contract-info-detail/content.vue'
-
-import LicenseEvent from '../contract-events/license/index.vue'
-import TransactionEvent from '../contract-events/transaction/index.vue'
-
-const eventComponentMap = {
-  transaction: {
-    type: 'transaction-event',
-    title: '支付'
-  },
-  signing: {
-    type: 'license-event',
-    title: '签署'
-  }
-}
-
-let userinfos = null
-export default {
-  props: {
-    presentable: {
-      type: Object
+  import { beautify } from '@freelog/resource-policy-lang'
+  import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
+  import ContractDetail from '../contract-detail/index'
+  import ContractContent from '../contract-info-detail/content.vue'
+  import LicenseEvent from '../contract-events/license/index.vue'
+  import TransactionEvent from '../contract-events/transaction/index.vue'
+  const eventComponentMap = {
+    transaction: {
+      type: 'transaction-event',
+      title: '支付'
     },
-    policyContractsMap: {
-      type: Object,
-    },
-    getContractState: {
-      type: Function,
-    }
-  },
-  data() {
-    return {
-      isShowComfirm: false,
-      comfirmType: '',
-      resourceIntro: '',
-      actPolicyIndex: 0,
-      isActPolicyDefault: false,
-      isAddRemark: false,
-      selectedContractEvent: '',
-      eventComponent: '',
-      modalTitle: '',
-      showEventExecModal: false,
-      userinfos: {},
-      isShowContractContent: false,
-      isUpdateView: 1,
-      isOpenContractRecordBox: false,
-    }
-  },
-  methods: {
-    // 处理策略与合同状态的关系
-    resolvePolicyContractStateMap() {
-      this.policyList.forEach((policy) => {
-        const contract = this.policyContractsMap[policy.segmentId] || null
-        policy.contractState = this.getContractState(contract)
-      })
-    },
-    exchangePolicy(index) {
-      this.actPolicyIndex = index
-    },
-    addRemark() {
-      this.isAddRemark = true
-    },
-    fillSpace(line) {
-      return line.replace(/^(\s+)/g, ($) => {
-        const spaceArr = new Array($.length)
-        spaceArr.fill('&nbsp;&nbsp;')
-        return spaceArr.join('')
-      })
-    },
-    // 关闭对话框
-    closeModalHandler() {
-      this.showEventExecModal = false
-    },
-    // 合同事件处理
-    executeContractHandler(params) {
-      const eventComConfig = eventComponentMap[params.type]
-
-      this.selectedContractEvent = {
-        event: params,
-        contract: this.selectedContract,
-        resource: Object.assign(this.presentable, this.presentable.resourceInfo)
-      }
-      this.eventComponent = eventComConfig.type
-      this.modalTitle = eventComConfig.title
-      this.showEventExecModal = true
-    },
-    // 取消签约并关闭对话框
-    cancelSign() {
-      this.$emit('cancel-sign')
-    },
-    // 执行合同签约
-    signContract() {
-      const { presentableId } = this.presentable
-      const { segmentId } = this.actPolicy
-
-      this.$axios({
-        url: '/v1/contracts/createUserPresentableContract',
-        method: 'POST',
-        data: {
-          presentableId,
-          segmentId,
-          targetId: presentableId
-        }
-      })
-        .then(res => res.data)
-        .then((res) => {
-          if (res.errcode === 0) {
-            const contract = res.data
-            this.policyContractsMap[segmentId] = contract
-            this.resolvePolicyContractStateMap()
-            // 更新policy与contract的映射关系后，强制刷新
-            this.$forceUpdate()
-            this.$emit('update-default-contract', contract)
-          } else {
-            throw new Error()
-          }
-        })
-        .catch(() => {
-          this.$message({
-            type: 'error',
-            showClose: true,
-            message: '签约失败，稍后再试！！！'
-          })
-        })
-    },
-    // 设置默认合同
-    setDefualtContract() {
-      this.$axios({
-        url: `/v1/contracts/setDefault?contractId=${this.selectedContract.contractId}`,
-        method: 'PUT',
-      })
-        .then(res => res.data)
-        .then((res) => {
-          if (res.errcode === 0) {
-            this.isActPolicyDefault = true
-          } else {
-            throw new Error()
-          }
-        })
-        .catch(() => {
-          this.$message({
-            type: 'error',
-            showClose: true,
-            message: '设置默认合同失败，稍后再试！！！'
-          })
-        })
-    },
-    // 显示confirm 弹窗
-    showComfirm(type) {
-      this.isShowComfirm = true
-      this.comfirmType = type
-    },
-    toggleContractRecordBox() {
-      this.isOpenContractRecordBox = !this.isOpenContractRecordBox
-    },
-    comfirmCancel() {
-      this.isShowComfirm = false
-    },
-    comfirmSure() {
-      this.isShowComfirm = false
-      switch (this.comfirmType) {
-        case 'set-default-contract': {
-          this.setDefualtContract()
-          break
-        }
-        case 'sign-contract': {
-          this.signContract()
-          break
-        }
-      }
-    },
-    showSetDefaultContractComfrim() {
-      this.showComfirm('set-default-contract')
-    },
-    showSignComfirm() {
-      this.showComfirm('sign-contract')
-    }
-
-  },
-  computed: {
-    isHasContractRecord() {
-      return false
-    },
-    contractRecords() {
-      return [
-        { contractId: '2345ythdnhfgkto87jhddfbg', policyName: '授权策略1', signDate: '2018-09-10 12:00' },
-        { contractId: '2345yfsfsfsffso87jhddfbg', policyName: '授权策略2', signDate: '2018-09-10 12:00' },
-      ]
-    },
-    actPolicy() {
-      const policy = this.policyList[this.actPolicyIndex]
-      return policy
-    },
-    isActPolicySigned() {
-      return this.actPolicy && this.actPolicy.contractState.type !== 'nosign'
-    },
-    resourceId() {
-      return this.presentable.resourceId
-    },
-    resourceType() {
-      return this.presentable.resourceInfo.resourceType
-    },
-    // 节点资源名称
-    presentableName() {
-      return this.presentable.presentableName
-    },
-    policyList() {
-      return this.presentable.policy
-    },
-    selectedContract() {
-      const contract = this.policyContractsMap[this.actPolicy.segmentId]
-      if (contract) {
-        contract.partyOneInfo = {
-          nodeName: this.presentable.nodeName,
-          ownerUserId: this.presentable.userId
-        }
-        contract.partyTwoInfo = userinfos
-      }
-
-      return contract
-    },
-    actPolicyText() {
-      const lines = compiler.beautify(this.actPolicy.policyText).split(/\n/)
-      let text = ''
-      lines.forEach((line) => {
-        const html = this.fillSpace(line)
-        text += `<p>${html}</p>`
-      })
-
-      return text
-    },
-    targRemark() {
-      return ''
-    }
-  },
-  components: {
-    ContractContent, FeDialog, TransactionEvent, LicenseEvent, ContractDetail
-  },
-  beforeMount() {
-    this.resolvePolicyContractStateMap()
-    if (userinfos === null) {
-      this.$axios.get('/v1/userinfos/current')
-        .then(res => res.data)
-        .then((res) => {
-          if (res.errcode === 0) {
-            userinfos = res.data
-            this.isShowContractContent = true
-          }
-        })
-    } else {
-      this.isShowContractContent = true
+    signing: {
+      type: 'license-event',
+      title: '签署'
     }
   }
-}
+  let userinfos = null
+  export default {
+    props: {
+      presentable: {
+        type: Object
+      },
+      policyContractsMap: {
+        type: Object,
+      },
+      getContractState: {
+        type: Function,
+      }
+    },
+    data() {
+      return {
+        isShowComfirm: false,
+        comfirmType: '',
+        resourceIntro: '',
+        actPolicyIndex: 0,
+        isActPolicyDefault: false,
+        isAddRemark: false,
+        selectedContractEvent: '',
+        eventComponent: '',
+        modalTitle: '',
+        showEventExecModal: false,
+        userinfos: {},
+        isShowContractContent: false,
+        isUpdateView: 1,
+        isOpenContractRecordBox: false,
+      }
+    },
+    methods: {
+      // 处理策略与合同状态的关系
+      resolvePolicyContractStateMap() {
+        this.policyList.forEach((policy) => {
+          const contract = this.policyContractsMap[policy.segmentId] || null
+          policy.contractState = this.getContractState(contract)
+        })
+      },
+      exchangePolicy(index) {
+        this.actPolicyIndex = index
+      },
+      addRemark() {
+        this.isAddRemark = true
+      },
+      // 关闭对话框
+      closeModalHandler() {
+        this.showEventExecModal = false
+      },
+      // 合同事件处理
+      executeContractHandler(params) {
+        const eventComConfig = eventComponentMap[params.type]
+        this.selectedContractEvent = {
+          event: params,
+          contract: this.selectedContract,
+          resource: Object.assign(this.presentable, this.presentable.resourceInfo)
+        }
+        this.eventComponent = eventComConfig.type
+        this.modalTitle = eventComConfig.title
+        this.showEventExecModal = true
+      },
+      // 取消签约并关闭对话框
+      cancelSign() {
+        this.$emit('cancel-sign')
+      },
+      // 执行合同签约
+      signContract() {
+        const {presentableId} = this.presentable
+        const {segmentId} = this.actPolicy
+        this.$axios({
+          url: '/v1/contracts/createUserPresentableContract',
+          method: 'POST',
+          data: {
+            presentableId,
+            segmentId,
+            targetId: presentableId
+          }
+        })
+          .then(res => res.data)
+          .then((res) => {
+            if (res.errcode === 0) {
+              const contract = res.data
+              this.policyContractsMap[segmentId] = contract
+              this.resolvePolicyContractStateMap()
+              // 更新policy与contract的映射关系后，强制刷新
+              this.$forceUpdate()
+              this.$emit('update-default-contract', contract)
+            } else {
+              throw new Error()
+            }
+          })
+          .catch(() => {
+            this.$message({
+              type: 'error',
+              showClose: true,
+              message: '签约失败，稍后再试！！！'
+            })
+          })
+      },
+      // 设置默认合同
+      setDefualtContract() {
+        this.$axios({
+          url: `/v1/contracts/setDefault?contractId=${this.selectedContract.contractId}`,
+          method: 'PUT',
+        })
+          .then(res => res.data)
+          .then((res) => {
+            if (res.errcode === 0) {
+              this.isActPolicyDefault = true
+            } else {
+              throw new Error()
+            }
+          })
+          .catch(() => {
+            this.$message({
+              type: 'error',
+              showClose: true,
+              message: '设置默认合同失败，稍后再试！！！'
+            })
+          })
+      },
+      // 显示confirm 弹窗
+      showComfirm(type) {
+        this.isShowComfirm = true
+        this.comfirmType = type
+      },
+      toggleContractRecordBox() {
+        this.isOpenContractRecordBox = !this.isOpenContractRecordBox
+      },
+      comfirmCancel() {
+        this.isShowComfirm = false
+      },
+      comfirmSure() {
+        this.isShowComfirm = false
+        switch (this.comfirmType) {
+          case 'set-default-contract': {
+            this.setDefualtContract()
+            break
+          }
+          case 'sign-contract': {
+            this.signContract()
+            break
+          }
+        }
+      },
+      showSetDefaultContractComfrim() {
+        this.showComfirm('set-default-contract')
+      },
+      showSignComfirm() {
+        this.showComfirm('sign-contract')
+      }
+    },
+    computed: {
+      isHasContractRecord() {
+        return false
+      },
+      contractRecords() {
+        return [
+          { contractId: '2345ythdnhfgkto87jhddfbg', policyName: '授权策略1', signDate: '2018-09-10 12:00' },
+          { contractId: '2345yfsfsfsffso87jhddfbg', policyName: '授权策略2', signDate: '2018-09-10 12:00' },
+        ]
+      },
+      actPolicy() {
+        const policy = this.policyList[this.actPolicyIndex]
+        return policy
+      },
+      isActPolicySigned() {
+        return this.actPolicy && this.actPolicy.contractState.type !== 'nosign'
+      },
+      resourceId() {
+        return this.presentable.resourceId
+      },
+      resourceType() {
+        return this.presentable.resourceInfo.resourceType
+      },
+      // 节点资源名称
+      presentableName() {
+        return this.presentable.presentableName
+      },
+      policyList() {
+        return this.presentable.policy
+      },
+      selectedContract() {
+        const contract = this.policyContractsMap[this.actPolicy.segmentId]
+        if (contract) {
+          contract.partyOneInfo = {
+            nodeName: this.presentable.nodeName,
+            ownerUserId: this.presentable.userId
+          }
+          contract.partyTwoInfo = userinfos
+        }
+        return contract
+      },
+      actBeautifulPolityText() {
+        return beautify(this.actPolicy.policyText)
+      },
+      targRemark() {
+        return ''
+      }
+    },
+    components: {
+      ContractContent, FeDialog, TransactionEvent, LicenseEvent, ContractDetail
+    },
+    beforeMount() {
+      this.resolvePolicyContractStateMap()
+      if (userinfos === null) {
+        this.$axios.get('/v1/userinfos/current')
+          .then(res => res.data)
+          .then((res) => {
+            if (res.errcode === 0) {
+              userinfos = res.data
+              this.isShowContractContent = true
+            }
+          })
+      } else {
+        this.isShowContractContent = true
+      }
+    }
+  }
 </script>
 
 <style lang="less" scoped type="text/less">
@@ -395,23 +371,19 @@ export default {
     width: 80px;
     color: #666;
   }
-
   .rcb-value {
     display: inline-block;
     font-size: 14px;
     font-weight: bold;
     color: #222;
   }
-
   .rcb-id-box, .rcb-type-box, .rcb-intro-box {
     display: inline-block;
     margin-top: 20px;
   }
-
   .rcb-id-box {
     width: 425px;
   }
-
   .rcb-intro-box {
     display: flex;
     width: 100%;
@@ -419,13 +391,10 @@ export default {
       flex: 1;
     }
   }
-
   .rcb-tab-box {
     position: relative;
     margin-top: 20px;
-
     ul{ margin-right: 30px; }
-
     .rcb-tab-item {
       display: inline-block;
       margin: 0 12px;
@@ -434,13 +403,11 @@ export default {
       cursor: pointer;
       font-size: 14px;
       font-weight: bold;
-
       &.active {
         border-bottom: 3px solid #4396F0;
         color: #222;
       }
     }
-
     .rcb-contract-record{
       position: absolute;
       top: 6px;
@@ -449,19 +416,15 @@ export default {
       height: 20px;
       background-image: url('../../../../assets/img/normal-record.png');
       cursor: pointer;
-
       &:hover{
         background-image: url('../../../../assets/img/hover:click-record.png');
       }
     }
-
     .rcb-contract-record.disabled{
       background-image: url('../../../../assets/img/disable-record.png');
       pointer-events: none;
     }
-
   }
-
   .rcb-tab-pane {
     position: relative;
     overflow-y: scroll;
@@ -469,7 +432,6 @@ export default {
     /*padding-bottom: 46px;*/
     border: 1px solid #CECECE;
     border-radius: 4px;
-
     .rcb-tp-contract-record{
       display: none;
       box-sizing: border-box;
@@ -482,26 +444,20 @@ export default {
       padding: 20px;
       background: #F3F5F5;
       color: #222;
-
       &.opened{
         display: block;
       }
-
       table{
         width: 100%;
-
         thead{
           border-bottom: 1px solid #CECECE;
         }
-
         th{
           padding-bottom: 10px;
         }
-
         td{
           padding: 20px 0;
         }
-
         tbody{
           tr{
             border-bottom: 1px solid #eee;
@@ -509,7 +465,6 @@ export default {
         }
       }
     }
-
     .rcb-tp-status-bar {
       position: relative;
       height: 46px;
@@ -519,7 +474,6 @@ export default {
       color: #333;
       font-size: 12px;
       line-height: 46px;
-
       .rcb-tp-sb-btn-box {
         position: absolute;
         top: 0;
@@ -543,15 +497,16 @@ export default {
       }
     }
   }
-
   .rcb-tp-contract-content {
     overflow: auto;
     height: 252px;
     padding: 15px;
     font-size: 16px;
     line-height: 1.4;
+    .policy-text{
+      color: #999;
+    }
   }
-
   .rcb-remark {
     display: flex;
     height: 64px;
@@ -559,7 +514,6 @@ export default {
     font-size: 14px;
     color: #222;
     font-weight: bold;
-
     .rcb-add-remark {
       color: #3C99FC;
       cursor: pointer;
@@ -569,7 +523,6 @@ export default {
     }
     .rcb-r-right {
       flex: 1;
-
       textarea {
         box-sizing: border-box;
         width: 100%;
@@ -580,18 +533,15 @@ export default {
       }
     }
   }
-
   .rcb-footer {
     padding-top: 20px;
     text-align: right;
-
     .btn-normal {
       padding: 10px 26px;
       font-size: 14px;
       border: none;
       outline: 0;
       cursor: pointer;
-
       &.btn-cancel {
         color: #666;
       }
@@ -607,49 +557,39 @@ export default {
           pointer-events: none;
         }
       }
-
     }
   }
-
   .rcb-comfirm-cont{
     text-align: center;
-
     .comfirm-set-default-contract{
       font-size: 16px;
       font-weight: bold;
       color: #222;
     }
-
     .csn-presentable-name{
       margin-bottom: 20px;
       font-size: 16px;
       color: #333;
     }
-
     .csn-policy-name{
       margin-bottom: 20px;
       font-size: 16px;
       font-weight: bold;
       color: #222;
     }
-
     .csn-set-default{
       font-size: 14px;
       color: #c6c6c6;
     }
-
   }
-
   .rcb-comfirm-btn-box{
     text-align: center;
-
     .cbb-btn {
       padding: 6px 20px;
       font-size: 14px;
       border: none;
       outline: 0;
       cursor: pointer;
-
       &.cbb-cancel {
         color: #666;
       }
@@ -657,7 +597,6 @@ export default {
         border: 1px solid #CECECE;
         border-radius: 4px;
         color: #333;
-
         &.disabled {
           border: 1px solid #CECECE;
           border-radius: 4px;
@@ -666,8 +605,6 @@ export default {
           pointer-events: none;
         }
       }
-
     }
   }
 </style>
-
