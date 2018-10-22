@@ -15,9 +15,9 @@ export default class QICore {
 
   fetch(url, req) {
     if (!/^(https?:)?\/\//.test(url)) {
-      if (!/^\/qi/.test(url) && !/^\/api/.test(url)) {
-        url = `/api${url}`
-      }
+      // if (!/^\/qi/.test(url) && !/^\/api/.test(url)) {
+      //   url = `/api${url}`
+      // }
     }
     return this.middlewares[0].fetch(url, req)
   }

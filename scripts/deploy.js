@@ -2,12 +2,40 @@ const oss = require('ali-oss');
 const walk = require('walk')
 const ora = require('ora');
 const consola = require('consola')
+const userHome = require('user-home')
 const logger = consola.withScope('deploy')
+const {existsSync} = require('fs')
 const path = require('path')
+const assert = require('assert')
 const {execSync} = require('child_process')
-const getOssConfig = require('./oss-config')
 const dist = path.join(__dirname, '../dist')
+const cwd = process.cwd()
 
+function getOSSAccessFile() {
+  const filename = 'oss-config'
+  const files = [path.join(cwd, filename), path.join(userHome, '.freelog', filename)].reduce((files, dir) => {
+    return files.concat(['.js', '.json'].map(ext => `${dir}${ext}`))
+  }, [])
+
+  for (let i = 0; i < files.length; i++) {
+    if (existsSync(files[i])) {
+      return files[i]
+    }
+  }
+
+  return null
+}
+
+
+function getOssConfig(isProd) {
+  const accessFile = getOSSAccessFile()
+  assert(accessFile, 'not found oss access config file')
+  const accessConfig = require(getOSSAccessFile())
+  return Object.assign({
+    bucket: isProd ? 'frcdn' : 'test-frcdn',
+    region: 'oss-cn-shenzhen'
+  }, accessConfig)
+}
 
 function getGitBranchName() {
   var name = execSync(`git branch | grep '*' | sed 's/* //'`).toString()
@@ -34,7 +62,7 @@ function uploadDir(dir, isProd) {
     walker.on('file', (root, fileState, next) => {
       const local = path.join(root, fileState.name)
       const target = path.relative(dir, local)
-      const promise = store.put('test/' + target, local)
+      const promise = store.put(target, local)
       promises.push(promise)
       next()
     })

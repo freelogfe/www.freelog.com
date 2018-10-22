@@ -20,5 +20,5 @@ yarn-error.log*
 *.sln
 *.sw*
 
-
-oss-config.js
+#敏感文件不上传
+oss-config.*

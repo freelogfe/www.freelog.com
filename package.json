@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@freelog/presentable-policy-compiler": "0.0.11",
-    "@freelog/resource-policy-lang": "0.0.30",
+    "@freelog/resource-policy-lang": "0.0.32",
     "axios": "^0.18.0",
     "cropperjs": "^1.4.1",
     "element-ui": "^2.4.7",
@@ -46,6 +46,7 @@
     "mocha": "^5.2.0",
     "ora": "^3.0.0",
     "puppeteer": "^1.9.0",
+    "user-home": "^2.0.0",
     "vue-cli-plugin-pug": "^1.0.7",
     "vue-template-compiler": "^2.5.17",
     "walk": "^2.3.14",

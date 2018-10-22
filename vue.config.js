@@ -24,8 +24,6 @@ module.exports = {
   assetsDir: 'public',
   crossorigin: 'anonymous',
   devServer: {
-    hot: false,
-    inline: false,
     port: 9080,
     inline: false,
     disableHostCheck: true,

@@ -8,20 +8,19 @@ import axios from 'axios'
 import { gotoLogin } from './utils'
 
 const instance = axios.create({
-  // baseURL: '/api/',
-  timeout: 10e3,
-  // crossdomain: true,
-  // withCredentials: true,
+  baseURL: window.location.origin.replace('www','qi'),
+  timeout: 1e4,
+  withCredentials: true,
   headers: {
-    'X-Requested-With': 'XMLHttpRequest'
+    // 'X-Requested-With': 'XMLHttpRequest'
   }
 })
 
 instance.interceptors.request.use(
   (config) => {
-    if (!/^\/qi\//.test(config.url) && !/^\/api\//.test(config.url)) {
-      config.url = `/api${config.url}`
-    }
+    // if (!/^\/qi\//.test(config.url) && !/^\/api\//.test(config.url)) {
+    //   config.url = `/api${config.url}`
+    // }
     return config
   },
   err => Promise.reject(err),
