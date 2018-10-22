@@ -62,7 +62,7 @@ export default {
         'cell-class-name': 'res-row-cell'
       },
       paginationConfig: {
-        target: '/api/v1/resources/collections',
+        target: '/v1/resources/collections',
         params: {}
       }
     }

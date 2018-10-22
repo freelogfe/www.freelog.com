@@ -18,9 +18,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    // if (!/^\/qi\//.test(config.url) && !/^\/api\//.test(config.url)) {
-    //   config.url = `/api${config.url}`
-    // }
+
     return config
   },
   err => Promise.reject(err),

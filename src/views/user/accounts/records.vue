@@ -83,7 +83,7 @@ export default {
         'cell-class-name': 'res-row-cell'
       },
       paginationConfig: {
-        target: '/qi/v1/pay/orders.json', // /v1/pay/paymentOrders
+        target: '/v1/pay/orders.json', // /v1/pay/paymentOrders
         params: {
           accountId: this.$route.query.accountId
         }

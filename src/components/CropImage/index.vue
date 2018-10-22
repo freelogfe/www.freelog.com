@@ -10,7 +10,7 @@
             <img :src="imageUrl" crossOrigin="anonymous" class="avatar" ref="avatarRef" alt="">
           </div>
           <el-upload
-                  action="/api/v1/userinfos/uploadHeadImg"
+                  action="//qi.testfreelog.com/v1/userinfos/uploadHeadImg"
                   class="avatar-uploader"
                   ref="uploader"
                   :auto-upload="false"

@@ -90,7 +90,7 @@ export default {
         'cell-class-name': 'res-row-cell'
       },
       paginationConfig: {
-        target: '/qi/v1/getMyResources.json'
+        target: '/v1/getMyResources.json'
       }
     }
   },
