@@ -27,10 +27,6 @@
     </div>
     <div class="rcb-tab-pane">
       <div class="rcb-tp-contract-content">
-        <!--<contract-content-->
-        <!--v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent"-->
-        <!--:data="selectedContract"-->
-        <!--@execute="executeContractHandler"></contract-content>-->
         <contract-detail v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent" :contract="selectedContract"></contract-detail>
         <pre class="policy-text" v-else>{{actBeautifulPolityText}}</pre>
         <el-dialog
@@ -59,18 +55,18 @@
       <div class="rcb-tp-contract-record" :class="{'opened': isOpenContractRecordBox}">
         <table>
           <thead>
-          <tr>
-            <th>合约ID</th>
-            <th>策略名称</th>
-            <th>签约时间</th>
-          </tr>
+            <tr>
+              <th>合约ID</th>
+              <th>策略名称</th>
+              <th>签约时间</th>
+            </tr>
           </thead>
           <tbody>
-          <tr v-for="(item, index) in contractRecords" :key="'record-'+index">
-            <td>{{item.contractId}}</td>
-            <td>{{item.policyName}}</td>
-            <td>{{item.signDate}}</td>
-          </tr>
+            <tr v-for="(item, index) in contractRecords" :key="'record-'+index">
+              <td>{{item.contractId}}</td>
+              <td>{{item.policyName}}</td>
+              <td>{{item.signDate}}</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -128,12 +124,15 @@
 </template>
 
 <script>
+
   import { beautify } from '@freelog/resource-policy-lang'
   import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
   import ContractDetail from '../contract-detail/index'
   import ContractContent from '../contract-info-detail/content.vue'
+
   import LicenseEvent from '../contract-events/license/index.vue'
   import TransactionEvent from '../contract-events/transaction/index.vue'
+
   const eventComponentMap = {
     transaction: {
       type: 'transaction-event',
@@ -144,6 +143,7 @@
       title: '签署'
     }
   }
+
   let userinfos = null
   export default {
     props: {
@@ -196,6 +196,7 @@
       // 合同事件处理
       executeContractHandler(params) {
         const eventComConfig = eventComponentMap[params.type]
+
         this.selectedContractEvent = {
           event: params,
           contract: this.selectedContract,
@@ -213,6 +214,7 @@
       signContract() {
         const {presentableId} = this.presentable
         const {segmentId} = this.actPolicy
+
         this.$axios({
           url: '/v1/contracts/createUserPresentableContract',
           method: 'POST',
@@ -295,6 +297,7 @@
       showSignComfirm() {
         this.showComfirm('sign-contract')
       }
+
     },
     computed: {
       isHasContractRecord() {
@@ -335,6 +338,7 @@
           }
           contract.partyTwoInfo = userinfos
         }
+
         return contract
       },
       actBeautifulPolityText() {
@@ -371,19 +375,23 @@
     width: 80px;
     color: #666;
   }
+
   .rcb-value {
     display: inline-block;
     font-size: 14px;
     font-weight: bold;
     color: #222;
   }
+
   .rcb-id-box, .rcb-type-box, .rcb-intro-box {
     display: inline-block;
     margin-top: 20px;
   }
+
   .rcb-id-box {
     width: 425px;
   }
+
   .rcb-intro-box {
     display: flex;
     width: 100%;
@@ -391,10 +399,13 @@
       flex: 1;
     }
   }
+
   .rcb-tab-box {
     position: relative;
     margin-top: 20px;
+
     ul{ margin-right: 30px; }
+
     .rcb-tab-item {
       display: inline-block;
       margin: 0 12px;
@@ -403,11 +414,13 @@
       cursor: pointer;
       font-size: 14px;
       font-weight: bold;
+
       &.active {
         border-bottom: 3px solid #4396F0;
         color: #222;
       }
     }
+
     .rcb-contract-record{
       position: absolute;
       top: 6px;
@@ -416,15 +429,19 @@
       height: 20px;
       background-image: url('../../../../assets/img/normal-record.png');
       cursor: pointer;
+
       &:hover{
         background-image: url('../../../../assets/img/hover:click-record.png');
       }
     }
+
     .rcb-contract-record.disabled{
       background-image: url('../../../../assets/img/disable-record.png');
       pointer-events: none;
     }
+
   }
+
   .rcb-tab-pane {
     position: relative;
     overflow-y: scroll;
@@ -432,6 +449,7 @@
     /*padding-bottom: 46px;*/
     border: 1px solid #CECECE;
     border-radius: 4px;
+
     .rcb-tp-contract-record{
       display: none;
       box-sizing: border-box;
@@ -444,20 +462,26 @@
       padding: 20px;
       background: #F3F5F5;
       color: #222;
+
       &.opened{
         display: block;
       }
+
       table{
         width: 100%;
+
         thead{
           border-bottom: 1px solid #CECECE;
         }
+
         th{
           padding-bottom: 10px;
         }
+
         td{
           padding: 20px 0;
         }
+
         tbody{
           tr{
             border-bottom: 1px solid #eee;
@@ -465,6 +489,7 @@
         }
       }
     }
+
     .rcb-tp-status-bar {
       position: relative;
       height: 46px;
@@ -474,6 +499,7 @@
       color: #333;
       font-size: 12px;
       line-height: 46px;
+
       .rcb-tp-sb-btn-box {
         position: absolute;
         top: 0;
@@ -497,16 +523,19 @@
       }
     }
   }
+
   .rcb-tp-contract-content {
     overflow: auto;
     height: 252px;
     padding: 15px;
     font-size: 16px;
     line-height: 1.4;
+
     .policy-text{
       color: #999;
     }
   }
+
   .rcb-remark {
     display: flex;
     height: 64px;
@@ -514,6 +543,7 @@
     font-size: 14px;
     color: #222;
     font-weight: bold;
+
     .rcb-add-remark {
       color: #3C99FC;
       cursor: pointer;
@@ -523,6 +553,7 @@
     }
     .rcb-r-right {
       flex: 1;
+
       textarea {
         box-sizing: border-box;
         width: 100%;
@@ -533,15 +564,18 @@
       }
     }
   }
+
   .rcb-footer {
     padding-top: 20px;
     text-align: right;
+
     .btn-normal {
       padding: 10px 26px;
       font-size: 14px;
       border: none;
       outline: 0;
       cursor: pointer;
+
       &.btn-cancel {
         color: #666;
       }
@@ -557,39 +591,49 @@
           pointer-events: none;
         }
       }
+
     }
   }
+
   .rcb-comfirm-cont{
     text-align: center;
+
     .comfirm-set-default-contract{
       font-size: 16px;
       font-weight: bold;
       color: #222;
     }
+
     .csn-presentable-name{
       margin-bottom: 20px;
       font-size: 16px;
       color: #333;
     }
+
     .csn-policy-name{
       margin-bottom: 20px;
       font-size: 16px;
       font-weight: bold;
       color: #222;
     }
+
     .csn-set-default{
       font-size: 14px;
       color: #c6c6c6;
     }
+
   }
+
   .rcb-comfirm-btn-box{
     text-align: center;
+
     .cbb-btn {
       padding: 6px 20px;
       font-size: 14px;
       border: none;
       outline: 0;
       cursor: pointer;
+
       &.cbb-cancel {
         color: #666;
       }
@@ -597,6 +641,7 @@
         border: 1px solid #CECECE;
         border-radius: 4px;
         color: #333;
+
         &.disabled {
           border: 1px solid #CECECE;
           border-radius: 4px;
@@ -605,6 +650,8 @@
           pointer-events: none;
         }
       }
+
     }
   }
 </style>
+
