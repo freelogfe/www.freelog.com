@@ -12,6 +12,7 @@
           <el-upload
                   action="//qi.testfreelog.com/v1/userinfos/uploadHeadImg"
                   class="avatar-uploader"
+                  :with-credentials="true"
                   ref="uploader"
                   :auto-upload="false"
                   :show-file-list="false"

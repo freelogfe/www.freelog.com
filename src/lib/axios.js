@@ -18,7 +18,6 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-
     return config
   },
   err => Promise.reject(err),
