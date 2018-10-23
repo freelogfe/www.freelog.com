@@ -1,17 +1,15 @@
 /* eslint-disable */
 
 const path = require('path')
-const fs = require('fs')
-const merge = require('webpack-merge')
-const isProd = process.env.NODE_ENV === 'production'
 const srcDir = path.resolve('./src');
 const config = require('./config')
 var minimist = require('minimist')
 var argv = minimist(process.argv.slice(2));
+const isProd = argv.env === 'prod' || process.env.NODE_ENV === 'production'
 
 function getBaseUrl() {
   var baseUrl
-  if (argv.beta) {
+  if (argv.env === 'beta') {
     baseUrl = config.build.assetsTestDomain
   } else if (isProd) {
     baseUrl = config.build.assetsDomain
@@ -26,8 +24,6 @@ module.exports = {
   assetsDir: 'public',
   crossorigin: 'anonymous',
   devServer: {
-    hot: false,
-    inline: false,
     port: 9080,
     inline: false,
     disableHostCheck: true,

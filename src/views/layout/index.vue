@@ -40,6 +40,13 @@ export default {
   methods: {}
 }
 </script>
+
 <style lang="less" scoped>
   @import "index.less";
+</style>
+
+<style>
+  i {
+    font-style: normal;
+  }
 </style>

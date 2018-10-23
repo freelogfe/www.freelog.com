@@ -15,9 +15,8 @@ export default class QICore {
 
   fetch(url, req) {
     if (!/^(https?:)?\/\//.test(url)) {
-      if (!/^\/qi/.test(url) && !/^\/api/.test(url)) {
-        url = `/api${url}`
-      }
+      const host = location.origin.replace(/\/\/[^.]+/, '//qi')
+      url = `${host}${url}`
     }
     return this.middlewares[0].fetch(url, req)
   }

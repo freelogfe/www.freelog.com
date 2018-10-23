@@ -6,7 +6,6 @@
 
 <script>
   import {highlight} from '@freelog/resource-policy-lang'
-
   export default {
     name: 'contract-detail',
     props: {
@@ -17,7 +16,6 @@
     },
     data() {
       return {
-
       }
     },
     computed: {
@@ -125,7 +123,6 @@
       },
       cycleEndEvent(transition) {},
       customEvent(transition) {},
-
     },
     mounted() {
       var $targDom = this.$el.querySelector(`.bp-s-${this.currentFsmState}`)
@@ -135,31 +132,27 @@
 </script>
 
 <style lang="less" type="text/less">
-
-// policy 高亮
-.beauty-poliycy-box{
-  font-size: 14px; line-height: 1.6;
-  color: #999;
-
-  .bp-audience{ }
-  .bp-declaration, .bp-state, .bp-s-row:not(:first-child){
-    padding-left: 1em;
+  // policy 高亮
+  .beauty-poliycy-box{
+    font-size: 14px; line-height: 1.6;
+    color: #999;
+    .bp-audience{ }
+    .bp-declaration, .bp-state, .bp-s-row:not(:first-child){
+      padding-left: 1em;
+    }
+    .bp-state.active{
+      background: #E3F0FF;
+      border: 1px solid #B3D7FF; border-radius: 20px;
+      color: #222;
+    }
+    .bp-state.active .bp-s-transition{
+      color: #EE6723;
+    }
+    .bp-state .bp-s-event{
+      pointer-events: none;
+    }
+    .bp-state.active .bp-s-event{
+      display: inline-block; cursor: pointer; color: #3e94f3; pointer-events: auto;
+    }
   }
-  .bp-state.active{
-    background: #E3F0FF;
-    border: 1px solid #B3D7FF; border-radius: 20px;
-    color: #222;
-  }
-  .bp-state.active .bp-s-transition{
-    color: #EE6723;
-  }
-
-  .bp-state .bp-s-event{
-    pointer-events: none;
-  }
-  .bp-state.active .bp-s-event{
-    display: inline-block; cursor: pointer; color: #3e94f3; pointer-events: auto;
-  }
-}
 </style>
-

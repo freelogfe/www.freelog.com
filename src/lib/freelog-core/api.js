@@ -13,8 +13,8 @@ class APIGenerator {
     this.fetch = options.fetch
     this.resourceLoadedState = new Map()
     this.resourceTokensMap = new Map()
-    window.__auth_info__ = window.__auth_info__ || { __auth_user_id__: 10008, __auth_node_id__: 10017 }
-    this.nodeId = __auth_info__.__auth_node_id__
+    window.__auth_info__ = window.__auth_info__ || {}
+    this.nodeId = window.__auth_info__.__auth_node_id__
     this.initTokens()
   }
 
@@ -47,11 +47,11 @@ class APIGenerator {
   }
 
   getSubResourceUrl(resourceId, token) {
-    return `/api/v1/auths/presentable/subResource/${resourceId}?token=${token}`
+    return `/v1/auths/presentable/subResource/${resourceId}?token=${token}`
   }
 
   getPresentableUrl(presentableId) {
-    return `/api/v1/auths/presentable/${presentableId}?nodeId=${this.nodeId}`
+    return `/v1/auths/presentable/${presentableId}?nodeId=${this.nodeId}`
   }
 
   // 获取节点的presentables列表
@@ -111,6 +111,7 @@ class APIGenerator {
    */
   requireSubResource(resourceId, token) {
     // 已经加载的资源不再加载
+
     if (this.getResourceLoaderState(resourceId)) {
       return Promise.resolve(this.getResourceLoaderState(resourceId))
     }
@@ -171,36 +172,35 @@ class APIGenerator {
     } else if (presentableId) {
       return Promise.resolve(this.getPresentableUrl(presentableId))
     }
-    return Promise.reject('no found token!')
-  }
 
+    throw new Error('no found token!')
+  }
 }
 
 export default function createApi(fetch) {
-
-  var apiGen = new APIGenerator({ fetch })
+  const apiGen = new APIGenerator({ fetch })
 
   return {
-    fetchPresentablesList() {
-      return apiGen.fetchPresentablesList.apply(apiGen, arguments)
+    fetchPresentablesList(...args) {
+      return apiGen.fetchPresentablesList(...args)
     },
-    fetchPresentableInfo() {
-      return apiGen.fetchPresentableInfo.apply(apiGen, arguments)
+    fetchPresentableInfo(...args) {
+      return apiGen.fetchPresentableInfo(...args)
     },
-    fetchPresentableResourceData() {
-      return apiGen.fetchPresentableResourceData.apply(apiGen, arguments)
+    fetchPresentableResourceData(...args) {
+      return apiGen.fetchPresentableResourceData(...args)
     },
-    fetchPresentableResourceInfo() {
-      return apiGen.fetchPresentableResourceInfo.apply(apiGen, arguments)
+    fetchPresentableResourceInfo(...args) {
+      return apiGen.fetchPresentableResourceInfo(...args)
     },
-    fetchSubResource() {
-      return apiGen.fetchSubResource.apply(apiGen, arguments)
+    fetchSubResource(...args) {
+      return apiGen.fetchSubResource(...args)
     },
-    requireSubResource() {
-      return apiGen.requireSubResource.apply(apiGen, arguments)
+    requireSubResource(...args) {
+      return apiGen.requireSubResource(...args)
     },
-    resolveResourceUrl() {
-      return apiGen.resolveResourceUrl.apply(apiGen, arguments)
+    resolveResourceUrl(...args) {
+      return apiGen.resolveResourceUrl(...args)
     }
   }
 }
