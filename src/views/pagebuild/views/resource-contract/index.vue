@@ -27,10 +27,6 @@
     </div>
     <div class="rcb-tab-pane">
       <div class="rcb-tp-contract-content">
-        <!--<contract-content-->
-                <!--v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent"-->
-                <!--:data="selectedContract"-->
-                <!--@execute="executeContractHandler"></contract-content>-->
         <contract-detail v-if="actPolicy.contractState.type === 'inactive' && isShowContractContent" :contract="selectedContract"></contract-detail>
         <pre class="policy-text" v-else>{{actBeautifulPolityText}}</pre>
         <el-dialog

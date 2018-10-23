@@ -171,7 +171,7 @@ class APIGenerator {
     } else if (presentableId) {
       return Promise.resolve(this.getPresentableUrl(presentableId))
     }
-    throw new Error('no found token!')
+    return Promise.reject('no found token!')
   }
 
 }
