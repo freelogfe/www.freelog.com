@@ -8,7 +8,7 @@ import axios from 'axios'
 import { gotoLogin } from './utils'
 
 const instance = axios.create({
-  baseURL: window.location.origin.replace('www','qi'),
+  baseURL: window.location.origin.replace(/\/\/[^.]+/,'//qi'),
   timeout: 1e4,
   withCredentials: true,
   headers: {

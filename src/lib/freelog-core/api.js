@@ -47,11 +47,11 @@ class APIGenerator {
   }
 
   getSubResourceUrl(resourceId, token) {
-    return `/v1/auths/presentable/subResource/${resourceId}?token=${token}`
+    return window.location.origin.replace(/\/\/[^.]+/,'//qi') + `/v1/auths/presentable/subResource/${resourceId}?token=${token}`
   }
 
   getPresentableUrl(presentableId) {
-    return `/v1/auths/presentable/${presentableId}?nodeId=${this.nodeId}`
+    return window.location.origin.replace(/\/\/[^.]+/,'//qi') + `/v1/auths/presentable/${presentableId}?nodeId=${this.nodeId}`
   }
 
   // 获取节点的presentables列表
