@@ -7,10 +7,10 @@
  * 5. 节点资源详情：presentable映射资源的资源详情
  */
 import * as helpers from './utils/helpers'
+import load from './load'
 
 class APIGenerator {
-  constructor(options) {
-    this.fetch = options.fetch
+  constructor() {
     this.resourceLoadedState = new Map()
     this.resourceTokensMap = new Map()
     window.__auth_info__ = window.__auth_info__ || {}
@@ -47,23 +47,23 @@ class APIGenerator {
   }
 
   getSubResourceUrl(resourceId, token) {
-    return window.location.origin.replace(/\/\/[^.]+/,'//qi') + `/v1/auths/presentable/subResource/${resourceId}?token=${token}`
+    return `${window.FreelogApp.Env.qiOrigin}/v1/auths/presentable/subResource/${resourceId}?token=${token}`
   }
 
   getPresentableUrl(presentableId) {
-    return window.location.origin.replace(/\/\/[^.]+/,'//qi') + `/v1/auths/presentable/${presentableId}?nodeId=${this.nodeId}`
+    return `${window.FreelogApp.Env.qiOrigin}/v1/auths/presentable/${presentableId}?nodeId=${this.nodeId}`
   }
 
   // 获取节点的presentables列表
   fetchPresentablesList(params = {}) {
     params = Object.assign({ nodeId: this.nodeId }, params)
-    return this.fetch('/v1/presentables', { data: params })
+    return load('/v1/presentables', { data: params })
       .then(resp => resp.json())
   }
 
   // 获取单个presentable的详情
   fetchPresentableInfo(presentableId) {
-    return this.fetch(`/v1/presentables/${presentableId}`)
+    return load(`/v1/presentables/${presentableId}`)
       .then(resp => resp.json())
   }
 
@@ -71,7 +71,7 @@ class APIGenerator {
     const url = `/v1/auths/presentable/${target}`
 
     params = Object.assign({ nodeId: this.nodeId }, params)
-    return this.fetch(url, { data: params })
+    return load(url, { data: params })
       .then((resp) => {
         const headers = resp.headers
         const rids = headers.get('freelog-sub-resourceids')
@@ -89,7 +89,7 @@ class APIGenerator {
 
   // 获取节点资源的数据内容
   fetchPresentableResourceData(presentableId, params) {
-    return this.fetchPresentableResource(`${presentableId}`, params)
+    return qiCore.fetchPresentableResource(`${presentableId}`, params)
   }
 
   // 获取节点资源的详情信息
@@ -100,7 +100,7 @@ class APIGenerator {
 
   fetchSubResource(resourceId) {
     return this.resolveResourceUrl({ resourceId })
-      .then(resourceUrl => fetch(resourceUrl))
+      .then(resourceUrl => load(resourceUrl))
   }
 
   /**
@@ -121,7 +121,7 @@ class APIGenerator {
 
     if (token) {
       const resourceUrl = this.getSubResourceUrl(resourceId, token)
-      promise = fetch(resourceUrl)
+      promise = load(resourceUrl)
       this.setResourceToken(resourceId, token)
     } else {
       promise = this.fetchSubResource(resourceId)
@@ -175,33 +175,10 @@ class APIGenerator {
 
     throw new Error('no found token!')
   }
-}
 
-export default function createApi(fetch) {
-  const apiGen = new APIGenerator({ fetch })
-
-  return {
-    fetchPresentablesList(...args) {
-      return apiGen.fetchPresentablesList(...args)
-    },
-    fetchPresentableInfo(...args) {
-      return apiGen.fetchPresentableInfo(...args)
-    },
-    fetchPresentableResourceData(...args) {
-      return apiGen.fetchPresentableResourceData(...args)
-    },
-    fetchPresentableResourceInfo(...args) {
-      return apiGen.fetchPresentableResourceInfo(...args)
-    },
-    fetchSubResource(...args) {
-      return apiGen.fetchSubResource(...args)
-    },
-    requireSubResource(...args) {
-      return apiGen.requireSubResource(...args)
-    },
-    resolveResourceUrl(...args) {
-      return apiGen.resolveResourceUrl(...args)
-    }
+  fetch(...args) {
+    load(...args)
   }
 }
 
+export default APIGenerator
