@@ -1,7 +1,10 @@
+/**
+ * 使用中间件模式封装window.fetch
+ */
+
 import MiddlewareAuth from './middlewares/auth'
 import MiddlewareFetch from './middlewares/resolveReq'
 import MiddlewareJWT from './middlewares/jwt'
-
 
 class QICore {
   constructor() {

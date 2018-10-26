@@ -25,6 +25,7 @@
     </el-form>
 
     <fl-pagination class="my-resource-list"
+                   v-if="isReady"
                    :config="tableConfig"
                    :rowClickHandler="rowClickHandler"
                    :pagination="paginationConfig">
@@ -85,12 +86,17 @@ export default {
         label: '资源类型'
       }],
 
+      isReady: false,
+
       tableConfig: {
         rowClassName: 'resource-row',
         'cell-class-name': 'res-row-cell'
       },
       paginationConfig: {
-        target: '/v1/getMyResources.json'
+        target: '/v1/getMyResources.json',
+        params: {
+
+        }
       }
     }
   },
@@ -99,8 +105,16 @@ export default {
     FlPagination
   },
 
+  created(){
+    this.$store.dispatch('getCurrentUserInfo').then(user=>{
+      if (user && user.userId) {
+        this.paginationConfig.params.partyTwo = user.userId
+        this.isReady = true
+      }
+    })
+  },
+
   mounted() {
-    this.host = window.location.host.split('.').slice(1).join('.')
   },
 
   methods: {
@@ -117,7 +131,7 @@ export default {
       })
     },
     formatNodeDomain(domain) {
-      return `${domain}.${this.host}`
+      return `${domain}.${window.FreelogApp.Env.mainDomain}`
     },
     resolveStatus(status) {
       let text
