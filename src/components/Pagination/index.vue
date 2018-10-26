@@ -33,7 +33,7 @@ export default {
       tableProps: {
         data: []
       },
-      currentPage: window.sessionStorage.getItem(`${this.$route.fullPath}_current_page`) || 1,
+      currentPage: parseInt(window.sessionStorage.getItem(`${this.$route.fullPath}_current_page`)) || 1,
       pageSize: 10,
       loading: false
     }

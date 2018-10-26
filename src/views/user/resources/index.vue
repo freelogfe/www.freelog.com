@@ -119,14 +119,14 @@ export default {
 
   methods: {
     rowClickHandler(row) {
-      const { targetId, nodeInfo: { nodeId }, resourceId } = row
+      const { targetId, nodeInfo: { nodeId }, resourceId, partyTwo } = row
 
       this.$router.push({
         path: '/resources/detail/',
         query: {
           resourceId,
           presentableId: targetId,
-          partyTwo: nodeId
+          partyTwo
         }
       })
     },
@@ -142,10 +142,10 @@ export default {
         case 2:
           text = '不可用'
           break
-        case 3:
+        case 4:
           text = '可用'
           break
-        case 4:
+        case 3:
         case 5:
         case 6:
           text = '合同终止'
