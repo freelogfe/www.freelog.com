@@ -15,7 +15,8 @@
 </template>
 
 <script>
-import singleContract from '@/views/pagebuild/views/resource-contract/single-contract.vue'
+// import singleContract from '@/views/pagebuild/views/resource-contract/single-contract.vue'
+import { SingleContract } from '@freelog/freelog-ui-contract/src/index.js'
 import { mapGetters } from 'vuex'
 import AccountLayout from '../layout.vue'
 
@@ -33,14 +34,14 @@ export default {
   props: {
   },
 
-  components: { AccountLayout, singleContract },
+  components: { AccountLayout, SingleContract },
 
   mounted() {
     const { resourceId, presentableId, partyTwo } = this.$route.query
 
     Promise.all([
       this.$axios.get(`/v1/presentables/${presentableId}`).then(res => res.data),
-      this.$axios.get(`/v1/contracts/contractRecords?resourceIds=${resourceId}&partyTwo=${partyTwo}&contentType=3`).then(res => res.data)
+      this.$axios.get(`/v1/contracts/contractRecords?resourceIds=${resourceId}&partyTwo=${partyTwo}&contractType=3`).then(res => res.data)
     ])
       .then(([res1, res2]) => {
         if (res1.errcode === 0 && res1.data) {
