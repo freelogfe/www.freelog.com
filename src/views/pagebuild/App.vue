@@ -1,18 +1,11 @@
 <template>
   <div id="app">
-    <dialog-contracts-single
-            :visible.sync="isShowSingleContract"
-            @close-dialog="hideAuthDialog"
-            :presentable="scAuthPresentable || {}"
-            :contractIDs="scAuthContractIDs"
-    ></dialog-contracts-single>
 
-    <dialog-contracts-multi
-            :visible.sync="isShowMultiContracts"
+    <contract-signing-dialog
+            :visible.sync="isShowDialog"
             @close-dialog="hideAuthDialog"
             :presentableList="scAuthPresentableList"
-            :contractIDs="scAuthContractIDs"
-    ></dialog-contracts-multi>
+    ></contract-signing-dialog>
 
     <tool-bar ref="toolbar"></tool-bar>
   </div>
@@ -20,28 +13,24 @@
 
 
 <script>
+  import { Message } from 'element-ui'
 import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
 import ToolBar from '@/components/ToolBar/index.vue'
-import { DialogContractsMulti, DialogContractsSingle } from '@freelog/freelog-ui-contract/src/index.js'
+import { ContractSigningDialog } from '@freelog/freelog-ui-contract/src/index.js'
 
 export default {
   data() {
     return {
-      scTitle: `资源签约&nbsp;&nbsp;&nbsp;&nbsp;${window.location.hostname}`,
-      isShowSingleContract: false,
-      isShowMultiContracts: false,
-      scAuthPresentable: null,
+      isShowDialog: false,
       scAuthPresentableList: [],
       scAuthContractIDs: [],
 
-      shouldShowAuthDialog: false,
       activeTabName: 'presentables'
     }
   },
   components: {
     FeDialog,
-    DialogContractsMulti,
-    DialogContractsSingle,
+    ContractSigningDialog,
     ToolBar
   },
 
@@ -55,31 +44,29 @@ export default {
   },
   methods: {
     hideAuthDialog() {
-      this.shouldShowAuthDialog = false
-      this.shouldShowAuthDialog = false
-      this.isShowSingleContract = false
-
-      this.$emit('close', '{}')
+      this.isShowDialog = false
+      this.refreshAuthPresentList()
+        .then(data => {
+          this.$emit('close', data)
+        })
+        .catch(e => {
+          Message.error(e)
+          this.$emit('close', {})
+        })
     },
     beforeClose(done) {
       console.log('beforeClose')
       done()
     },
-    showSingleAuthDialog(presentable, contractIDs = []) {
-      this.scAuthPresentable = presentable
-      this.scAuthContractIDs = contractIDs
+    showSingleAuthDialog(presentable) {
+      this.scAuthPresentableList = [presentable]
 
-      this.shouldShowAuthDialog = true
-      this.isShowSingleContract = true
-      this.isShowMultiContracts = false
+      this.isShowDialog = true
     },
-    showMultiAuthDialog(presentableList, contractIDs = []) {
+    showMultiAuthDialog(presentableList) {
       this.scAuthPresentableList = presentableList
-      this.scAuthContractIDs = contractIDs
 
-      this.shouldShowAuthDialog = true
-      this.isShowSingleContract = false
-      this.isShowMultiContracts = true
+      this.isShowDialog = true
     },
     showToolBar() {
       this.$refs.toolbar.show()
@@ -87,6 +74,22 @@ export default {
     hideToolBar() {
       this.$refs.toolbar.hide()
     },
+    refreshAuthPresentList() {
+      var nodeId = null
+      var presentableIDs = this.scAuthPresentableList.map(p => {
+        nodeId = p.nodeId
+        return p.presentableId
+      })
+      return this.$axios.get(`/v1/presentables/auth.json?pids=${presentableIDs}&nodeId=${nodeId}`)
+        .then(res => res.data)
+        .then(res => {
+          if(res.errcode === 0){
+            return res.data
+          }else {
+            return Promise.reject(res.msg)
+          }
+        })
+    }
   }
 }
 </script>

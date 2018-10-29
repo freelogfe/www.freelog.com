@@ -6,7 +6,6 @@
               style="width: 100%"
               v-if="isRenderContract"
               :presentable="presentable"
-              :contractIDs="contractIDs"
               @close-dialog="goBack"
       ></single-contract>
     </account-layout>
@@ -15,7 +14,6 @@
 </template>
 
 <script>
-// import singleContract from '@/views/pagebuild/views/resource-contract/single-contract.vue'
 import { SingleContract } from '@freelog/freelog-ui-contract/src/index.js'
 import { mapGetters } from 'vuex'
 import AccountLayout from '../layout.vue'
@@ -26,7 +24,6 @@ export default {
   data() {
     return {
       presentable: null,
-      contractIDs: [],
       isRenderContract: false
     }
   },
@@ -38,23 +35,12 @@ export default {
 
   mounted() {
     const { resourceId, presentableId, partyTwo } = this.$route.query
-
-    Promise.all([
-      this.$axios.get(`/v1/presentables/${presentableId}`).then(res => res.data),
-      this.$axios.get(`/v1/contracts/contractRecords?resourceIds=${resourceId}&partyTwo=${partyTwo}&contractType=3`).then(res => res.data)
-    ])
-      .then(([res1, res2]) => {
-        if (res1.errcode === 0 && res1.data) {
-          this.presentable = res1.data
+    this.$axios.get(`/v1/presentables/${presentableId}`).then(res => res.data)
+      .then(res => {
+        if (res.errcode === 0 && res.data) {
+          this.presentable = res.data
+          this.isRenderContract = true
         }
-        if (res2.errcode === 0 && res2.data) {
-          res2.data.forEach((item) => {
-            if (presentableId === item.targetId) {
-              this.contractIDs.push(item.contractId)
-            }
-          })
-        }
-        this.isRenderContract = true
       })
   },
 
