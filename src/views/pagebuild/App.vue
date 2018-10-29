@@ -1,35 +1,18 @@
 <template>
   <div id="app">
-    <fe-dialog
-            :close-on-click-modal="false"
-            :title="scTitle"
-            width="790px"
-            top="5vh"
+    <dialog-contracts-single
             :visible.sync="isShowSingleContract"
-            :beforeClose="beforeClose"
-            @close="hideAuthDialog"
-            is-destoryed-body
-    >
-      <single-contract
-              :presentable="scAuthPresentable || {}"
-              :contractIDs="scAuthContractIDs"
-              @close-dialog="hideAuthDialog"
-      ></single-contract>
-    </fe-dialog>
-    <fe-dialog
-            :close-on-click-modal="false"
-            :title="scTitle"
-            width="1000px"
-            top="5vh"
+            @close-dialog="hideAuthDialog"
+            :presentable="scAuthPresentable || {}"
+            :contractIDs="scAuthContractIDs"
+    ></dialog-contracts-single>
+
+    <dialog-contracts-multi
             :visible.sync="isShowMultiContracts"
-            @close="hideAuthDialog"
-    >
-      <multi-contracts
-              :presentableList="scAuthPresentableList"
-              :contractIDs="scAuthContractIDs"
-              @close-dialog="hideAuthDialog"
-      ></multi-contracts>
-    </fe-dialog>
+            @close-dialog="hideAuthDialog"
+            :presentableList="scAuthPresentableList"
+            :contractIDs="scAuthContractIDs"
+    ></dialog-contracts-multi>
 
     <tool-bar ref="toolbar"></tool-bar>
   </div>
@@ -39,8 +22,7 @@
 <script>
 import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
 import ToolBar from '@/components/ToolBar/index.vue'
-import multiContracts from './views/resource-contract/multi-contracts.vue'
-import singleContract from './views/resource-contract/single-contract.vue'
+import { DialogContractsMulti, DialogContractsSingle } from '@freelog/freelog-ui-contract/src/index.js'
 
 export default {
   data() {
@@ -58,8 +40,8 @@ export default {
   },
   components: {
     FeDialog,
-    multiContracts,
-    singleContract,
+    DialogContractsMulti,
+    DialogContractsSingle,
     ToolBar
   },
 

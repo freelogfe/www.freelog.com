@@ -149,6 +149,9 @@ class APIGenerator {
         }
         throw new Error(JSON.stringify(data))
       })
+      .catch(e => {
+        console.log('e ---', e)
+      })
   }
 
   resolveResourceUrl({ presentableId, resourceId }) {
@@ -177,7 +180,7 @@ class APIGenerator {
   }
 
   fetch(...args) {
-    load(...args)
+    return load(...args)
   }
 }
 

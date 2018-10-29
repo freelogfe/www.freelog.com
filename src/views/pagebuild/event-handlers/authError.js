@@ -31,8 +31,18 @@ export default function handleAuthError({ appUiVm }, options, callback) {
 
   function _unactivatedHandler() {
     const contracts = authData.contracts || (authData.contract && [authData.contract]) || []
-    const contractsIDs = contracts.map(item => item.contractId)
-    appUiVm.showSingleAuthDialog(authData.presentableInfo, contractsIDs)
+    const resourceIds = contracts.map(item => item.resourceId)
+
+    const userId = window.__auth_info__.__auth_user_id__
+    return window.FreelogApp.QI.fetch(`/v1/contracts/contractRecords?resourceIds=${resourceIds}&partyTwo=${userId}&isDefault=1`)
+      .then(resp => resp.json())
+      .then(res => {
+        if(res.errcode === 0) {
+          const contractsIDs = res.data.map(contract => contract.contractId)
+          appUiVm.showSingleAuthDialog(authData.presentableInfo, contractsIDs)
+        }
+      })
+
   }
 
   function _unSignHandler() {

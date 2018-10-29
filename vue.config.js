@@ -1,5 +1,5 @@
 /* eslint-disable */
-
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require('path')
 const srcDir = path.resolve('./src');
 const config = require('./config')
@@ -85,7 +85,9 @@ module.exports = {
         },
       }
     },
-    plugins: []
+    plugins: [
+      // new BundleAnalyzerPlugin()
+    ]
   },
   // configureWebpack: (config) => {
   //   merge(config, baseWebpackConfig);

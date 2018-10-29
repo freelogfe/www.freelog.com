@@ -35,5 +35,5 @@ const QIIns = new QICore()
   .use(new MiddlewareJWT())
 
 export default function load(...args) {
-  QIIns.fetch(...args)
+  return QIIns.fetch(...args)
 }

@@ -26,7 +26,7 @@ export default function createApi() {
       return apiGen.resolveResourceUrl(...args)
     },
     fetch(...args){
-      apiGen.fetch(...args)
+      return apiGen.fetch(...args)
     }
   }
 }
