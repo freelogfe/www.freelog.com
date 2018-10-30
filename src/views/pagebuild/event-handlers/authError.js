@@ -30,10 +30,10 @@ export default function handleAuthError({ appUiVm }, options, callback) {
   }
 
   function _unactivatedHandler() {
-    appUiVm.showSingleAuthDialog(authData.presentableInfo)
+    appUiVm.showAuthDialog([authData.presentableInfo])
   }
 
   function _unSignHandler() {
-    appUiVm.showSingleAuthDialog(authData.presentableInfo, [])
+    appUiVm.showAuthDialog([authData.presentableInfo])
   }
 }

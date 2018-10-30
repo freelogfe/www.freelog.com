@@ -14,7 +14,6 @@
 
 <script>
   import { Message } from 'element-ui'
-import FeDialog from '@/components/fe-dialog/fe-dialog.vue'
 import ToolBar from '@/components/ToolBar/index.vue'
 import { ContractSigningDialog } from '@freelog/freelog-ui-contract/src/index.js'
 
@@ -29,7 +28,6 @@ export default {
     }
   },
   components: {
-    FeDialog,
     ContractSigningDialog,
     ToolBar
   },
@@ -58,12 +56,7 @@ export default {
       console.log('beforeClose')
       done()
     },
-    showSingleAuthDialog(presentable) {
-      this.scAuthPresentableList = [presentable]
-
-      this.isShowDialog = true
-    },
-    showMultiAuthDialog(presentableList) {
+    showAuthDialog(presentableList) {
       this.scAuthPresentableList = presentableList
 
       this.isShowDialog = true
@@ -80,6 +73,8 @@ export default {
         nodeId = p.nodeId
         return p.presentableId
       })
+
+      // 获取presentable授权详情
       return this.$axios.get(`/v1/presentables/auth.json?pids=${presentableIDs}&nodeId=${nodeId}`)
         .then(res => res.data)
         .then(res => {
