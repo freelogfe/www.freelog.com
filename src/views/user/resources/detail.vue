@@ -2,19 +2,18 @@
   <div class="resource-contract-detail-view">
     <account-layout ref="layout" title="资源详情" :showFooter="false" return-name="/resources">
 
-      <single-contract
+      <contract-signing-single
               style="width: 100%"
               v-if="isRenderContract"
               :presentable="presentable"
-              @close-dialog="goBack"
-      ></single-contract>
+      ></contract-signing-single>
     </account-layout>
 
   </div>
 </template>
 
 <script>
-import { SingleContract } from '@freelog/freelog-ui-contract/src/index.js'
+import { ContractSigningSingle } from '@freelog/freelog-ui-contract/src/index.js'
 import { mapGetters } from 'vuex'
 import AccountLayout from '../layout.vue'
 
@@ -31,7 +30,7 @@ export default {
   props: {
   },
 
-  components: { AccountLayout, SingleContract },
+  components: { AccountLayout, ContractSigningSingle },
 
   mounted() {
     const { resourceId, presentableId, partyTwo } = this.$route.query
