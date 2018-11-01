@@ -55,7 +55,7 @@ export default {
 <style lang="less" scoped type="text/less">
   .account-layout-view {
     .account-action-view-wrap {
-      margin-top: 50px;
+      margin-top: 30px;
       padding-bottom: 30px;
       display: flex;
       flex-flow: column;
