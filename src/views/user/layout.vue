@@ -5,7 +5,7 @@
       <nav @click="cancelHandler"><i>&lsaquo;</i> 返回</nav>
     </header>
 
-    <div class="account-action-view-wrap">
+    <div class="account-sub-view-wrap">
       <slot></slot>
       <div class="form-ft" v-if="showFooter">
         <el-button class="ft-btn" @click="cancelHandler">取消</el-button>
@@ -54,7 +54,7 @@ export default {
 
 <style lang="less" scoped type="text/less">
   .account-layout-view {
-    .account-action-view-wrap {
+    .account-sub-view-wrap {
       margin-top: 30px;
       padding-bottom: 30px;
       display: flex;
