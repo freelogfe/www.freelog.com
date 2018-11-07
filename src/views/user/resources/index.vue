@@ -4,7 +4,7 @@
       <el-form-item>
         <el-select v-model="searchForm.type"
                    size="small"
-                   style="width: 80px"
+                   style="width: 100px"
                    placeholder="请选择">
           <el-option
                   v-for="item in searchTypes"
@@ -44,7 +44,7 @@
         </el-table-column>
         <el-table-column
                 label="节点"
-                width="200">
+                width="350">
           <template slot-scope="scope">
             <div class="node-domain">
               {{formatNodeDomain(scope.row.nodeInfo.nodeDomain)}}

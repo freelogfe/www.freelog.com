@@ -89,7 +89,7 @@ class APIGenerator {
 
   // 获取节点资源的数据内容
   fetchPresentableResourceData(presentableId, params) {
-    return qiCore.fetchPresentableResource(`${presentableId}`, params)
+    return this.fetchPresentableResource(`${presentableId}`, params)
   }
 
   // 获取节点资源的详情信息
