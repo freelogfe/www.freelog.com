@@ -147,10 +147,7 @@ class APIGenerator {
           return helpers.injectCodeResource(data, type)
             .then(() => this.setResourceLoaderState(resourceId, data))
         }
-        throw new Error(JSON.stringify(data))
-      })
-      .catch(e => {
-        console.log('e ---', e)
+        return Promise.reject(JSON.stringify(data))
       })
   }
 
@@ -169,14 +166,14 @@ class APIGenerator {
             if (token) {
               return this.getSubResourceUrl(resourceId, token)
             }
-            throw new Error('no found token!')
+            return Promise.reject('no found token!')
           })
       }
     } else if (presentableId) {
       return Promise.resolve(this.getPresentableUrl(presentableId))
     }
 
-    throw new Error('no found token!')
+    return Promise.reject('no found token!')
   }
 
   fetch(...args) {

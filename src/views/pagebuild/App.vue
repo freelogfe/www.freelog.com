@@ -2,6 +2,7 @@
   <div id="app">
 
     <contract-signing-dialog
+            :activeIndex="activePresentableIndex"
             :visible.sync="isShowDialog"
             @close-dialog="hideAuthDialog"
             :presentableList="scAuthPresentableList"
@@ -23,8 +24,9 @@ export default {
       isShowDialog: false,
       scAuthPresentableList: [],
       scAuthContractIDs: [],
-
-      activeTabName: 'presentables'
+      activeTabName: 'presentables',
+      nodePresetableList: [],
+      activePresentableIndex: 0
     }
   },
   components: {
@@ -57,15 +59,41 @@ export default {
       done()
     },
     showAuthDialog(presentableList) {
-      this.scAuthPresentableList = presentableList
+      var { nodeId, presentableId } = presentableList[0]
 
-      this.isShowDialog = true
+      // this.scAuthPresentableList = presentableList
+      // this.isShowDialog = true
+      this.getNodePresentableList(nodeId, presentableId)
     },
     showToolBar() {
       this.$refs.toolbar.show()
     },
     hideToolBar() {
       this.$refs.toolbar.hide()
+    },
+    getNodePresentableList(nodeId, presentableId) {
+      this.$axios.get('/v1/presentables', {
+        params: {
+          nodeId,
+          isOnline: 1
+        }
+      })
+        .then(resp => resp.data)
+        .then(res => {
+          if(res.errcode === 0) {
+            this.scAuthPresentableList = res.data
+            this.resolvePresentableActiveIndex(presentableId)
+            this.isShowDialog = true
+          }
+        })
+    },
+    resolvePresentableActiveIndex(presentableId) {
+      for(let i = 0; i < this.scAuthPresentableList.length; i++){
+        if(this.scAuthPresentableList[i].presentableId === presentableId) {
+          this.activePresentableIndex = i
+          break
+        }
+      }
     },
     refreshAuthPresentList() {
       var nodeId = null
@@ -84,7 +112,7 @@ export default {
             return Promise.reject(res.msg)
           }
         })
-    }
+    },
   }
 }
 </script>

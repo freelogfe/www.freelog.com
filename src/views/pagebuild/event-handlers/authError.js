@@ -34,6 +34,7 @@ export default function handleAuthError({ appUiVm }, options, callback) {
   }
 
   function _unSignHandler() {
+    console.log('_unactivatedHandler ---', authData.presentableInfo)
     appUiVm.showAuthDialog([authData.presentableInfo])
   }
 }
