@@ -103,6 +103,7 @@ sup {
 sub {
   vertical-align:text-bottom;
 }
+pre,
 input,
 textarea,
 select {
