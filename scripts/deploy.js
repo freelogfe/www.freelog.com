@@ -48,7 +48,12 @@ function gitBranchIs(branchName) {
 
 function build(env) {
   const spinner = ora(`building for ${env}...`).start();
-  const res = execSync(`npm i && npm run build:${env}`)
+  var res
+  try {
+     res = execSync(`npm i && npm run build:${env}`)
+  }catch (e) {
+    handleError(e)
+  }
   spinner.succeed('build complete')
   return res.toString().includes('Build complete')
 }
@@ -85,9 +90,12 @@ async function run() {
   }
 }
 
-process.on('uncaughtException', function (err) {
+function handleError(err){
   logger.error(err.stdout.toString())
   logger.error(err.stderr.toString())
-})
+  process.exit(1)
+}
+
+process.on('uncaughtException', handleError)
 
 run()

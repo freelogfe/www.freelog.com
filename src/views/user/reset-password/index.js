@@ -1,6 +1,6 @@
 import { storage } from '@/lib'
 import { isSafeUrl } from '@/lib/security'
-import { validateLoginName } from '@freelog/freelog-ui-login'
+import { validateLoginName } from '../login/validator'
 
 export default {
   name: 'reset-password',

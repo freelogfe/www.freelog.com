@@ -1,3 +1,5 @@
+import {isSafeUrl} from "./security";
+
 const host = window.location.host.split('.').slice(1).join('.')
 
 function getPageKey() {
@@ -31,24 +33,6 @@ function gotoCacheScrollTop() {
   if (!Number.isNaN(st)) {
     scrollTopHandler(st, 3333)
   }
-}
-
-function isSafeUrl(url) {
-  const reg = /^.+\.(test)?freelog\.com$/
-
-  try {
-    const obj = new URL(url) // 正确的链接检测
-    if (reg.test(obj.hostname)) {
-      return true
-    }
-  } catch (e) {
-    // path型链接检测
-    if ((/^\/[^\/]+/.test(url))) {
-      return true
-    }
-  }
-
-  return false
 }
 
 function gotoLogin(redirect) {
