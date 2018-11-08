@@ -32,7 +32,7 @@ export default function handleAuthError({appUiVm}, options, callback) {
       })
     }
   } else {
-    console.error(`[${arguments.callee.name}] 参数有误`)
+    console.error(`[handleAuthError] 参数有误`)
   }
 
   function _unactivatedHandler(presentableInfo) {
