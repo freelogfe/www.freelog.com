@@ -18,8 +18,7 @@
     }
   },
   "dependencies": {
-    "@freelog/freelog-ui-contract": "0.0.4",
-    "@freelog/freelog-ui-login": "*",
+    "@freelog/freelog-ui-contract": "0.0.6",
     "@freelog/resource-policy-lang": "0.0.33",
     "axios": "^0.18.0",
     "cropperjs": "^1.4.1",
