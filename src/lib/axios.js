@@ -27,7 +27,9 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response) => {
     const { data } = response
-    if ([28, 30].indexOf(data.errcode) > -1) {
+    let loginPath = '/login'
+
+    if ([28, 30].indexOf(data.errcode) > -1 && location.pathname !== loginPath) {
       gotoLogin(window.location.href)
       return null
     }

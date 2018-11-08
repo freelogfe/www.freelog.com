@@ -59,7 +59,7 @@ export default {
     syncUserSession() {
       this.$store.dispatch('checkUserSession')
         .then((valid) => {
-          if (!valid) {
+          if (!valid && this.userInfo && this.userInfo.userId) {
             this.$store.dispatch('loadCurrentUserInfo').then(() => {
               window.location.reload()
             })
@@ -71,7 +71,7 @@ export default {
         this.$vuex.dispatch('userLogout').then(() => {
           setTimeout(() => {
             const redirect = encodeURIComponent(window.location.href)
-            window.location.replace(`//console.${window.FreelogApp.Env.mainDomain}/user/login?redirect=${redirect}`)
+            window.location.replace(`//www.${window.FreelogApp.Env.mainDomain}/login?redirect=${redirect}`)
           }, 20)
         })
       })

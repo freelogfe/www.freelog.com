@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+
+import UserLayout from '@/views/layout/user.vue'
 import MyResourcesView from '@/views/user/resources/index.vue'
 import MyAccountsView from '@/views/user/accounts/index.vue'
 import MyProfileView from '@/views/user/profile/index.vue'
@@ -12,6 +14,9 @@ import AccountResetPayPasswordView from '@/views/user/accounts/reset.vue'
 import AccountWithdrawView from '@/views/user/accounts/withdraw.vue'
 import AccountTransferView from '@/views/user/accounts/transfer.vue'
 import ResourceContractDetailView from '@/views/user/resources/detail.vue'
+import LoginView from '@/views/user/login/index.vue'
+import SignupView from '@/views/user/signup/index.vue'
+import RsetPasswordView from '@/views/user/reset-password/index.vue'
 import ErrorView from '@/views/error/index.vue'
 
 const scrollBehavior = (to, from, savedPosition) => {
@@ -39,83 +44,107 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/accounts'
+      redirect: '/user/accounts'
     },
     {
-      path: '/accounts',
+      path: '/login',
       meta: {
-        title: '我的账户',
+        title: '登录',
         theme: 'transparent'
       },
-      component: MyAccountsView
+      component: LoginView
     },
     {
-      path: '/accounts/create',
-      name: 'accountCreate',
+      path: '/signup',
       meta: {
-        title: '创建账户'
+        title: '注册',
+        theme: 'transparent'
       },
-      component: AccountCreateView
+      component: SignupView
     },
     {
-      path: '/accounts/recharge',
-      name: 'accountRecharge',
+      path: '/reset_pw',
       meta: {
-        title: '账户充值'
+        title: '重置密码',
+        theme: 'transparent'
       },
-      component: AccountRechargeView
+      component: RsetPasswordView
     },
     {
-      path: '/accounts/records',
-      name: 'accountRecords',
+      path: '/user',
       meta: {
-        title: '账户交易记录'
+        title: '我的账户'
       },
-      component: AccountTransactionRecordsView
-    },
-    {
-      path: '/accounts/reset',
-      name: 'accountReset',
-      meta: {
-        title: '账户充值密码'
+      component: UserLayout,
+      children: [{
+        path: 'accounts',
+        meta: {
+          title: '我的账户',
+          theme: 'transparent'
+        },
+        component: MyAccountsView
+      }, {
+        path: 'create',
+        name: 'accountCreate',
+        meta: {
+          title: '创建账户'
+        },
+        component: AccountCreateView
+      }, {
+        path: 'recharge',
+        name: 'accountRecharge',
+        meta: {
+          title: '账户充值'
+        },
+        component: AccountRechargeView
+      }, {
+        path: 'records',
+        name: 'accountRecords',
+        meta: {
+          title: '账户交易记录'
+        },
+        component: AccountTransactionRecordsView
+      }, {
+        path: 'reset',
+        name: 'accountReset',
+        meta: {
+          title: '账户充值密码'
+        },
+        component: AccountResetPayPasswordView
+      }, {
+        path: 'withdraw',
+        name: 'accountWithdraw',
+        meta: {
+          title: '账户提现'
+        },
+        component: AccountWithdrawView
       },
-      component: AccountResetPayPasswordView
-    },
-    {
-      path: '/accounts/withdraw',
-      name: 'accountWithdraw',
-      meta: {
-        title: '账户提现'
-      },
-      component: AccountWithdrawView
-    },
-    {
-      path: '/accounts/transfer',
-      name: 'accountTransfer',
-      meta: {
-        title: '账户转账'
-      },
-      component: AccountTransferView
-    },
-    {
-      path: '/resources',
-      meta: { title: '我的资源' },
-      component: MyResourcesView
-    },
-    {
-      path: '/resources/detail',
-      meta: { title: '资源详情' },
-      component: ResourceContractDetailView
-    },
-    {
-      path: '/profile',
-      meta: { title: '我的账号' },
-      component: MyProfileView
-    },
-    {
-      path: '/collections',
-      meta: { title: '我的关注' },
-      component: MyCollectionsView
+        {
+          path: 'transfer',
+          name: 'accountTransfer',
+          meta: {
+            title: '账户转账'
+          },
+          component: AccountTransferView
+        },
+        {
+          path: 'profile',
+          meta: {title: '我的账号'},
+          component: MyProfileView
+        }, {
+          path: 'collections',
+          meta: {title: '我的关注'},
+          component: MyCollectionsView
+        }, {
+          path: 'resources',
+          meta: {title: '我的资源'},
+          component: MyResourcesView
+        },
+        {
+          path: 'resources/detail',
+          meta: {title: '资源详情'},
+          component: ResourceContractDetailView
+        },]
     },
     {
       path: '/*',

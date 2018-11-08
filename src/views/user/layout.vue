@@ -32,7 +32,7 @@ export default {
     },
     returnName: {
       type: String,
-      default: '/accounts'
+      default: '/user/accounts'
     }
   },
 

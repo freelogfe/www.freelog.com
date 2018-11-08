@@ -1,6 +1,6 @@
 <template>
   <div class="resource-contract-detail-view">
-    <account-layout ref="layout" title="资源详情" :showFooter="false" return-name="/resources">
+    <account-layout ref="layout" title="资源详情" :showFooter="false" return-name="/user/resources">
 
       <contract-signing-single
               style="width: 100%"

@@ -74,7 +74,7 @@ export default {
       }
 
       if (curNav) {
-        this.$router.push(`/${curNav.link}`)
+        this.$router.push(`/user/${curNav.link}`)
       }
     },
     gotoMyProfile() {
