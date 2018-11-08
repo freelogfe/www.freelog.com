@@ -5,7 +5,6 @@ export default function handleAuthError({appUiVm}, options, callback) {
     presentableInfo = response.data.presentableInfo || (response.data.data && response.data.data.presentableInfo)
   }
 
-
   if (response && response.errcode && presentableInfo) {
     switch (response.errcode) {
       // 未激活状态

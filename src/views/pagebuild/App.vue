@@ -58,11 +58,14 @@ export default {
       console.log('beforeClose')
       done()
     },
-    showAuthDialog(presentableList) {
+    showAuthDialog(presentableList, activePresentable) {
       var { nodeId, presentableId } = presentableList[0]
+      // var { nodeId, presentableId } = activePresentable
 
       // this.scAuthPresentableList = presentableList
+      // this.resolvePresentableActiveIndex(presentableId)
       // this.isShowDialog = true
+
       this.getNodePresentableList(nodeId, presentableId)
     },
     showToolBar() {
