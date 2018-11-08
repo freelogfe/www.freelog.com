@@ -1,5 +1,6 @@
 export default function handleAuthError({appUiVm}, options, callback) {
   const response = options.response
+
   var presentableInfo
   if (response.data) {
     presentableInfo = response.data.presentableInfo || (response.data.data && response.data.data.presentableInfo)

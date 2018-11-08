@@ -58,15 +58,16 @@ export default {
       console.log('beforeClose')
       done()
     },
-    showAuthDialog(presentableList, activePresentable) {
-      var { nodeId, presentableId } = presentableList[0]
-      // var { nodeId, presentableId } = activePresentable
+    showAuthDialog(presentableList, activePresentableId) {
+      if(presentableList.length === 1) {
+        activePresentableId = presentableList[0].presentableId
+      }
 
-      // this.scAuthPresentableList = presentableList
-      // this.resolvePresentableActiveIndex(presentableId)
-      // this.isShowDialog = true
+      this.scAuthPresentableList = presentableList
+      this.resolvePresentableActiveIndex(activePresentableId)
+      this.isShowDialog = true
 
-      this.getNodePresentableList(nodeId, presentableId)
+      // this.getNodePresentableList(nodeId, presentableId)
     },
     showToolBar() {
       this.$refs.toolbar.show()
@@ -91,10 +92,14 @@ export default {
         })
     },
     resolvePresentableActiveIndex(presentableId) {
-      for(let i = 0; i < this.scAuthPresentableList.length; i++){
-        if(this.scAuthPresentableList[i].presentableId === presentableId) {
-          this.activePresentableIndex = i
-          break
+      if(typeof presentableId === 'undefined') {
+        this.activePresentableIndex = 0
+      }else {
+        for(let i = 0; i < this.scAuthPresentableList.length; i++){
+          if(this.scAuthPresentableList[i].presentableId === presentableId) {
+            this.activePresentableIndex = i
+            break
+          }
         }
       }
     },
