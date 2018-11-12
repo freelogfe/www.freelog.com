@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" v-loading="pageloading">
 
     <contract-signing-dialog
             :activeIndex="activePresentableIndex"
@@ -21,6 +21,7 @@ import { ContractSigningDialog } from '@freelog/freelog-ui-contract/src/index.js
 export default {
   data() {
     return {
+      pageloading: false,
       isShowDialog: false,
       scAuthPresentableList: [],
       scAuthContractIDs: [],

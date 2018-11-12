@@ -20,6 +20,7 @@ export default {
     }
   },
   hideLoading() {
+
     document.body.querySelector('#js-page-container').classList.remove('freelog-app-loading')
   },
   getWidgets() {
