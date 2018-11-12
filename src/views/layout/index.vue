@@ -1,14 +1,7 @@
 <template>
   <div>
     <nav-top-bar></nav-top-bar>
-    <el-container class="app-container">
-      <user-aside-nav v-show="!isError"></user-aside-nav>
-      <el-main class="main-app-content" :class="[themeCls]">
-        <transition name="fade">
-          <router-view></router-view>
-        </transition>
-      </el-main>
-    </el-container>
+    <router-view></router-view>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
-  <div class="nav-top-wrapper">
-    <div class="nav-top-container" v-if="userInfo">
+  <div class="nav-top-wrapper" v-if="userInfo">
+    <div class="nav-top-container">
       <ul class="nav-top-right">
         <li class="nav-top-item">
           <!--{{userInfo.nickname}}-->

@@ -14,7 +14,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "node scripts/deploy.js"
+      "pre-push": "freelog-ci deploy"
     }
   },
   "dependencies": {
@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@freelog/freelog-ci": "*",
     "@vue/cli-plugin-babel": "^3.0.3",
     "@vue/cli-plugin-eslint": "^3.0.3",
     "@vue/cli-service": "^3.0.3",

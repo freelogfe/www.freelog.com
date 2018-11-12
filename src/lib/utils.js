@@ -1,3 +1,5 @@
+import {isSafeUrl} from "./security";
+
 const host = window.location.host.split('.').slice(1).join('.')
 
 function getPageKey() {
@@ -36,8 +38,13 @@ function gotoCacheScrollTop() {
 function gotoLogin(redirect) {
   cacheScrollTop()
 
-  let loginUrl = `//console.${window.FreelogApp.Env.mainDomain}/user/login`
-  if (redirect) {
+  let loginPath = '/login'
+  if (location.pathname === loginPath) {
+    return
+  }
+
+  let loginUrl = `//www.${window.FreelogApp.Env.mainDomain}${loginPath}`
+  if (isSafeUrl(redirect)) {
     loginUrl += `?redirect=${encodeURIComponent(redirect)}`
   }
 

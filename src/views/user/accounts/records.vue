@@ -247,6 +247,7 @@ export default {
           color: #999999;
           font-size: 12px;
           font-weight: normal;
+          margin-left: 10px;
         }
       }
       .minus-status {

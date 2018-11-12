@@ -122,7 +122,7 @@ export default {
       const { targetId, nodeInfo: { nodeId }, resourceId, partyTwo } = row
 
       this.$router.push({
-        path: '/resources/detail/',
+        path: '/user/resources/detail/',
         query: {
           resourceId,
           presentableId: targetId,
