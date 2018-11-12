@@ -1,3 +1,4 @@
+import { Loading } from 'element-ui'
 import Vue from '@/views/layout/index'
 import { gotoCacheScrollTop } from '@/lib/utils'
 import '@/lib/freelog-core/index'
@@ -7,7 +8,11 @@ import PageBuildeParser from './parser'
 
 import AppCenter from './event-center'
 
-document.body.querySelector('#js-page-container').classList.add('freelog-app-loading')
+// 页面loading
+const loadingInstance = Loading.service({
+  fullscreen: true,
+  background: 'rgba(255, 255, 255, .6)'
+})
 
 export default new Vue({
   el: '#app',
@@ -20,7 +25,9 @@ export default new Vue({
       appUiVm.$on('close', () => {
       })
 
-      PageBuildeParser.start()
+      PageBuildeParser.init({
+        loadingInstance
+      })
       gotoCacheScrollTop()
     }
   },

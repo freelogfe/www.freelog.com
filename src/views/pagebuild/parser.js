@@ -1,5 +1,9 @@
 
 export default {
+  init({ loadingInstance }) {
+    this.loadingInstance = loadingInstance
+    this.start()
+  },
   start() {
     const self = this
     const authInfo = window.__auth_info__
@@ -20,8 +24,7 @@ export default {
     }
   },
   hideLoading() {
-
-    document.body.querySelector('#js-page-container').classList.remove('freelog-app-loading')
+    this.loadingInstance.close()
   },
   getWidgets() {
     const $page = document.querySelector('#js-page-container')
