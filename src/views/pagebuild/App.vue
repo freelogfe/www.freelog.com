@@ -43,19 +43,22 @@ export default {
     this.$emit('ready', this)
   },
   methods: {
-    hideAuthDialog() {
+    hideAuthDialog({ isUpdatedContract }) {
+
       this.isShowDialog = false
-      this.refreshAuthPresentList()
-        .then(data => {
-          this.$emit('close', data)
-        })
-        .catch(e => {
-          Message.error(e)
-          this.$emit('close', {})
-        })
+      if(isUpdatedContract) {
+        this.refreshAuthPresentList()
+          .then(data => {
+            this.$emit('close', data)
+          })
+          .catch(e => {
+            Message.error(e)
+            this.$emit('close', null)
+          })
+      }
+
     },
     beforeClose(done) {
-      console.log('beforeClose')
       done()
     },
     showAuthDialog(presentableList, activePresentableId) {
@@ -74,22 +77,6 @@ export default {
     },
     hideToolBar() {
       this.$refs.toolbar.hide()
-    },
-    getNodePresentableList(nodeId, presentableId) {
-      this.$axios.get('/v1/presentables', {
-        params: {
-          nodeId,
-          isOnline: 1
-        }
-      })
-        .then(resp => resp.data)
-        .then(res => {
-          if(res.errcode === 0) {
-            this.scAuthPresentableList = res.data
-            this.resolvePresentableActiveIndex(presentableId)
-            this.isShowDialog = true
-          }
-        })
     },
     resolvePresentableActiveIndex(presentableId) {
       if(typeof presentableId === 'undefined') {
