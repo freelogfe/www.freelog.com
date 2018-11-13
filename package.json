@@ -5,8 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build:prod": "vue-cli-service build --env=prod",
-    "build:beta": "vue-cli-service build --env=beta",
+    "build:prod": "npm run build -- --env=prod",
+    "build:beta": "npm run build -- --env=beta",
     "lint": "vue-cli-service lint --fix",
     "dev": "npm run serve --title=www.freelog.com",
     "test": "mocha 'test/**/*.test.js'",

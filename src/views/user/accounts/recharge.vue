@@ -258,7 +258,7 @@ export default {
 
           if ([1, 3].includes(data.data.tradeStatus)) {
             this.$message.success(msg)
-            this.$router.push('/accounts')
+            this.$router.push('/user/accounts')
           } else {
             this.$message.error(msg)
           }

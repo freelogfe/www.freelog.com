@@ -119,7 +119,7 @@ export default {
             const { data } = res
             if (data.ret === 0 && data.errcode === 0) {
               this.$message.success('支付密码重置成功')
-              this.$router.push('/accounts')
+              this.$router.push('/user/accounts')
             } else {
               this.$error.showErrorMessage(res.data.msg)
             }

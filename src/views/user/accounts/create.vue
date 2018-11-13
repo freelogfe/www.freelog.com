@@ -124,7 +124,7 @@ export default {
       this.goBack()
     },
     goBack() {
-      this.$router.push('/accounts')
+      this.$router.push('/user/accounts')
     },
     createHandler() {
       this.$refs.createForm.validate((valid) => {
