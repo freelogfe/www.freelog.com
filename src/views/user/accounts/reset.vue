@@ -112,6 +112,7 @@ export default {
     resetHandler() {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
+          debugger
           this.$axios.put(`/v1/pay/accounts/${this.renderData.accountId}`, {
             originalPassword: this.form.password,
             newPassword: this.form.newPassword

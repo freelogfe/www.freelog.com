@@ -10,7 +10,7 @@
             <img :src="imageUrl" crossOrigin="anonymous" class="avatar" ref="avatarRef" alt="">
           </div>
           <el-upload
-                  action="//qi.testfreelog.com/v1/userinfos/uploadHeadImg"
+                  :action="updateAction"
                   class="avatar-uploader"
                   :with-credentials="true"
                   ref="uploader"
@@ -128,6 +128,12 @@ export default {
         uploader.handleStart(file)
         uploader.submit()
       })
+    }
+  },
+
+  computed: {
+    updateAction() {
+      return `${window.FreelogApp.Env.qiOrigin}/v1/userinfos/uploadHeadImg`
     }
   }
 }

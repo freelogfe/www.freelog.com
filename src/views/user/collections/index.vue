@@ -76,7 +76,6 @@ export default {
   },
   methods: {
     rowClickHandler(row) {
-      console.log('row', row)
       // const { targetId, nodeInfo: { nodeId }, resourceId } = row
       // this.$router.push({
       //   path: '/resources/detail/',
