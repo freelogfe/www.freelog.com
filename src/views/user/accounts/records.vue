@@ -21,7 +21,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column width="380" label="名称|对方|流水号">
+            <el-table-column width="300" label="名称|对方|流水号">
               <template slot-scope="scope">
                 <div class="trans-target-info">
                   <p class="trans-target-name" :title="scope.row.tradeDesc">{{scope.row.tradeDesc}}</p>
@@ -194,7 +194,7 @@ export default {
         width: 16px;
         height: 16px;
         margin-right: 5px;
-        vertical-align: middle;
+        vertical-align: text-bottom;
       }
     }
 

@@ -73,7 +73,7 @@ export default {
       }
 
       if (!redirect || !isSafeUrl(redirect)) {
-        redirect = '/node/list'
+        redirect = '/'
       }
 
       self.logining = true
@@ -83,7 +83,7 @@ export default {
           if (isNewPage) {
             location.replace(redirect)
           } else {
-            self.$router.replace(redirect || '/node/list')
+            self.$router.replace(redirect || '/')
           }
         })
         .catch((_) => {
@@ -109,7 +109,7 @@ export default {
           (key !== 'checkPassword') && (data[key] = this.model[key])
         })
 
-        this.$services.other.register(data)
+        this.$axios.post('/v1/userinfos/register',data)
           .then((res) => {
             if (res.data.errcode === 0) {
               this.$message.success('注册成功')
