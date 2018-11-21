@@ -39,7 +39,7 @@ export default {
         this.error = null
         this.loading = true
 
-        this.$services.other.resetPassword(this.model).then((res) => {
+        this.$axios.post('/v1/userinfos/resetPassword',this.model).then((res) => {
           if (res.data.errcode === 0) {
             let redirect = this.$route.query.redirect
             if (!redirect || !isSafeUrl(redirect)) {

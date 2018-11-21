@@ -1,6 +1,7 @@
 /* eslint-disable */
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require('path')
+const fs = require('fs')
 const srcDir = path.resolve('./src');
 const config = require('./config')
 var minimist = require('minimist')
@@ -19,21 +20,34 @@ function getBaseUrl() {
   return baseUrl
 }
 
-module.exports = {
-  baseUrl: getBaseUrl(),
-  assetsDir: 'public',
-  crossorigin: 'anonymous',
-  devServer: {
+
+function getDevServer() {
+  var config = {
     port: 9080,
     inline: false,
     disableHostCheck: true,
     historyApiFallback: true,
-    hot: false,
-    // https: {
-    //   key: fs.readFileSync('./config/cert/server_ca.key'),
-    //   cert: fs.readFileSync('./config/cert/server_ca.crt'),
-    // }
-  },
+    hot: false
+  }
+
+  if (argv.https) {
+    Object.assign(config, {
+      https: {
+        key: fs.readFileSync('./config/cert/server_ca.key'),
+        cert: fs.readFileSync('./config/cert/server_ca.crt'),
+      }
+    })
+  }
+
+  return config
+}
+
+
+module.exports = {
+  baseUrl: getBaseUrl(),
+  assetsDir: 'public',
+  crossorigin: 'anonymous',
+  devServer: getDevServer(),
   css: {
     extract: true
   },

@@ -20,5 +20,10 @@ module.exports = {
     branch: 'daily',
     env: 'test',
     bucket: 'test-frcdn'
-  }]
+  }],
+  after: function () {
+    //同步前端模板
+    //https://api.freelog.com/test/v1/node/web/triggerUpdateNodeTemplateEvent
+    console.log('publish after')
+  }
 }

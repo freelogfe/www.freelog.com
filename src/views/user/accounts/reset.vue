@@ -112,6 +112,7 @@ export default {
     resetHandler() {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
+          debugger
           this.$axios.put(`/v1/pay/accounts/${this.renderData.accountId}`, {
             originalPassword: this.form.password,
             newPassword: this.form.newPassword
@@ -119,7 +120,7 @@ export default {
             const { data } = res
             if (data.ret === 0 && data.errcode === 0) {
               this.$message.success('支付密码重置成功')
-              this.$router.push('/accounts')
+              this.$router.push('/user/accounts')
             } else {
               this.$error.showErrorMessage(res.data.msg)
             }

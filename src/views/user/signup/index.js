@@ -1,4 +1,3 @@
-import { storage } from '@/lib'
 import { validateLoginName } from '../login/validator'
 import { isSafeUrl } from '@/lib/security'
 
@@ -69,21 +68,23 @@ export default {
       const data = {
         loginName: this.model.loginName,
         password: this.model.password,
-        jwtType: isNewPage ? 'cookie' : 'header'
+        jwtType: 'cookie'
       }
 
       if (!redirect || !isSafeUrl(redirect)) {
-        redirect = '/node/list'
+        redirect = '/'
       }
 
       self.logining = true
+
       this.$store.dispatch('userLogin', data)
         .then(() => {
-          storage.set('loginName', data.loginName)
+          window.localStorage.setItem('loginName', data.loginName)
+
           if (isNewPage) {
             location.replace(redirect)
           } else {
-            self.$router.replace(redirect || '/node/list')
+            self.$router.replace(redirect || '/')
           }
         })
         .catch((_) => {
@@ -109,7 +110,7 @@ export default {
           (key !== 'checkPassword') && (data[key] = this.model[key])
         })
 
-        this.$services.other.register(data)
+        this.$axios.post('/v1/userinfos/register',data)
           .then((res) => {
             if (res.data.errcode === 0) {
               this.$message.success('注册成功')
