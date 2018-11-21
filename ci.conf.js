@@ -12,8 +12,13 @@ module.exports = {
     env: 'prod',
     bucket: 'frcdn'
   }, {
-    branch: 'daily',
+    branch: 'beta',
     env: 'beta',
+    bucket: 'frcdn',
+    path: 'beta/'
+  }, {
+    branch: 'daily',
+    env: 'test',
     bucket: 'test-frcdn'
   }]
 }
