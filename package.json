@@ -9,8 +9,7 @@
     "build:beta": "npm run build -- --env=beta",
     "lint": "vue-cli-service lint --fix",
     "dev": "npm run serve --title=www.freelog.com",
-    "test": "mocha 'test/**/*.test.js'",
-    "test:exit": "node test/exit.js"
+    "test": "mocha 'test/**/*.test.js'"
   },
   "husky": {
     "hooks": {
@@ -40,6 +39,7 @@
     "ali-oss": "^6.0.1",
     "babel-plugin-component": "^1.1.1",
     "chai": "^4.2.0",
+    "co": "^4.6.0",
     "consola": "^1.4.4",
     "husky": "^1.1.2",
     "less": "^3.0.4",
@@ -47,7 +47,7 @@
     "minimist": "^1.2.0",
     "mocha": "^5.2.0",
     "ora": "^3.0.0",
-    "puppeteer": "^1.9.0",
+    "puppeteer": "^1.10.0",
     "user-home": "^2.0.0",
     "vue-cli-plugin-pug": "^1.0.7",
     "vue-template-compiler": "^2.5.17",
