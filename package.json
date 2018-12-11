@@ -5,8 +5,9 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "npm test && vue-cli-service build",
-    "build:prod": "npm run build -- --env=prod",
-    "build:beta": "npm run build -- --env=beta",
+    "build:prod": "vue-cli-service build --env=prod",
+    "build:beta": "vue-cli-service build --env=prod",
+    "build:test": "vue-cli-service build --env=beta",
     "lint": "vue-cli-service lint --fix",
     "dev": "npm run serve --title=www.freelog.com",
     "test": "mocha 'test/**/*.test.js'"
@@ -17,7 +18,7 @@
     }
   },
   "dependencies": {
-    "@freelog/freelog-ui-contract": "0.0.7",
+    "@freelog/freelog-ui-contract": "0.0.9",
     "@freelog/resource-policy-lang": "0.0.33",
     "axios": "^0.18.0",
     "cropperjs": "^1.4.1",
