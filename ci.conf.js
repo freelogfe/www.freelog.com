@@ -19,6 +19,6 @@ module.exports = {
   after: function () {
     //同步前端模板
     //https://api.freelog.com/test/v1/node/web/triggerUpdateNodeTemplateEvent
-    console.log('publish after')
+    console.log('publish complete')
   }
 }
