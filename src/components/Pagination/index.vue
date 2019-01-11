@@ -29,7 +29,7 @@ export default {
   name: 'fl-pagination',
   data() {
     return {
-      total: 8,
+      total: 0,
       tableProps: {
         data: []
       },
