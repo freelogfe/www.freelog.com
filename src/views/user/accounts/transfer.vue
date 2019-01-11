@@ -89,7 +89,7 @@ export default {
               this.$message.success('转账成功')
               this.$router.push('/user/accounts')
             } else {
-              this.$error.showErrorMessage(res)
+              this.$error.showErrorMessage(res.data.msg)
             }
           })
         }

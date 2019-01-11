@@ -27,7 +27,8 @@ function getDevServer() {
     inline: false,
     disableHostCheck: true,
     historyApiFallback: true,
-    hot: false
+    hot: false,
+    host: '0.0.0.0'
   }
 
   if (argv.https) {

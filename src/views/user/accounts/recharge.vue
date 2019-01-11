@@ -31,8 +31,8 @@
           </el-form-item>
           <el-form-item label="Address">
             <el-select v-model="cardNo" size="small" placeholder="请选择充值账户" style="width: 440px;">
-              <el-option :label="addr.label" :key="addr.value" :value="addr.value"
-                         v-for="addr in cardClips"></el-option>
+              <el-option :label="addr.label" :key="index" :value="addr.value"
+                         v-for="(addr,index) in cardClips"></el-option>
             </el-select>
             <el-button type="text" @click="showAddCardDialogHandler"><i class="el-icon-plus"></i></el-button>
             <div class="form-item-tip" v-if="currencyInfo.abbr === 'feth'">还没有以太坊账户？
@@ -210,6 +210,7 @@ export default {
       this.addCardToCardclips(this.addCardNo)
         .then(() => {
           this.$message.success('添加成功')
+          this.shouldShowAddDialog = false
         }).catch(this.$error.showErrorMessage)
     },
     resolveCard(card) {
@@ -291,7 +292,7 @@ export default {
                   .then(() => {
                     this.$message.success('创建成功')
                   })
-                  .catch(this.$message.error)
+                  .catch(this.$error.showErrorMessage)
               } else {
                 this.$message.error(data.msg || '创建失败')
               }
