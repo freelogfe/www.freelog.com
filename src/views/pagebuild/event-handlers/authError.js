@@ -34,6 +34,7 @@ export default function handleAuthError({appUiVm}, options, callback) {
     }
   } else {
     console.error(`[handleAuthError] 参数有误`)
+    alert('参数有误') //临时展示解决
   }
 
   function _unactivatedHandler(presentableInfo) {

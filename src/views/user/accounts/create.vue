@@ -75,21 +75,21 @@ export default {
         accountName: [
           { required: true, message: '请输入账户名称', trigger: 'blur' },
           {
-            min: 2, max: 20, message: '由2-20位字符组成', trigger: 'blur'
+            min: 2, max: 20, message: '由2-20位字符组成', trigger: 'change'
           }
         ],
         password: [
           { required: true, message: '请输入支付密码', trigger: 'blur' },
           { validator: validatePass, trigger: 'blur' },
           {
-            min: 6, max: 6, message: '由6位数字组成', trigger: 'blur'
+            min: 6, max: 6, message: '由6位数字组成', trigger: 'change'
           }
         ],
         checkPassword: [
           { required: true, message: '请输入支付确认密码', trigger: 'blur' },
           { validator: validateCheckPass, trigger: 'change' },
           {
-            min: 6, max: 6, message: '由6位数字组成', trigger: 'blur'
+            min: 6, max: 6, message: '由6位数字组成', trigger: 'change'
           }
         ]
       }
@@ -151,5 +151,30 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  @import "create.less";
+  .create-account-view {
+    .create-account-input-wrap {
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+      align-items: center;
+
+      .valid-icon {
+        display: inline-block;
+        width: 22px;
+        height: 22px;
+        background: url("../../../assets/img/success.png") no-repeat;
+        background-size: 100%;
+        vertical-align: middle;
+      }
+      .input-area {
+        width: 380px;
+        margin-right: 10px;
+      }
+
+      .input-tip {
+        color: #999999;
+        font-size: 14px;
+      }
+    }
+  }
 </style>

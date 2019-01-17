@@ -88,15 +88,9 @@
     },
     mounted() {
       const redirect = this.$route.query.redirect
-
-
-      this.$store.dispatch('checkUserSession').then((isLogined) => {
-        if (isLogined) {
-          this.redirect()
-        } else if (isSafeUrl(redirect)) {
-          this.signUpLink += `?redirect=${redirect}`
-        }
-      })
+      if (isSafeUrl(redirect)) {
+        this.signUpLink += `?redirect=${redirect}`
+      }
     },
 
     methods: {
