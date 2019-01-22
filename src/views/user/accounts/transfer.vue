@@ -1,9 +1,10 @@
 <template>
   <div class="account-transfer-view">
     <account-layout :title="navTitle">
-      <el-form label-width="100px"
+      <el-form label-width="120px"
                :rules="rules"
                :model="form"
+               style="width: 500px"
                ref="formRef"
                label-position="left">
         <el-form-item label="付款方账户ID">
@@ -14,13 +15,13 @@
           <el-input size="small" v-model="form.toAccountId"></el-input>
         </el-form-item>
         <el-form-item label="转账金额">
-          <el-input size="small" v-model="form.amount" style="width: 100px"></el-input>
+          <el-input size="small" v-model="form.amount" style="width: 150px"></el-input>
           <label>{{currencyInfo.abbr}}</label>
         </el-form-item>
         <el-form-item label="支付密码">
-          <el-input size="small" v-model="form.password" type="password" style="width: 100px"></el-input>
+          <el-input size="small" v-model="form.password" type="password" style="width: 150px"></el-input>
         </el-form-item>
-        <el-form-item label="备注">
+        <el-form-item label="转账备注">
           <el-input size="small" v-model="form.remark"></el-input>
         </el-form-item>
       </el-form>

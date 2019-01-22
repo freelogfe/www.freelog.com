@@ -18,7 +18,7 @@ function initEnv() {
     mainDomain
   })
 
-  win.FreelogApp.Env.qiOrigin = win.location.protocol + '//qi.' + mainDomain
+  win.FreelogApp.Env.qiOrigin = `${win.location.protocol}//qi.${mainDomain}`
 }
 
 initEnv()

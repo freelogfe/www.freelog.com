@@ -185,5 +185,3 @@ class APIGenerator {
 }
 
 export default APIGenerator
-
-

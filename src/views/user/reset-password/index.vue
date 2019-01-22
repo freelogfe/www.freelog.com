@@ -36,9 +36,9 @@
 </template>
 
 <script>
-  import ResetView from './index'
+import ResetView from './index'
 
-  export default ResetView
+export default ResetView
 </script>
 
 <style lang="less" scoped>

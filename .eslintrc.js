@@ -22,7 +22,7 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'no-extra-semi': 'warn',
     'comma-dangle': 'off',
-    semi: ['error', 'never'],  //关闭末尾分号
+    semi: ['error', 'never'], // 关闭末尾分号
     'prefer-destructuring': ['error', {
       VariableDeclarator: {
         object: false

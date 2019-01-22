@@ -142,7 +142,6 @@ export default {
               this.$message.error(data.msg || '操作失败')
             }
           })
-        } else {
         }
       })
     }
