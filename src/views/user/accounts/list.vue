@@ -131,7 +131,7 @@ export default {
           ret, errcode, msg
         } = res.data
         if (this.isSuccess(res.data)) {
-          account.balance = 1e4
+          account.balance = 100 * this.currencyInfo.unit
           account._isGifted = true
           this.$message.success('领取成功')
         } else if (ret === 0 && errcode !== 0) {
