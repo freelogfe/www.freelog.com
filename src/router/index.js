@@ -13,6 +13,8 @@ import AccountTransactionRecordsView from '@/views/user/accounts/records.vue'
 import AccountResetPayPasswordView from '@/views/user/accounts/reset.vue'
 import AccountWithdrawView from '@/views/user/accounts/withdraw.vue'
 import AccountTransferView from '@/views/user/accounts/transfer.vue'
+import AccountListManagerView from '@/views/user/accounts/list.vue'
+import AddPayAccountView from '@/views/user/accounts/add-pay-account.vue'
 import ResourceContractDetailView from '@/views/user/resources/detail.vue'
 import LoginView from '@/views/user/login/index.vue'
 import SignupView from '@/views/user/signup/index.vue'
@@ -105,6 +107,22 @@ export default new Router({
         },
         component: AccountTransactionRecordsView
       }, {
+        path: 'accounts-manager',
+        name: 'accountsManager',
+        meta: {
+          title: '账号管理'
+        },
+        component: AccountListManagerView
+        // AddPayAccountView
+      }, {
+        path: 'accounts/add',
+        name: 'addPayAccount',
+        meta: {
+          title: '添加支付账号'
+        },
+        component: AddPayAccountView
+        // AddPayAccountView
+      }, {
         path: 'reset',
         name: 'accountReset',
         meta: {
@@ -119,32 +137,32 @@ export default new Router({
         },
         component: AccountWithdrawView
       },
-        {
-          path: 'transfer',
-          name: 'accountTransfer',
-          meta: {
-            title: '账户转账'
-          },
-          component: AccountTransferView
+      {
+        path: 'transfer',
+        name: 'accountTransfer',
+        meta: {
+          title: '账户转账'
         },
-        {
-          path: 'profile',
-          meta: {title: '我的账号'},
-          component: MyProfileView
-        }, {
-          path: 'collections',
-          meta: {title: '我的关注'},
-          component: MyCollectionsView
-        }, {
-          path: 'resources',
-          meta: {title: '我的资源'},
-          component: MyResourcesView
-        },
-        {
-          path: 'resources/detail',
-          meta: {title: '资源详情'},
-          component: ResourceContractDetailView
-        },]
+        component: AccountTransferView
+      },
+      {
+        path: 'profile',
+        meta: { title: '我的账号' },
+        component: MyProfileView
+      }, {
+        path: 'collections',
+        meta: { title: '我的关注' },
+        component: MyCollectionsView
+      }, {
+        path: 'resources',
+        meta: { title: '我的资源' },
+        component: MyResourcesView
+      },
+      {
+        path: 'resources/detail',
+        meta: { title: '资源详情' },
+        component: ResourceContractDetailView
+      }]
     },
     {
       path: '/*',

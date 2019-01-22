@@ -17,9 +17,7 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use(
-  (config) => {
-    return config
-  },
+  config => config,
   err => Promise.reject(err),
 )
 
@@ -27,9 +25,9 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response) => {
     const { data } = response
-    let loginPath = '/login'
+    const loginPath = '/login'
 
-    if ([28, 30].indexOf(data.errcode) > -1 && location.pathname !== loginPath) {
+    if ([28, 30].indexOf(data.errcode) > -1 && window.location.pathname !== loginPath) {
       gotoLogin(window.location.href)
       return null
     }

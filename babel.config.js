@@ -5,10 +5,10 @@ module.exports = {
   plugins: [
     '@babel/plugin-syntax-dynamic-import',
     [
-      "component",
+      'component',
       {
-        "libraryName": "element-ui",
-        "styleLibraryName": "theme-chalk"
+        libraryName: 'element-ui',
+        styleLibraryName: 'theme-chalk'
       }
     ]
   ]

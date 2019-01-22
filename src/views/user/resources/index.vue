@@ -105,8 +105,8 @@ export default {
     FlPagination
   },
 
-  created(){
-    this.$store.dispatch('getCurrentUserInfo').then(user=>{
+  created() {
+    this.$store.dispatch('getCurrentUserInfo').then((user) => {
       if (user && user.userId) {
         this.paginationConfig.params.partyTwo = user.userId
         this.isReady = true
@@ -119,7 +119,9 @@ export default {
 
   methods: {
     rowClickHandler(row) {
-      const { targetId, nodeInfo: { nodeId }, resourceId, partyTwo } = row
+      const {
+        targetId, resourceId, partyTwo
+      } = row
 
       this.$router.push({
         path: '/user/resources/detail/',

@@ -1,4 +1,3 @@
-import { storage } from '@/lib'
 import { isSafeUrl } from '@/lib/security'
 import { validateLoginName } from '../login/validator'
 
@@ -33,13 +32,13 @@ export default {
     submit(ref) {
       this.$refs[ref].validate((valid) => {
         if (!valid) {
-          return false
+          return
         }
 
         this.error = null
         this.loading = true
 
-        this.$axios.post('/v1/userinfos/resetPassword',this.model).then((res) => {
+        this.$axios.post('/v1/userinfos/resetPassword', this.model).then((res) => {
           if (res.data.errcode === 0) {
             let redirect = this.$route.query.redirect
             if (!redirect || !isSafeUrl(redirect)) {
@@ -62,6 +61,8 @@ export default {
             case 500:
               this.error.message = '服务器内部异常，请稍后再试！'
               break
+            default:
+              this.error.message = '应用异常，请稍后再试！'
           }
         })
       })
