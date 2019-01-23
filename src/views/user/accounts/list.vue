@@ -28,7 +28,7 @@
                   v-if="currencyInfo.abbr=== 'feth'"
                   width="150">
             <template slot-scope="{row}">
-              <el-button size="small" class="test-btn" :class="{done: row._isGifted}" @click="officialTapHandler(row)">
+              <el-button size="small" class="test-btn" :disabled="row._isGifted" :class="{done: row._isGifted}" @click="officialTapHandler(row)">
                 {{row._isGifted?'已': ''}}领取
               </el-button>
             </template>
