@@ -16,7 +16,7 @@
             <div v-if="cardClips.length">
               <el-select v-model="cardNo"
                          size="small"
-                         popper-class="cardNo-item"
+                         popper-class="cardNo-item-poper"
                          placeholder="请选择付款账号"
                          @change="changeCardClipHandler"
                          style="width: 600px;">
@@ -238,14 +238,6 @@ export default {
       }
     }
 
-    .add-new-card-btn {
-      padding: 0;
-      .el-icon-plus {
-        font-weight: bold;
-        margin-right: 5px;
-      }
-    }
-
     .account-info-wrap {
       width: 740px;
       .input-tip {
@@ -267,6 +259,19 @@ export default {
       padding-bottom: 5px;
       margin-bottom: 30px;
       border-bottom: 1px solid #EEEEEE;
+    }
+  }
+</style>
+
+
+<style lang="less">
+  .cardNo-item-poper {
+    .add-new-card-btn {
+      padding: 0;
+      .el-icon-plus {
+        font-weight: bold;
+        margin-right: 5px;
+      }
     }
   }
 </style>

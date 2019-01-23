@@ -154,7 +154,7 @@ export default {
       this.$axios.get('/v1/pay/accounts/rechargeRecords', {
         params: {
           accountId: account.accountId,
-          status: 1,
+          tradeStatus: 1,
           pageSize: 50
         }
       }).then((res) => {
