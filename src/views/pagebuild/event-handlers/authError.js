@@ -34,7 +34,8 @@ export default function handleAuthError({ appUiVm }, options, callback) {
     }
   } else {
     console.error('[handleAuthError] 参数有误')
-    alert('参数有误') // 临时展示解决
+    window.FreelogApp.trigger('AUTH_ERROR')
+    //待完善错误提示
   }
 
   function _unactivatedHandler(presentableInfoData) {
