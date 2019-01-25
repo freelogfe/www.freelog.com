@@ -47,7 +47,7 @@
                 width="350">
           <template slot-scope="scope">
             <div class="node-domain">
-              {{formatNodeDomain(scope.row.nodeInfo.nodeDomain)}}
+              {{formatNodeDomain(scope.row.nodeInfo)}}
             </div>
           </template>
         </el-table-column>
@@ -132,8 +132,12 @@ export default {
         }
       })
     },
-    formatNodeDomain(domain) {
-      return `${domain}.${window.FreelogApp.Env.mainDomain}`
+    formatNodeDomain(nodeInfo) {
+      if (nodeInfo && nodeInfo.nodeDomain) {
+        return `${nodeInfo.nodeDomain}.${window.FreelogApp.Env.mainDomain}`
+      } else {
+        return ''
+      }
     },
     resolveStatus(status) {
       let text

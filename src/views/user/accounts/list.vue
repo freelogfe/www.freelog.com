@@ -135,8 +135,9 @@ export default {
           account._isGifted = true
           this.$message.success('领取成功')
         } else if (ret === 0 && errcode !== 0) {
-          account._isGifted = true
-          this.$message.info('已领取过啦！')
+          this.$message.error(msg)
+          // account._isGifted = true
+          // this.$message.info('已领取过啦！')
         } else {
           this.$message.error(msg)
         }
