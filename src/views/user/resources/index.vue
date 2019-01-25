@@ -52,7 +52,7 @@
           </template>
         </el-table-column>
         <el-table-column
-                width="145"
+                width="155"
                 label="签约时间">
           <template slot-scope="scope">
             {{scope.row.createDate |fmtDate}}
