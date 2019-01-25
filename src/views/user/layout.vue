@@ -2,7 +2,7 @@
   <div class="account-layout-view">
     <header>
       <span>{{title}}</span>
-      <nav @click="cancelHandler"><i>&lsaquo;</i> 返回</nav>
+      <nav @click="cancelHandler"><i class="el-icon-arrow-left"></i> 返回</nav>
     </header>
 
     <div class="account-sub-view-wrap">
@@ -33,20 +33,23 @@ export default {
     returnName: {
       type: String,
       default: '/user/accounts'
-    }
+    },
+    goBackFn: Function
   },
 
   mounted() {
   },
-
-  computed: {},
 
   methods: {
     cancelHandler() {
       this.goBack()
     },
     goBack() {
-      this.$router.push(this.returnName)
+      if (typeof this.goBackFn === 'function') {
+        this.goBackFn()
+      } else {
+        this.$router.push(this.returnName)
+      }
     }
   }
 }
@@ -73,10 +76,9 @@ export default {
 
       i {
         font-style: normal;
-        font-size: 40px;
+        font-size: 25px;
         vertical-align: top;
         line-height: 23px;
-        margin-right: 5px;
         font-weight: 200;
       }
 

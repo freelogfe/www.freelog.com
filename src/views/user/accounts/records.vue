@@ -13,7 +13,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="交易时间" width="100">
+            <el-table-column label="交易时间" width="110">
               <template slot-scope="scope">
                 <div class="trans-date">
                   <div class="trans-date-1">{{scope.row.createDate|fmtDate('yyyy-MM-dd')}}</div>

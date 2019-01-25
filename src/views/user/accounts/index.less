@@ -16,12 +16,27 @@
     margin-bottom: 30px;
     color: #222222;
     .account-type-name {
-      color: #999999;
-      font-size: 16px;
+      color: #333333;
+      font-weight: bold;
+      font-size: 14px;
+      .account-addrs-btn {
+        float: right;
+        padding: 0;
+        margin-top: 3px;
+      }
     }
 
     .account-balance {
       margin-bottom: 15px;
+      .recording-icon {
+        background: url("../../../assets/img/recording.png") no-repeat 100%;
+        width: 26px;
+        height: 18px;
+        display: inline-block;
+        margin-left: 20px;
+        vertical-align: text-bottom;
+        cursor: pointer;
+      }
     }
     .account-info-wrap {
       border: 1px solid #EEEEEE;
@@ -147,4 +162,12 @@
     padding: 10px
   }
 
+}
+
+
+.recordings-popover {
+  .recording-status {
+    color: #E1AD4A;
+    font-size: 14px;
+  }
 }

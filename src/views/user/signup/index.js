@@ -1,5 +1,5 @@
-import { validateLoginName } from '../login/validator'
 import { isSafeUrl } from '@/lib/security'
+import { validateLoginName } from '../login/validator'
 
 export default {
   name: 'signup',
@@ -82,12 +82,12 @@ export default {
           window.localStorage.setItem('loginName', data.loginName)
 
           if (isNewPage) {
-            location.replace(redirect)
+            window.location.replace(redirect)
           } else {
             self.$router.replace(redirect || '/')
           }
         })
-        .catch((_) => {
+        .catch(() => {
           self.logining = false
         })
     },
@@ -98,7 +98,7 @@ export default {
 
       this.$refs[ref].validate((valid) => {
         if (!valid) {
-          return false
+          return
         }
 
         this.error = null
@@ -107,10 +107,12 @@ export default {
         const data = {}
 
         Object.keys(this.model).forEach((key) => {
-          (key !== 'checkPassword') && (data[key] = this.model[key])
+          if ((key !== 'checkPassword')) {
+            data[key] = this.model[key]
+          }
         })
 
-        this.$axios.post('/v1/userinfos/register',data)
+        this.$axios.post('/v1/userinfos/register', data)
           .then((res) => {
             if (res.data.errcode === 0) {
               this.$message.success('注册成功')
@@ -129,6 +131,8 @@ export default {
               case 500:
                 this.error.message = '服务器内部异常，请稍后再试！'
                 break
+              default:
+                this.error.message = '应用异常，请稍后再试！'
             }
             this.loading = false
           })

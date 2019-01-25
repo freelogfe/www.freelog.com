@@ -47,7 +47,7 @@
                 width="350">
           <template slot-scope="scope">
             <div class="node-domain">
-              {{formatNodeDomain(scope.row.nodeInfo.nodeDomain)}}
+              {{formatNodeDomain(scope.row.nodeInfo)}}
             </div>
           </template>
         </el-table-column>
@@ -105,8 +105,8 @@ export default {
     FlPagination
   },
 
-  created(){
-    this.$store.dispatch('getCurrentUserInfo').then(user=>{
+  created() {
+    this.$store.dispatch('getCurrentUserInfo').then((user) => {
       if (user && user.userId) {
         this.paginationConfig.params.partyTwo = user.userId
         this.isReady = true
@@ -119,7 +119,9 @@ export default {
 
   methods: {
     rowClickHandler(row) {
-      const { targetId, nodeInfo: { nodeId }, resourceId, partyTwo } = row
+      const {
+        targetId, resourceId, partyTwo
+      } = row
 
       this.$router.push({
         path: '/user/resources/detail/',
@@ -130,8 +132,12 @@ export default {
         }
       })
     },
-    formatNodeDomain(domain) {
-      return `${domain}.${window.FreelogApp.Env.mainDomain}`
+    formatNodeDomain(nodeInfo) {
+      if (nodeInfo && nodeInfo.nodeDomain) {
+        return `${nodeInfo.nodeDomain}.${window.FreelogApp.Env.mainDomain}`
+      } else {
+        return ''
+      }
     },
     resolveStatus(status) {
       let text

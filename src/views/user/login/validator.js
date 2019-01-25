@@ -12,3 +12,5 @@ export const validateLoginName = function (rule, value, callback) {
     callback(new Error('账号不能为空'))
   }
 }
+
+export default validateLoginName

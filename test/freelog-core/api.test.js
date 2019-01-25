@@ -18,7 +18,7 @@ describe('Test API: window.FreelogApp.QI.***', async function (){
       page.once('load', async () => {
         resolve()
       })
-      await page.goto('http://local.testfreelog.com')
+      await page.goto('http://musicplayer.testfreelog.com')
     })
   })
 
@@ -36,8 +36,9 @@ describe('Test API: window.FreelogApp.QI.***', async function (){
   createFetchApiAssertion('fetchPresentableInfo', function (){
     return page.evaluate(async () => {
       var pListResp = await window.FreelogApp.QI.fetchPresentablesList()
-      var pInfoResp = await window.FreelogApp.QI.fetchPresentableInfo(pListResp.data[0].presentableId)
-      return pInfoResp
+      return pListResp
+      // var pInfoResp = await window.FreelogApp.QI.fetchPresentableInfo(pListResp.data[0].presentableId)
+      // return pInfoResp
     })
   })
 

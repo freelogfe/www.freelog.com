@@ -42,118 +42,114 @@
 </template>
 
 <script>
-  import {isSafeUrl} from "../../../lib/security";
+import { isSafeUrl } from '../../../lib/security'
 
-  export default {
-    name: 'freelog-ui-login',
+export default {
+  name: 'freelog-ui-login',
 
-    data() {
-      const validateLoginName = function (rule, value, callback) {
-        if (value) {
-          const EMAIL_REG = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/
-          const PHONE_REG = /^1[34578]\d{9}$/
-          if (!EMAIL_REG.test(value) && !PHONE_REG.test(value)) {
-            callback(new Error('账号格式有误，输入正确的手机号或邮箱'))
-          } else {
-            callback()
-          }
+  data() {
+    const validateLoginName = function (rule, value, callback) {
+      if (value) {
+        const EMAIL_REG = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/
+        const PHONE_REG = /^1[34578]\d{9}$/
+        if (!EMAIL_REG.test(value) && !PHONE_REG.test(value)) {
+          callback(new Error('账号格式有误，输入正确的手机号或邮箱'))
         } else {
-          callback(new Error('账号不能为空'))
+          callback()
         }
-      }
-
-      const rules = {
-        loginName: [
-          {required: true, message: '请输入账号', trigger: 'blur'},
-          { validator: validateLoginName, trigger: 'blur' }
-        ],
-        password: [
-          {required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 6, message: '长度至少6个字符', trigger: 'blur'}
-        ]
-      }
-      var loginName = window.localStorage.getItem('loginName') || ''
-
-      return {
-        model: {
-          loginName: loginName,
-          password: '',
-        },
-        signUpLink: '/signup',
-        rules,
-        error: null,
-        loading: false,
-        rememberUser: false
-      }
-    },
-    mounted() {
-      const redirect = this.$route.query.redirect
-
-
-      this.$store.dispatch('checkUserSession').then((isLogined) => {
-        if (isLogined) {
-          this.redirect()
-        } else if (isSafeUrl(redirect)) {
-          this.signUpLink += `?redirect=${redirect}`
-        }
-      })
-    },
-
-    methods: {
-      redirect() {
-        const redirect = this.$route.query.redirect
-        if (isSafeUrl(redirect)) {
-          window.location.replace(redirect)
-        } else {
-          this.$router.replace('/')
-        }
-      },
-      submit(ref) {
-        const self = this
-        this.$refs[ref].validate((valid) => {
-          if (!valid) {
-            return false
-          }
-
-          this.error = null
-          this.loading = true
-
-          const data = Object.assign(this.model, {
-            isRememer: this.rememberUser ? 1 : 0
-          })
-
-          this.$store.dispatch('userLogin', data)
-            .then(() => {
-              window.localStorage.setItem('loginName', data.loginName)
-              const redirect = this.$route.query.redirect
-              if (isSafeUrl(redirect)) {
-                window.location.replace(redirect)
-              } else {
-                self.$router.replace('/')
-              }
-              self.loading = false
-            })
-            .catch((err) => {
-              console.log(err)
-              if (typeof err === 'string') {
-                self.error = {title: '', message: err}
-              } else {
-                self.error = {title: '发生错误', message: err.response.errorMsg || '出现异常，请稍后再试！'}
-                switch (err.response && err.response.status) {
-                  case 401:
-                    self.error.message = '用户名或密码错误！'
-                    break
-                  case 500:
-                    self.error.message = '服务器内部异常，请稍后再试！'
-                    break
-                }
-              }
-              self.loading = false
-            })
-        })
+      } else {
+        callback(new Error('账号不能为空'))
       }
     }
+
+    const rules = {
+      loginName: [
+        { required: true, message: '请输入账号', trigger: 'blur' },
+        { validator: validateLoginName, trigger: 'blur' }
+      ],
+      password: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { min: 6, message: '长度至少6个字符', trigger: 'blur' }
+      ]
+    }
+    const loginName = window.localStorage.getItem('loginName') || ''
+
+    return {
+      model: {
+        loginName,
+        password: '',
+      },
+      signUpLink: '/signup',
+      rules,
+      error: null,
+      loading: false,
+      rememberUser: false
+    }
+  },
+  mounted() {
+    const redirect = this.$route.query.redirect
+    if (isSafeUrl(redirect)) {
+      this.signUpLink += `?redirect=${redirect}`
+    }
+  },
+
+  methods: {
+    redirect() {
+      const redirect = this.$route.query.redirect
+      if (isSafeUrl(redirect)) {
+        window.location.replace(redirect)
+      } else {
+        this.$router.replace('/')
+      }
+    },
+    submit(ref) {
+      const self = this
+      this.$refs[ref].validate((valid) => {
+        if (!valid) {
+          return
+        }
+
+        this.error = null
+        this.loading = true
+
+        const data = Object.assign(this.model, {
+          isRememer: this.rememberUser ? 1 : 0
+        })
+
+        this.$store.dispatch('userLogin', data)
+          .then(() => {
+            window.localStorage.setItem('loginName', data.loginName)
+            const redirect = this.$route.query.redirect
+            if (isSafeUrl(redirect)) {
+              window.location.replace(redirect)
+            } else {
+              self.$router.replace('/')
+            }
+            self.loading = false
+          })
+          .catch((err) => {
+            console.log(err)
+            if (typeof err === 'string') {
+              self.error = { title: '', message: err }
+            } else {
+              self.error = { title: '发生错误', message: err.response.errorMsg || '出现异常，请稍后再试！' }
+              switch (err.response && err.response.status) {
+                case 401:
+                  self.error.message = '用户名或密码错误！'
+                  break
+                case 500:
+                  self.error.message = '服务器内部异常，请稍后再试！'
+                  break
+                default:
+                  self.error.message = '应用异常，请稍后再试！'
+              }
+            }
+            self.loading = false
+          })
+      })
+    }
   }
+}
 </script>
 
 <style lang="less" scoped>

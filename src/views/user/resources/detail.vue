@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { ContractSigningSingle } from '@freelog/freelog-ui-contract/src/index.js'
+import { ContractSigningSingle } from '@freelog/freelog-ui-contract/src/index'
 import { mapGetters } from 'vuex'
 import AccountLayout from '../layout.vue'
 
@@ -33,9 +33,9 @@ export default {
   components: { AccountLayout, ContractSigningSingle },
 
   mounted() {
-    const { resourceId, presentableId, partyTwo } = this.$route.query
+    const { presentableId } = this.$route.query
     this.$axios.get(`/v1/presentables/${presentableId}`).then(res => res.data)
-      .then(res => {
+      .then((res) => {
         if (res.errcode === 0 && res.data) {
           this.presentable = res.data
           this.isRenderContract = true

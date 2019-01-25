@@ -1,7 +1,7 @@
-export default function handleAuthError({appUiVm}, options, callback) {
+export default function handleAuthError({ appUiVm }, options, callback) {
   const response = options.response
 
-  var presentableInfo
+  let presentableInfo
   if (response.data) {
     presentableInfo = response.data.presentableInfo || (response.data.data && response.data.data.presentableInfo)
   }
@@ -33,14 +33,16 @@ export default function handleAuthError({appUiVm}, options, callback) {
       })
     }
   } else {
-    console.error(`[handleAuthError] 参数有误`)
+    console.error('[handleAuthError] 参数有误')
+    window.FreelogApp.trigger('AUTH_ERROR')
+    //待完善错误提示
   }
 
-  function _unactivatedHandler(presentableInfo) {
-    appUiVm.showAuthDialog([presentableInfo])
+  function _unactivatedHandler(presentableInfoData) {
+    appUiVm.showAuthDialog([presentableInfoData])
   }
 
-  function _unSignHandler(presentableInfo) {
-    appUiVm.showAuthDialog([presentableInfo])
+  function _unSignHandler(presentableInfoData) {
+    appUiVm.showAuthDialog([presentableInfoData])
   }
 }

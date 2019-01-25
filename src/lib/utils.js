@@ -1,4 +1,4 @@
-import {isSafeUrl} from "./security";
+import { isSafeUrl } from './security'
 
 const host = window.location.host.split('.').slice(1).join('.')
 
@@ -38,8 +38,8 @@ function gotoCacheScrollTop() {
 function gotoLogin(redirect) {
   cacheScrollTop()
 
-  let loginPath = '/login'
-  if (location.pathname === loginPath) {
+  const loginPath = '/login'
+  if (window.location.pathname === loginPath) {
     return
   }
 

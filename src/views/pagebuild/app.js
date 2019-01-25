@@ -1,5 +1,5 @@
-import { Loading } from 'element-ui'
 import Vue from '@/views/layout/index'
+import { Loading } from 'element-ui'
 import { gotoCacheScrollTop } from '@/lib/utils'
 import '@/lib/freelog-core/index'
 
