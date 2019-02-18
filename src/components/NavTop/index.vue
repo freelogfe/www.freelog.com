@@ -13,8 +13,8 @@
             <!--</el-dropdown-menu>-->
           <!--</el-dropdown>-->
         </li>
-        <li class="nav-top-item" @click="logoutHandler">退出</li>
-        <li class="nav-top-item"><a href="/">我的freelog</a></li>
+        <li class="nav-top-item" @click="logoutHandler">{{$t('navTop[0]')}}</li>
+        <li class="nav-top-item"><a href="/">{{$t('navTop[1]')}}</a></li>
       </ul>
     </div>
   </div>

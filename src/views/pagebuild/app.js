@@ -3,6 +3,8 @@ import { Loading } from 'element-ui'
 import { gotoCacheScrollTop } from '@/lib/utils'
 import '@/lib/freelog-core/index'
 
+import i18n from '../../lib/i18n/index'
+
 import AppView from './App.vue'
 import PageBuildeParser from './parser'
 
@@ -16,12 +18,14 @@ const loadingInstance = Loading.service({
 
 export default new Vue({
   el: '#app',
+  i18n,
   methods: {
     // app-view mounted
     onReady(appUiVm) {
+      const $i18n = this.$i18n
       this.appUiVm = appUiVm
 
-      AppCenter.setOptions({ appUiVm })
+      AppCenter.setOptions({ appUiVm, $i18n })
       appUiVm.$on('close', () => {
       })
 

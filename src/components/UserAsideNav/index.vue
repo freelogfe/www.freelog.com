@@ -6,7 +6,7 @@
           <img v-if="user.avatarUrl" class="portrait-img"
                :src="user.avatarUrl"
                alt="">
-          <span v-else>去上传头像</span>
+          <span v-else>{{$t('common.avatarPlaceholder')}}</span>
         </a>
         <p class="user-name">{{user.nickname}}</p>
       </div>
@@ -18,8 +18,8 @@
           :class="{active: navItem.name=== activeNavName}"
           :nav-name="navItem.name"
           :key="navItem.name"
-          v-for="navItem in navs">
-        {{navItem.title}}
+          v-for="(navItem, index) in navs">
+        {{$t(`userAsideNav.title[${index}]`)}}
       </li>
     </ul>
   </el-aside>

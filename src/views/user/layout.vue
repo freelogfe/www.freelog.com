@@ -2,13 +2,13 @@
   <div class="account-layout-view">
     <header>
       <span>{{title}}</span>
-      <nav @click="cancelHandler"><i class="el-icon-arrow-left"></i> 返回</nav>
+      <nav @click="cancelHandler"><i class="el-icon-arrow-left"></i> {{$t('common.backText')}}</nav>
     </header>
 
     <div class="account-sub-view-wrap">
       <slot></slot>
       <div class="form-ft" v-if="showFooter">
-        <el-button class="ft-btn" @click="cancelHandler">取消</el-button>
+        <el-button class="ft-btn" @click="cancelHandler">{{$t('common.cancelText')}}</el-button>
         <slot name="footer"></slot>
       </div>
     </div>
