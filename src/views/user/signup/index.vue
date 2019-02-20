@@ -1,7 +1,7 @@
 <template>
   <section class="login-section"
            v-loading="logining"
-           element-loading-text="正在登录中...">
+           :element-loading-text="$t('signup.loadingText')">
     <header class="login-header">
       <!--<h1 class="brand">-->
       <!--<router-link to="/" tabindex="-1">freelog.com</router-link>-->
@@ -9,32 +9,32 @@
       <el-alert v-if="error" :title="error.title" type="error" :description="error.message" show-icon/>
     </header>
     <el-form class="login-form" auto-complete="off" :model="model" :rules="rules" ref="signupForm" label-width="80px">
-      <h2 class="heading">注册用户</h2>
-      <el-form-item prop="loginName" label="账号" required>
-        <el-input type="text" v-model="model.loginName" placeholder="请输入手机号或邮箱">
+      <h2 class="heading">{{$t('signup.head')}}</h2>
+      <el-form-item prop="loginName" :label="$t('signup.loginName')" required>
+        <el-input type="text" v-model="model.loginName" :placeholder="$t('signup.loginNamePlaceholder')">
         </el-input>
       </el-form-item>
-      <el-form-item prop="nickname" label="用户昵称" required>
-        <el-input type="text" v-model="model.nickname" placeholder="请输入用户昵称">
+      <el-form-item prop="nickname" :label="$t('signup.nickname')" required>
+        <el-input type="text" v-model="model.nickname" :placeholder="$t('signup.nicknamePlaceholder')">
         </el-input>
       </el-form-item>
-      <el-form-item prop="password" label="设置密码" required>
-        <el-input type="password" v-model="model.password" placeholder="密码(6-16位字母、数字和符号)"></el-input>
+      <el-form-item prop="password" :label="$t('signup.password')" required>
+        <el-input type="password" v-model="model.password" :placeholder="$t('signup.passwordPlaceholder')"></el-input>
       </el-form-item>
-      <el-form-item prop="checkPassword" label="确认密码" required>
-        <el-input type="password" v-model="model.checkPassword" placeholder="请输入确认密码"></el-input>
+      <el-form-item prop="checkPassword" :label="$t('signup.checkPassword')" required>
+        <el-input type="password" v-model="model.checkPassword" :placeholder="$t('signup.checkPasswordPlaceholder')"></el-input>
       </el-form-item>
-      <el-form-item label="验证码" prop="verifyCode" v-show="false">
-        <el-input v-model="model.verifyCode" placeholder="请输入验证码"></el-input>
+      <el-form-item prop="verifyCode" :label="$t('signup.verifyCode')" v-show="false">
+        <el-input v-model="model.verifyCode" :placeholder="$t('signup.verifyCodePlaceholder')"></el-input>
       </el-form-item>
       <el-form-item>
-        <router-link to="/login" class="user-op">去登录<i class="el-icon-d-arrow-right"></i></router-link>
+        <router-link to="/login" class="user-op">{{$t('signup.loginText')}}<i class="el-icon-d-arrow-right"></i></router-link>
       </el-form-item>
       <el-form-item class="login-btns">
         <el-button type="primary"
                    style="width: 100%;"
                    :loading="loading"
-                   @click="submit('signupForm')">{{ loading ? '注册中...' : '注册' }}
+                   @click="submit('signupForm')">{{ loading ? $t('signup.signupingText') : $t('signup.signupedText') }}
         </el-button>
       </el-form-item>
     </el-form>

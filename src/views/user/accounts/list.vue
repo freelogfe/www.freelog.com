@@ -6,7 +6,7 @@
                 :data="cardClips">
           <el-table-column>
             <template slot="header" slot-scope="scope">
-              <span class="cell-title">账号名 <span class="split-line">|</span> 地址</span>
+              <span class="cell-title">{{$t('accounts.list.tableColumn[0]')}}</span>
               <el-button type="text" class="create-new-account-btn" @click="gotoAddAccountHandler"><i
                       class="el-icon-plus"></i></el-button>
             </template>
@@ -17,26 +17,26 @@
             </template>
           </el-table-column>
           <el-table-column
-                  label="当前余额"
+                  :label="$t('accounts.list.tableColumn[1]')"
                   width="180">
             <template slot-scope="{row}">
               {{row.balance|humanizeCurrency(currencyInfo.abbr)}} {{currencyInfo.abbr}}
             </template>
           </el-table-column>
           <el-table-column
-                  label="测试币(100feth)"
+                  :label="$t('accounts.list.tableColumn[2]')"
                   v-if="currencyInfo.abbr=== 'feth'"
                   width="150">
             <template slot-scope="{row}">
               <el-button size="small" class="test-btn" :disabled="row._isGifted" :class="{done: row._isGifted}" @click="officialTapHandler(row)">
-                {{row._isGifted?'已': ''}}领取
+                {{row._isGifted ? $t('accounts.list.giftedStatus[1]') : $t('accounts.list.giftedStatus[0]')}}
               </el-button>
             </template>
           </el-table-column>
           <el-table-column
-                  width="50"
+                  width="100"
                   align="center"
-                  label="操作">
+                  :label="$t('accounts.list.tableColumn[3]')">
             <template slot-scope="{row}">
               <el-button type="text" @click="deleteAccountHandler(row)"><i class="el-icon-delete"></i></el-button>
             </template>
@@ -79,14 +79,15 @@ export default {
     navTitle() {
       let title
       if (this.currencyInfo.abbr === 'feth') {
-        title = '以太坊地址'
+        title = this.$i18n.t('accounts.addrName[0]')
       } else {
-        title = `${this.currencyInfo.name}${this.currencyInfo.extBindAddrName}`
+        title = `${this.currencyInfo.name} ${this.currencyInfo.extBindAddrName}`
       }
-      return `${title}管理`
+      return title + ' ' + this.$i18n.t('accounts.list.manageText')
     },
     currencyInfo() {
-      return AccountTypes[this.renderData.currencyType]
+      const i = this.renderData.currencyType
+      return this.$i18n.t(`accounts.currencyAccounts[${i}]`)
     }
   },
 
@@ -133,7 +134,7 @@ export default {
         if (this.isSuccess(res.data)) {
           account.balance = 100 * this.currencyInfo.unit
           account._isGifted = true
-          this.$message.success('领取成功')
+          this.$message.success(this.$i18n.t('accounts.list.giftedStatus[2]'))
         } else if (ret === 0 && errcode !== 0) {
           this.$message.error(msg)
           // account._isGifted = true
@@ -144,11 +145,11 @@ export default {
       })
     },
     deleteAccountHandler(account) {
-      this.$confirm('确定删除账户？')
+      this.$confirm(this.$i18n.t('accounts.list.deleteConfirm'))
         .then(() => {
           this.$axios.delete(`/v1/pay/cardclips/${account.cardNo}`).then((res) => {
             if (this.isSuccess(res.data)) {
-              this.$message.success('删除成功')
+              this.$message.success(this.$i18n.t('accounts.list.deleteSuccess'))
               this.deleteAccountFromCards(account)
             } else {
               this.$message.error(res.data.msg)

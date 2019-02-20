@@ -1,6 +1,6 @@
 <template>
   <div class="account-withdraw-view">
-    <account-layout title="提现" :showFooter="false">
+    <account-layout :title="$t('accounts.withdraw.title')" :showFooter="false">
       待开发
     </account-layout>
   </div>

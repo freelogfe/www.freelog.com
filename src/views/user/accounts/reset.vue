@@ -6,18 +6,18 @@
                :model="form"
                ref="formRef"
                label-position="left">
-        <el-form-item label="旧支付密码" prop="password">
+        <el-form-item :label="$t('accounts.reset.oldPassword')" prop="oldPassword">
           <password-input class="input-area" v-model="form.password"></password-input>
         </el-form-item>
-        <el-form-item label="新支付密码" prop="newPassword">
+        <el-form-item :label="$t('accounts.reset.newPassword')" prop="newPassword">
           <password-input class="input-area" v-model="form.newPassword"></password-input>
         </el-form-item>
-        <el-form-item label="确认支付密码" prop="checkNewPassword">
+        <el-form-item :label="$t('accounts.reset.checkNewPassword')" prop="checkNewPassword">
           <password-input class="input-area" v-model="form.checkNewPassword"></password-input>
         </el-form-item>
       </el-form>
       <template slot="footer">
-        <el-button class="ft-btn" type="primary" @click="resetHandler">确定重置</el-button>
+        <el-button class="ft-btn" type="primary" @click="resetHandler">{{$t('accounts.reset.sureBtnText')}}</el-button>
       </template>
     </account-layout>
   </div>
@@ -34,11 +34,12 @@ export default {
 
   data() {
     const reg = /^\d{6}$/
+    const $i18n = this.$i18n
     const validatePass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入密码'))
+        callback(new Error($i18n.t('accounts.reset.errors[0]')))
       } else if (!reg.test(value)) {
-        callback(new Error('请输入6位数字'))
+        callback(new Error($i18n.t('accounts.reset.errors[2]')))
       } else {
         if (this.form.checkNewPassword !== '') {
           this.$refs.formRef.validateField('checkNewPassword')
@@ -48,43 +49,36 @@ export default {
     }
     const validateCheckPass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请再次输入密码'))
+        callback(new Error($i18n.t('accounts.reset.errors[1]')))
       } else if (!reg.test(value)) {
-        callback(new Error('请输入6位数字'))
+        callback(new Error($i18n.t('accounts.reset.errors[2]')))
       } else if (value !== this.form.newPassword) {
-        callback(new Error('两次输入密码不一致!'))
+        callback(new Error($i18n.t('accounts.reset.errors[3]')))
       } else {
         callback()
       }
     }
 
-
     return {
       form: {
-        password: '',
+        oldPassword: '',
         newPassword: '',
-        checkNewPassword: ''
+        checkNewPassword: '',
       },
       rules: {
         password: [
-          { required: true, message: '请输入支付密码', trigger: 'blur' },
-          {
-            min: 6, max: 6, message: '由6位数字组成', trigger: 'blur'
-          }
+          { required: true, message: $i18n.t('accounts.reset.messages[0]'), trigger: 'blur' },
+          { min: 6, max: 6, message: $i18n.t('accounts.reset.messages[2]'), trigger: 'blur' }
         ],
         newPassword: [
-          { required: true, message: '请输入支付密码', trigger: 'blur' },
+          { required: true, message: $i18n.t('accounts.reset.messages[0]'), trigger: 'blur' },
           { validator: validatePass, trigger: 'blur' },
-          {
-            min: 6, max: 6, message: '由6位数字组成', trigger: 'blur'
-          }
+          { min: 6, max: 6, message: $i18n.t('accounts.reset.messages[2]'), trigger: 'blur' }
         ],
         checkNewPassword: [
-          { required: true, message: '请输入支付确认密码', trigger: 'blur' },
+          { required: true, message: $i18n.t('accounts.reset.messages[1]'), trigger: 'blur' },
           { validator: validateCheckPass, trigger: 'change' },
-          {
-            min: 6, max: 6, message: '由6位数字组成', trigger: 'blur'
-          }
+          { min: 6, max: 6, message: $i18n.t('accounts.reset.messages[2]'), trigger: 'blur' }
         ]
       }
     }
@@ -98,10 +92,11 @@ export default {
 
   computed: {
     currencyInfo() {
-      return AccountTypes[this.renderData.currencyType]
+      const i = this.renderData.currencyType
+      return this.$i18n.t(`accounts.currencyAccounts[${i}]`)
     },
     navTitle() {
-      return `重置${this.currencyInfo.name}支付密码`
+      return this.$i18n.t('accounts.reset.text') + this.currencyInfo.name + this.$i18n.t('accounts.reset.password')
     },
     renderData() {
       return this.$route.query

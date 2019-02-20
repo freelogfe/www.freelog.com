@@ -47,12 +47,12 @@ class AppCenter {
           if (!self.options.appUiVm) {
             throw new Error('not set app ui instance')
           }
-          handler({ appUiVm: self.options.appUiVm }, opts, callback)
+          handler({ appUiVm: self.options.appUiVm, $i18n: self.options.$i18n }, opts, callback)
         } catch (err) {
           Error.showErrorMessage(err)
         }
       } else {
-        console.error('不存在对应的事件处理函数')
+        console.error(self.options.$i18n.t('pagebuild.errors[0]'))
       }
     }
   }

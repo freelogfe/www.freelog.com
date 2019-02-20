@@ -4,19 +4,21 @@
             ref="table"
             @row-click="rowClickHandler"
             v-bind="tableProps"
-            style="width: 100%">
+            style="width: 100%"
+            :empty-text="$t('pagination.emptyText')"
+    >
       <slot name="list"></slot>
     </el-table>
     <div class="fl-pg-ft clearfix">
       <slot name="footer"></slot>
       <div class="fl-pg-info">
-        <el-button style="margin-right: 10px" type="text" v-if="hasPrev" @click="gotoFirstPageHandler">&lt;&lt; 首页
+        <el-button style="margin-right: 10px" type="text" v-if="hasPrev" @click="gotoFirstPageHandler">&lt;&lt; {{$t('pagination.start')}}
         </el-button>
-        <el-button type="text" v-if="hasPrev" @click="loadPrevHandler">&lt; 上一页</el-button>
+        <el-button type="text" v-if="hasPrev" @click="loadPrevHandler">&lt; {{$t('pagination.prev')}}</el-button>
         <span class="fl-pg-num">
-          <span v-if="to>0 && to > from">{{from}}-{{to}}条，</span>共{{total}}条</span>
-        <el-button style="margin-right: 10px" type="text" v-if="hasNext" @click="loadNextHandler">下一页 &gt;</el-button>
-        <el-button type="text" v-if="hasNext" @click="gotoLastPageHandler">尾页 &gt;&gt;</el-button>
+          <span v-if="to>0 && to > from">{{from}}-{{to}}{{$t('pagination.bar')}}，</span>{{$t('pagination.total')}}{{total}}{{$t('pagination.bar')}}</span>
+        <el-button style="margin-right: 10px" type="text" v-if="hasNext" @click="loadNextHandler">{{$t('pagination.next')}} &gt;</el-button>
+        <el-button type="text" v-if="hasNext" @click="gotoLastPageHandler">{{$t('pagination.end')}} &gt;&gt;</el-button>
       </div>
     </div>
   </div>
