@@ -49,7 +49,7 @@ export default ResetView
     background-clip: padding-box;
     margin: 180px auto;
     width: 350px;
-    height: 300px;
+    min-height: 300px;
     padding: 35px 35px 15px 35px;
     background: #fff;
     border: 1px solid #eaeaea;
