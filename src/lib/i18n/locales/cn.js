@@ -1,3 +1,12 @@
+
+// 异常码对应的解释和eventName
+import { HANDLE_INVALID_AUTH, GO_TO_LOGIN, REPORT_ERROR, NOTIFY_NODE } from '@/views/pagebuild/event-center/event-name.js'
+const noLogin = {
+  desc: '未登录用户',
+  tip: '去登录',
+  eventName: GO_TO_LOGIN
+}
+
 export default {
   common: {
     searchPlaceholder: '按回车搜索',
@@ -209,7 +218,7 @@ export default {
     rememberUser: '记住我',
     resetPW: '忘记密码',
     signup: '注册新用户',
-    loginStatus: ['验证中...','立即验证'],
+    loginStatus: ['登录中...','登录'],
     validateErrors: ['账号格式有误，输入正确的手机号或邮箱','账号不能为空'],
     ruleMessages: ['请输入账号','请输入密码','长度至少6个字符'],
     errorTitle: '发生错误',
@@ -267,15 +276,82 @@ export default {
       checkboxText: '接受协议',
       msgs: ['协议格式不正确，请联系合约作者。','执行成功']
     },
+    eventTitles: {
+      transactionEvent: '支付',
+      signingEvent: '协议签署',
+      escrowExceedAmount: '保证金支付',
+      escrowConfiscated: '保证金没收',
+      escrowRefunded: '保证金赎回'
+    },
   },
   pagebuild: {
-    errors: ['不存在对应的事件处理函数'],
+    errors: ['不存在对应的事件处理函数', '未定义错误'],
+    tips: ['上报错误'],
     authError: {
       msg: '参数有误'
     },
     notifyNode: {
       msg: '节点资源合同未生效，已通知节点'
     },
-    exceptionCodes: {}
+    exceptionCodes: {
+      301: {
+        desc: '资源合同未激活',
+        tip: '去通知节点',
+        eventName: NOTIFY_NODE
+      },
+      401: {
+        desc: '节点的合同未激活',
+        tip: '去通知节点',
+        eventName: NOTIFY_NODE
+      },
+      402: {
+        desc: '节点合同中的策略身份认证失败',
+        tip: '查看策略',
+        eventName: HANDLE_INVALID_AUTH
+      },
+      403: {
+        desc: '未找到有效的节点合同',
+        tip: '去通知节点',
+        eventName: NOTIFY_NODE
+      },
+      404: {
+        desc: '未找到节点信息',
+        tip: '我要上报',
+        eventName: REPORT_ERROR
+      },
+      501: {
+        desc: '用户的合同未激活',
+        tip: '去激活合同',
+        eventName: HANDLE_INVALID_AUTH
+      },
+      502: {
+        desc: '资源策略拒绝',
+        tip: '查看策略',
+        eventName: HANDLE_INVALID_AUTH
+      },
+      503: {
+        desc: '未创建资源合同',
+        tip: '去创建合同',
+        eventName: HANDLE_INVALID_AUTH
+      },
+      505: noLogin,
+      28: noLogin,
+      30: noLogin,
+      506: {
+        desc: '选择需要执行的合同.一般有两个或两个以上的时候需要用户选择具体执行哪个',
+        tip: '去选择合同',
+        eventName: HANDLE_INVALID_AUTH
+      },
+      601: {
+        desc: '身份认证失败',
+        tip: '去登录',
+        eventName: GO_TO_LOGIN
+      },
+      900: {
+        desc: '未知异常',
+        tip: '我要上报',
+        eventName: REPORT_ERROR
+      }
+    }
   },
 }

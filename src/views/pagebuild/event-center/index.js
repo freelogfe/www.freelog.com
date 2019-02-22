@@ -20,12 +20,11 @@ class AppCenter {
     Object.assign(win.FreelogApp, {
       trigger,
       on: this.$eventBus.$on.bind(this.$eventBus),
-      exceptionCodes,
       eventNames,
       getErrorInfo(error) {
         return exceptionCodes[error.errcode] || {
-          desc: `未定义的错误[${error.errcode}]`,
-          tip: '上报错误',
+          desc: self.options.$i18n.t('pagebuild.errors[1]') + `[${error.errcode}]`,
+          tip: self.options.$i18n.t('pagebuild.tips[0]'),
           eventName: 'REPORT_ERROR',
         }
       }
@@ -38,8 +37,7 @@ class AppCenter {
         callback = opts.callback
       }
 
-      callback = callback || function cb() {
-      }
+      callback = callback || function cb() {}
 
       const handler = eventsMap[name]
       if (handler) {
@@ -59,6 +57,13 @@ class AppCenter {
 
   setOptions(options) {
     Object.assign(this.options, options)
+    this.resetExceptionCodes(options)
+  }
+
+  resetExceptionCodes(options) {
+    Object.assign(window.FreelogApp, {
+      exceptionCodes: options.$i18n.t('pagebuild.exceptionCodes')
+    })
   }
 
   emit(...args) {
