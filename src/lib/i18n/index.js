@@ -8,8 +8,13 @@ Vue.use(I18n)
 
 function initI18n() {
   const win = window
-  // var language = 'zh-CN'
-  var language = 'en'
+
+  var language
+  if (/^zh(\-\w+)?/.test(navigator.language)) {
+    language = 'zh-CN'
+  } else {
+    language = 'en'
+  }
 
   win.FreelogApp = win.FreelogApp || {}
   win.FreelogApp.Env = win.FreelogApp.Env || {}
