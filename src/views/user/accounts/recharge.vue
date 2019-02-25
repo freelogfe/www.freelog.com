@@ -5,19 +5,19 @@
         <!--<h5>充值方式（{{rechargeMethod}}）</h5>-->
         <el-form label-width="80px"
                  label-position="left">
-          <el-form-item label="充值到">
+          <el-form-item :label="$t('accounts.recharge.to')">
             {{renderData.accountName}} <span style="font-size: 20px; vertical-align: middle;">|</span> {{renderData.accountId}}
           </el-form-item>
-          <el-form-item label="充值金额">
+          <el-form-item :label="$t('accounts.recharge.amount')">
             <el-input size="small" v-model="amount" style="width: 180px;"></el-input>
             <label class="input-tip">{{currencyInfo.abbr}}</label>
           </el-form-item>
-          <el-form-item label="付款地址">
+          <el-form-item :label="$t('accounts.recharge.payAddr')">
             <div v-if="cardClips.length">
               <el-select v-model="cardNo"
                          size="small"
                          popper-class="cardNo-item-poper"
-                         placeholder="请选择付款账号"
+                         :placeholder="$t('accounts.recharge.payAccountPlaceholder')"
                          @change="changeCardClipHandler"
                          style="width: 600px;">
                 <el-option :label="addr.label" :key="index" :value="addr.value"
@@ -25,24 +25,25 @@
                 <el-option value="">
                   <el-button type="text"
                              @click="addNewCardHandler"
-                             class="add-new-card-btn"><i class="el-icon-plus"></i>添加新的{{addrName}}
+                             class="add-new-card-btn"><i class="el-icon-plus"></i>
+                    {{$t('accounts.recharge.addNewText')}}{{addrName}}
                   </el-button>
                 </el-option>
               </el-select>
-              <div v-if="selectedCard">当前{{addrName}}余额 <span style="color: #607A97">
+              <div v-if="selectedCard">{{$t('accounts.recharge.curentText')}}{{addrName}}{{$t('accounts.recharge.balanceText')}} <span style="color: #607A97">
                 {{selectedCard.balance|humanizeCurrency(currencyInfo.abbr)}}{{currencyInfo.abbr}}</span>
               </div>
             </div>
             <el-button v-else
                        @click="addNewCardHandler"
                        type="text"
-                       class="add-new-card-btn"><i class="el-icon-plus"></i>添加{{addrName}}
+                       class="add-new-card-btn"><i class="el-icon-plus"></i>{{$t('accounts.recharge.addText')}}{{addrName}}
             </el-button>
           </el-form-item>
         </el-form>
       </div>
       <template slot="footer">
-        <el-button class="ft-btn" type="primary" @click="rechargeHandler">充值</el-button>
+        <el-button class="ft-btn" type="primary" @click="rechargeHandler">{{$t('accounts.recharge.btn')}}</el-button>
       </template>
     </account-layout>
   </div>
@@ -83,22 +84,23 @@ export default {
 
   computed: {
     navTitle() {
-      return `${this.currencyInfo.name}账户充值`
+      return this.currencyInfo.name + this.$i18n.t('accounts.recharge.title')
     },
     currencyInfo() {
-      return AccountTypes[this.renderData.currencyType]
+      const i = this.renderData.currencyType
+      return this.$i18n.t(`accounts.currencyAccounts[${i}]`)
     },
     rechargeMethod() {
       let method
       switch (this.renderData.currencyType) {
         case 1:
-          method = '以太坊'
+          method = this.$i18n.t('accounts.recharge.currencyTypes[0]')
           break
         case 2:
         case 3:
         case 4:
         default:
-          method = '银行'
+          method = this.$i18n.t('accounts.recharge.currencyTypes[1]')
       }
 
       return method
@@ -107,13 +109,13 @@ export default {
       let name
       switch (this.renderData.currencyType) {
         case 1:
-          name = '以太坊地址'
+          name = this.$i18n.t('accounts.addrName[0]')
           break
         case 2:
         case 3:
         case 4:
         default:
-          name = '银行账号'
+          name = this.$i18n.t('accounts.addrName[1]')
       }
 
       return name
@@ -159,16 +161,16 @@ export default {
           let msg
           switch (data.data.tradeStatus) {
             case 1:
-              msg = '充值成功'
+              msg = this.$i18n.t('accounts.recharge.tradeStatus[0]')
               break
             case 2:
-              msg = '充值失败'
+              msg = this.$i18n.t('accounts.recharge.tradeStatus[1]')
               break
             case 3:
-              msg = '发起中'
+              msg = this.$i18n.t('accounts.recharge.tradeStatus[2]')
               break
             case 4:
-              msg = '超时失败'
+              msg = this.$i18n.t('accounts.recharge.tradeStatus[3]')
               break
             default:
               msg = data.msg

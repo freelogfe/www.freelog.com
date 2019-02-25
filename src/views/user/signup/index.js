@@ -1,5 +1,5 @@
-import { isSafeUrl } from '@/lib/security'
-import { validateLoginName } from '../login/validator'
+import {isSafeUrl} from '@/lib/security'
+import {validateLoginName, EMAIL_REG, PHONE_REG} from '../login/validator'
 
 export default {
   name: 'signup',
@@ -7,7 +7,7 @@ export default {
   data() {
     const validatePassword = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入密码'))
+        callback(new Error(this.$t('signup.passwordInputTip')))
       } else {
         if (this.model.checkPassword !== '') {
           this.$refs.signupForm.validateField('checkPassword')
@@ -18,9 +18,9 @@ export default {
 
     const validateCheckPassword = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请再次输入密码'))
+        callback(new Error(this.$t('signup.checkPasswordInputTip')))
       } else if (value !== this.model.password) {
-        callback(new Error('两次输入密码不一致!'))
+        callback(new Error(this.$t('signup.inconsistentPasswordTip')))
       } else {
         callback()
       }
@@ -28,28 +28,29 @@ export default {
 
     const rules = {
       loginName: [
-        { required: true, message: '请输入账号名', trigger: 'blur' },
-        { validator: validateLoginName, trigger: 'blur' }
+        {required: true, message: this.$t('signup.loginNamePlaceholder'), trigger: 'blur'},
+        {validator: validateLoginName, trigger: 'blur'}
       ],
       nickname: [
-        { required: true, message: '请输入昵称', trigger: 'blur' }
+        {required: true, message: this.$t('signup.nicknamePlaceholder'), trigger: 'blur'}
       ],
       password: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
-        { validator: validatePassword, trigger: 'blur' },
-        { min: 6, message: '长度至少6个字符', trigger: 'blur' }
+        {required: true, message: this.$t('signup.passwordInputTip'), trigger: 'blur'},
+        {validator: validatePassword, trigger: 'blur'},
+        {min: 6, message: this.$t('signup.passwordLengthRule'), trigger: 'blur'}
       ],
       checkPassword: [
-        { required: true, message: '请输入确认密码', trigger: 'blur' },
-        { validator: validateCheckPassword, trigger: 'blur' },
-        { min: 6, message: '长度至少6个字符', trigger: 'blur' }
+        {required: true, message: this.$t('signup.checkPasswordPlaceholder'), trigger: 'blur'},
+        {validator: validateCheckPassword, trigger: 'blur'},
+        {min: 6, message: this.$t('signup.passwordLengthRule'), trigger: 'blur'}
       ]
     }
     const model = {
       loginName: '',
       nickname: '',
       password: '',
-      checkPassword: ''
+      checkPassword: '',
+      authCode: ''
     }
     return {
       model,
@@ -57,7 +58,45 @@ export default {
       error: null,
       loading: false,
       logining: false,
+      readonly: true,
+      sending: false,
+      waitingTimer: 0
     }
+  },
+
+  computed: {
+    disabledCheckCodeBtn() {
+      return this.waitingTimer> 0 || !(EMAIL_REG.test(this.model.loginName) || PHONE_REG.test(this.model.loginName))
+    },
+    accountType() {
+      var type = ''
+      if (EMAIL_REG.test(this.model.loginName)) {
+        type = 'email'
+      } else if (PHONE_REG.test(this.model.loginName)) {
+        type = 'phone'
+      }
+
+      return type
+    },
+    vcodeBtnText() {
+      if (this.sending) {
+        return this.$t('signup.sendingText')
+      } else if (this.waitingTimer) {
+        setTimeout(() => {
+          this.waitingTimer--
+        }, 1e3)
+        return this.$t('signup.timerText', {time: this.waitingTimer})
+      }
+
+      return this.$t('signup.checkcodeBtnText')
+    }
+  },
+
+  mounted() {
+    //阻止浏览器自动填充
+    setTimeout(() => {
+      this.readonly = false
+    }, 1e3)
   },
 
   methods: {
@@ -115,7 +154,7 @@ export default {
         this.$axios.post('/v1/userinfos/register', data)
           .then((res) => {
             if (res.data.errcode === 0) {
-              this.$message.success('注册成功')
+              // this.$message.success(this.$t('signup.registerSuccess'))
               this.login()
             } else {
               this.$message.error(res.data.msg)
@@ -123,20 +162,45 @@ export default {
             this.loading = false
           })
           .catch((err) => {
-            this.error = { title: '发生错误', message: '出现异常，请稍后再试！' }
+            this.error = {title: this.$t('signup.errorTitle'), message: this.$t('signup.defaultErrorMsg')}
             switch (err.response && err.response.status) {
               case 401:
-                this.error.message = '用户名或密码错误！'
+                this.error.message = this.$t('signup.identifyError')
                 break
               case 500:
-                this.error.message = '服务器内部异常，请稍后再试！'
+                this.error.message = this.$t('signup.serverError')
                 break
               default:
-                this.error.message = '应用异常，请稍后再试！'
+                this.error.message = this.$t('signup.appError')
             }
             this.loading = false
           })
       })
+    },
+    sendCheckCodeNotifyHandler() {
+      if (this.sending || !this.model.loginName) return
+
+      if (!this.model.password) {
+        return this.$message.error(this.$t('signup.passwordInputTip'))
+      }
+
+      this.sending = true
+      this.$axios.post(`/v1/message/send`, {
+        loginName: this.model.loginName,
+        authCodeType: 'register'
+      }).then(res => {
+        const {ret, errcode, data, msg} = res.data
+
+        this.sending = false
+        if (ret === 0 && errcode === 0) {
+          this.waitingTimer = 60
+        } else {
+          this.$message.error(msg)
+        }
+      })
+    },
+    refreshVcodeHandler() {
+      this.t = +new Date()
     }
   }
 }

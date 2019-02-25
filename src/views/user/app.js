@@ -2,11 +2,13 @@ import Vue from '../layout/index'
 import App from '../layout/index.vue'
 import router from '../../router'
 import store from '../../store'
+import i18n from '../../lib/i18n/index'
 
 export default new Vue({
   el: '#app',
   store,
   router,
+  i18n,
   render: h => h(App)
 })
 
