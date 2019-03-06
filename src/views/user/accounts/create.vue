@@ -2,28 +2,28 @@
   <div class="create-account-view">
     <account-layout :title="navTitle">
       <div class="create-account-input-wrap">
-        <el-form label-width="100px"
+        <el-form :label-width="formLabelWidth"
                  ref="createForm"
                  :model="form"
                  label-position="left"
                  @validate="validateForm"
                  :rules="rules">
-          <el-form-item label="账户名称" prop="accountName">
+          <el-form-item :label="$t('accounts.create.accountName')" prop="accountName">
             <el-input size="small" class="input-area" v-model="form.accountName"></el-input>
-            <label class="input-tip">由2-20位字符组成</label>
+            <label class="input-tip">{{$t('accounts.create.accountNameTip')}}</label>
           </el-form-item>
-          <el-form-item label="支付密码" prop="password">
+          <el-form-item :label="$t('accounts.create.password')" prop="password">
             <password-input class="input-area" v-model="form.password"></password-input>
-            <label class="input-tip">由6位数字组成</label>
+            <label class="input-tip">{{$t('accounts.create.passwordTip')}}</label>
           </el-form-item>
-          <el-form-item label="确认密码" prop="checkPassword">
+          <el-form-item :label="$t('accounts.create.checkPassword')" prop="checkPassword">
             <password-input class="input-area" v-model="form.checkPassword"></password-input>
             <label v-show="validPassword"><i class="valid-icon"></i></label>
           </el-form-item>
         </el-form>
       </div>
       <template slot="footer">
-        <el-button class="ft-btn" type="primary" @click="createHandler">创建</el-button>
+        <el-button class="ft-btn" type="primary" @click="createHandler">{{$t('accounts.create.text')}}</el-button>
       </template>
     </account-layout>
   </div>
@@ -40,11 +40,12 @@ export default {
 
   data() {
     const reg = /^\d{6}$/
+    const $i18n = this.$i18n
     const validatePass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入密码'))
+        callback(new Error($i18n.t('accounts.create.errors[0]')))
       } else if (!reg.test(value)) {
-        callback(new Error('请输入6位数字'))
+        callback(new Error($i18n.t('accounts.create.errors[2]')))
       } else {
         if (this.form.checkPassword !== '') {
           this.$refs.createForm.validateField('checkPassword')
@@ -54,11 +55,11 @@ export default {
     }
     const validateCheckPass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请再次输入密码'))
+        callback(new Error($i18n.t('accounts.create.errors[1]')))
       } else if (!reg.test(value)) {
-        callback(new Error('请输入6位数字'))
+        callback(new Error($i18n.t('accounts.create.errors[2]')))
       } else if (value !== this.form.password) {
-        callback(new Error('两次输入密码不一致!'))
+        callback(new Error($i18n.t('accounts.create.errors[3]')))
       } else {
         callback()
       }
@@ -73,27 +74,26 @@ export default {
       validPassword: false,
       rules: {
         accountName: [
-          { required: true, message: '请输入账户名称', trigger: 'blur' },
+          { required: true, message: $i18n.t('accounts.create.messages[0]'), trigger: 'blur' },
           {
-            min: 2, max: 20, message: '由2-20位字符组成', trigger: 'change'
+            min: 2, max: 20, message: $i18n.t('accounts.create.messages[1]'), trigger: 'change'
           }
         ],
         password: [
-          { required: true, message: '请输入支付密码', trigger: 'blur' },
+          { required: true, message: $i18n.t('accounts.create.messages[2]'), trigger: 'blur' },
           { validator: validatePass, trigger: 'blur' },
           {
-            min: 6, max: 6, message: '由6位数字组成', trigger: 'change'
+            min: 6, max: 6, message: $i18n.t('accounts.create.messages[3]'), trigger: 'change'
           }
         ],
         checkPassword: [
-          { required: true, message: '请输入支付确认密码', trigger: 'blur' },
+          { required: true, message: $i18n.t('accounts.create.messages[4]'), trigger: 'blur' },
           { validator: validateCheckPass, trigger: 'change' },
           {
-            min: 6, max: 6, message: '由6位数字组成', trigger: 'change'
+            min: 6, max: 6, message: $i18n.t('accounts.create.messages[3]'), trigger: 'change'
           }
         ]
       }
-
     }
   },
 
@@ -103,14 +103,18 @@ export default {
   },
 
   computed: {
+    formLabelWidth() {
+      return this.$i18n.locale === 'cn' ? '100px' : '150px'
+    },
     currencyType() {
       return this.$route.query.currencyType
     },
     currencyTypeInfo() {
-      return accountTypes[this.currencyType || '1']
+      const i = this.currencyType || '1'
+      return this.$i18n.t(`accounts.currencyAccounts[${i}]`)
     },
     navTitle() {
-      return `创建${this.currencyTypeInfo.name}账户`
+      return this.$i18n.t('accounts.create.text') + ` ${this.currencyTypeInfo.name} ` + this.$i18n.t('accounts.create.accountText')
     }
   },
 
@@ -136,10 +140,10 @@ export default {
           }).then((res) => {
             const { data } = res
             if (data.ret === 0 && data.errcode === 0) {
-              this.$message.success('创建成功')
+              this.$message.success(this.$i18n.t('accounts.create.successMsg'))
               this.goBack()
             } else {
-              this.$message.error(data.msg || '操作失败')
+              this.$message.error(data.msg || this.$i18n.t('accounts.create.failMsg'))
             }
           })
         }

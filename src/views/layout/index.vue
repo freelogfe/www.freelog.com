@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="[$i18n.locale]" >
     <nav-top-bar></nav-top-bar>
     <router-view></router-view>
   </div>

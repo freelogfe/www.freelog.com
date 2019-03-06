@@ -19,7 +19,6 @@ export default {
   },
   methods: {
     copyHandler() {
-      console.log('copy')
       const copyTextarea = this.$refs.copyText
       copyTextarea.select()
       try {

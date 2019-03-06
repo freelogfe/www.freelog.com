@@ -73,7 +73,6 @@ class APIGenerator {
     params = Object.assign({nodeId: this.nodeId}, params)
     return load(url, {data: params})
       .then((resp) => {
-        console.log('resp ---', resp)
         const headers = resp.headers
         const rids = headers.get('freelog-sub-resourceids')
         const token = headers.get('freelog-sub-resource-auth-token')
@@ -83,8 +82,6 @@ class APIGenerator {
             this.setResourceToken(id, token)
           })
         }
-
-        console.log('rids --', rids, 'token --', token, this.resourceTokensMap)
 
         return resp
       })
