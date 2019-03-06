@@ -67,15 +67,16 @@ export default {
         this.loading = true
 
         this.$axios.post('/v1/userinfos/resetPassword', this.model).then((res) => {
-          if (res.data.errcode === 0) {
+          const {msg, ret, errcode} = res.data
+          if (errcode === 0 && ret === 0) {
             let redirect = this.$route.query.redirect
             this.$message.success(this.$t('resetPassword.resetSuccess'))
-            if (!redirect || !isSafeUrl(redirect)) {
-              redirect = '/'
-            }
-            this.$router.replace(redirect)
+            // if (!redirect || !isSafeUrl(redirect)) {
+            //   redirect = '/'
+            // }
+            // this.$router.replace(redirect)
           } else {
-            this.error = { title: '', message: res.data.msg }
+            this.error = { title: '', message: msg }
           }
           this.loading = false
         }).catch((err) => {
