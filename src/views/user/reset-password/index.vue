@@ -31,11 +31,10 @@
         <router-link to="/login" class="user-op">{{$t('resetPassword.backToLogin')}}<i class="el-icon-d-arrow-right"></i></router-link>
       </el-form-item>
       <el-form-item class="login-btns">
-        <el-button type="primary"
+        <el-button :type="resetSuccess? 'success': 'primary'"
                    style="width: 100%;"
                    :loading="loading"
-                   @click="submit('formRef')">{{ loading ? $t('resetPassword.verifyCodeStatus[0]') : $t('resetPassword.verifyCodeStatus[1]') }}
-        </el-button>
+                   @click="submit('formRef')">{{submitBtnText}}</el-button>
       </el-form-item>
 
     </el-form>

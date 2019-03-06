@@ -222,7 +222,7 @@ export default {
     loginNamePlaceholder: '请输入手机号或邮箱',
     password: '新密码',
     backToLogin: '返回登录',
-    verifyCodeStatus: ['验证中...','立即验证'],
+    verifyCodeStatus: ['验证中...','立即验证', '修改成功，重新登录'],
     resetSuccess:'修改成功，重新登录',
     verifyCodeInputTip: '请输入验证码',
     sendingText: '发送中...',
