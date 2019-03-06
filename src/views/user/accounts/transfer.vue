@@ -7,26 +7,26 @@
                style="width: 500px"
                ref="formRef"
                label-position="left">
-        <el-form-item label="付款方账户ID">
+        <el-form-item :label="$t('accounts.transfer.fromAccountId')">
           {{form.fromAccountId}}
           <!--<el-input size="small" v-model="form.fromAccountId" style="width: 300px"></el-input>-->
         </el-form-item>
-        <el-form-item label="收款方账户ID">
+        <el-form-item :label="$t('accounts.transfer.fromAccountId')">
           <el-input size="small" v-model="form.toAccountId"></el-input>
         </el-form-item>
-        <el-form-item label="转账金额">
+        <el-form-item :label="$t('accounts.transfer.toAccountId')">
           <el-input size="small" v-model="form.amount" style="width: 150px"></el-input>
           <label>{{currencyInfo.abbr}}</label>
         </el-form-item>
-        <el-form-item label="支付密码">
+        <el-form-item :label="$t('accounts.transfer.password')">
           <el-input size="small" v-model="form.password" type="password" style="width: 150px"></el-input>
         </el-form-item>
-        <el-form-item label="转账备注">
+        <el-form-item :label="$t('accounts.transfer.remark')">
           <el-input size="small" v-model="form.remark"></el-input>
         </el-form-item>
       </el-form>
       <template slot="footer">
-        <el-button class="ft-btn" type="primary" @click="transferHandler">转账</el-button>
+        <el-button class="ft-btn" type="primary" @click="transferHandler">{{$t('accounts.transfer.transferText')}}</el-button>
       </template>
     </account-layout>
   </div>
@@ -49,12 +49,6 @@ export default {
         password: '',
         remark: ''
       },
-      rules: {
-        fromAccountId: [{ required: true, message: '请输入付款方账户ID', trigger: 'blur' }],
-        toAccountId: [{ required: true, message: '请输入收款方账户ID', trigger: 'blur' }],
-        amount: [{ required: true, message: '请输入转账金额', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入支付密码', trigger: 'blur' }]
-      }
     }
   },
 
@@ -67,11 +61,21 @@ export default {
   },
 
   computed: {
+    rules() {
+      const $i18n = this.$i18n
+      return {
+        fromAccountId: [{ required: true, trigger: 'blur', message: $i18n.t('accounts.transfer.placeholder[0]') }],
+        toAccountId: [{ required: true, trigger: 'blur', message: $i18n.t('accounts.transfer.placeholder[1]') }],
+        amount: [{ required: true, trigger: 'blur', message: $i18n.t('accounts.transfer.placeholder[2]') }],
+        password: [{ required: true, trigger: 'blur', message: $i18n.t('accounts.transfer.placeholder[3]') }]
+      }
+    },
     navTitle() {
-      return `${this.currencyInfo.name}转账`
+      return `${this.currencyInfo.name}` + this.$i18n.t('accounts.transfer.transferText')
     },
     currencyInfo() {
-      return AccountTypes[this.renderData.currencyType]
+      const i = this.renderData.currencyType
+      return this.$i18n.t(`accounts.currencyAccounts[${i}]`)
     },
     renderData() {
       return this.$route.query
@@ -87,7 +91,7 @@ export default {
           this.$axios.post('/v1/pay/transfer', form).then((res) => {
             const { data } = res
             if (data.ret === 0 && data.errcode === 0) {
-              this.$message.success('转账成功')
+              this.$message.success(this.$i18n.t('accounts.transfer.message.success'))
               this.$router.push('/user/accounts')
             } else {
               this.$error.showErrorMessage(res.data.msg)

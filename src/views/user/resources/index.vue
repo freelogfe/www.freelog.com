@@ -4,12 +4,12 @@
       <el-form-item>
         <el-select v-model="searchForm.type"
                    size="small"
-                   style="width: 100px"
-                   placeholder="请选择">
+                   style="width: 140px"
+                   :placeholder="$t(`resources.searchType.placeholder`)">
           <el-option
-                  v-for="item in searchTypes"
+                  v-for="(item, index) in searchTypes"
                   :key="item.value"
-                  :label="item.label"
+                  :label="$t(`resources.searchType.label[${index}]`)"
                   :value="item.value">
           </el-option>
         </el-select>
@@ -18,7 +18,7 @@
         <el-input size="small"
                   style="width: 400px"
                   suffix-icon="el-icon-search"
-                  placeholder="按回车搜索"
+                  :placeholder="$t('common.searchPlaceholder')"
                   @keyup.native.enter="searchHandler"
                   v-model="searchForm.input"></el-input>
       </el-form-item>
@@ -31,7 +31,7 @@
                    :pagination="paginationConfig">
       <template slot="list">
         <el-table-column
-                label="资源|状态|类型">
+                :label="$t(`resources.tableColumn[0]`)">
           <template slot-scope="scope">
             <div>
               <p class="resource-name">{{ scope.row.resourceInfo.resourceName }}</p>
@@ -43,7 +43,7 @@
           </template>
         </el-table-column>
         <el-table-column
-                label="节点"
+                :label="$t(`resources.tableColumn[1]`)"
                 width="350">
           <template slot-scope="scope">
             <div class="node-domain">
@@ -53,7 +53,7 @@
         </el-table-column>
         <el-table-column
                 width="155"
-                label="签约时间">
+                :label="$t(`resources.tableColumn[2]`)">
           <template slot-scope="scope">
             {{scope.row.createDate |fmtDate}}
           </template>
@@ -77,13 +77,10 @@ export default {
       },
       searchTypes: [{
         value: 'node',
-        label: '节点'
       }, {
         value: 'resource',
-        label: '资源'
       }, {
         value: 'resourceType',
-        label: '资源类型'
       }],
 
       isReady: false,

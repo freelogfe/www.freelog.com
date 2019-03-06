@@ -1,4 +1,4 @@
-export default function handleAuthError({ appUiVm }, options, callback) {
+export default function handleAuthError({ appUiVm, $i18n }, options, callback) {
   const response = options.response
 
   let presentableInfo
@@ -33,7 +33,7 @@ export default function handleAuthError({ appUiVm }, options, callback) {
       })
     }
   } else {
-    console.error('[handleAuthError] 参数有误')
+    console.error('[handleAuthError] ' + $i18n.t('pagebuild.authError.msg'))
     window.FreelogApp.trigger('AUTH_ERROR')
     //待完善错误提示
   }

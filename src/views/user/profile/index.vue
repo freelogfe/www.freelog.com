@@ -2,28 +2,29 @@
   <div class="my-profile-view" v-if="session">
     <el-form label-width="0"
              label-position="left">
-      <el-form-item class="profile-info-item" :class="[avatarCls]" label="用户头像">
+      <el-form-item class="profile-info-item" :class="[avatarCls]" :label="$t('profile.userAvatar')">
         <el-button type="text" class="user-avatar-btn" @click="showImageCropUploader=true">
           <img v-show="session.avatarUrl" class="user-avatar" :src="session.avatarUrl" @error="imgErrorHandler"
-               alt="用户头像">
-          <span v-if="!session.avatarUrl">编辑头像</span>
+               :alt="$t('profile.userAvatar')">
+          <span v-if="!session.avatarUrl">{{$t('profile.editAvatar')}}</span>
+          <div class="edit-avatar-part">{{$t('profile.editAvatar')}}</div>
         </el-button>
         <crop-image v-model="showImageCropUploader"
                     :avatarUrl="session.avatarUrl"
                     :upload-success="uploadSuccessHandler"></crop-image>
       </el-form-item>
-      <el-form-item class="profile-info-item" label="用户姓名">
-        {{session.userName?session.userName: '未设置用户姓名'}}
+      <el-form-item class="profile-info-item" :label="$t('profile.userName')">
+        {{session.userName?session.userName: $t('profile.noUserAvatar')}}
       </el-form-item>
-      <el-form-item class="profile-info-item" label="用户昵称">
+      <el-form-item class="profile-info-item" :label="$t('profile.userNickname')">
         {{session.nickname}}
         <!--<el-input size="small" type="password" v-model="password" style="width: 200px;"></el-input>-->
       </el-form-item>
-      <el-form-item class="profile-info-item" label="邮箱">
+      <el-form-item class="profile-info-item" :label="$t('profile.email')">
         {{session.email}}
       </el-form-item>
-      <el-form-item class="profile-info-item" label="手机号">
-        {{session.mobile?session.mobile: '未设置手机号'}}
+      <el-form-item class="profile-info-item" :label="$t('profile.phoneNumber')">
+        {{session.mobile?session.mobile: $t('profile.noPhoneNumber')}}
       </el-form-item>
     </el-form>
   </div>
@@ -92,27 +93,16 @@ export default {
     }
     .user-avatar-btn {
       position: relative;
-      &:before {
-        content: '编辑头像';
-        background-color: #333333;
-        opacity: 0;
-        width: 83px;
-        height: 83px;
-        display: block;
-        position: absolute;
-        top: 13px;
-        left: 0;
-        border-radius: 50%;
-        line-height: 83px;
-        color: white;
-        transition: all .3s;
-        transform: scale(0);
+
+      .edit-avatar-part {
+        position: absolute; top: 13px; left: 0;
+        width: 83px; height: 83px; border-radius: 50%;
+        line-height: 83px; background-color: #333333; color: white;
+        transition: all .3s; transform: scale(0); opacity: 0;
       }
-      &:hover {
-        &:before {
-          opacity: .8;
-          transform: scale(1);
-        }
+
+      &:hover .edit-avatar-part{
+        transform: scale(1); opacity: .8;
       }
     }
     .user-avatar {
@@ -138,7 +128,7 @@ export default {
 <style lang="less" type="text/less">
   .my-profile-view {
     .profile-info-item .el-form-item__label {
-      width: 100px !important;
+      width: 110px !important;
     }
   }
 </style>

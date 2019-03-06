@@ -1,5 +1,5 @@
 import { isSafeUrl } from '@/lib/security'
-import { validateLoginName } from '../login/validator'
+import {EMAIL_REG, PHONE_REG, validateLoginName} from '../login/validator'
 
 export default {
   name: 'reset-password',
@@ -8,24 +8,52 @@ export default {
     // form validate rules
     const rules = {
       loginName: [
-        { required: true, message: '请输入用户名', trigger: 'blur' },
+        { required: true, message: this.$t('resetPassword.loginNamePlaceholder'), trigger: 'blur' },
         { validator: validateLoginName, trigger: 'blur' }
       ],
       verifyCode: [
-        { required: true, message: '请输入验证码', trigger: 'blur' }
+        { required: true, message: this.$t('resetPassword.verifyCodeInputTip'), trigger: 'blur' }
       ]
     }
 
     return {
       model: {
         loginName: '',
-        // verifyCode: '',
+        authCode: '',
         password: ''
       },
       rules,
       error: null,
-      loading: false
+      loading: false,
+      sending: false,
+      waitingTimer: 0,
+      readonly: true
     }
+  },
+
+  computed: {
+    disabledCheckCodeBtn() {
+      return this.waitingTimer> 0 || !(EMAIL_REG.test(this.model.loginName) || PHONE_REG.test(this.model.loginName))
+    },
+    vcodeBtnText() {
+      if (this.sending) {
+        return this.$t('resetPassword.sendingText')
+      } else if (this.waitingTimer) {
+        setTimeout(() => {
+          this.waitingTimer--
+        }, 1e3)
+        return this.$t('resetPassword.timerText', {time: this.waitingTimer})
+      }
+
+      return this.$t('resetPassword.checkcodeBtnText')
+    }
+  },
+
+  mounted() {
+    //阻止浏览器自动填充
+    setTimeout(() => {
+      this.readonly = false
+    }, 1e3)
   },
 
   methods: {
@@ -39,33 +67,53 @@ export default {
         this.loading = true
 
         this.$axios.post('/v1/userinfos/resetPassword', this.model).then((res) => {
-          if (res.data.errcode === 0) {
+          const {msg, ret, errcode} = res.data
+          if (errcode === 0 && ret === 0) {
             let redirect = this.$route.query.redirect
-            if (!redirect || !isSafeUrl(redirect)) {
-              redirect = '/'
-            }
-            this.$router.replace(redirect)
+            this.$message.success(this.$t('resetPassword.resetSuccess'))
+            // if (!redirect || !isSafeUrl(redirect)) {
+            //   redirect = '/'
+            // }
+            // this.$router.replace(redirect)
           } else {
-            this.error = { title: '', message: res.data.msg }
+            this.error = { title: '', message: msg }
           }
           this.loading = false
         }).catch((err) => {
           this.loading = false
-          this.error = { title: '发生错误', message: '出现异常，请稍后再试！' }
+          this.error = { title: this.$t('resetPassword.errorTitle'), message: this.$t('resetPassword.defaultErrorMsg') }
 
 
           switch (err.response && err.response.status) {
             case 401:
-              this.error.message = '用户名或密码错误！'
+              this.error.message = this.$t('resetPassword.identifyError')
               break
             case 500:
-              this.error.message = '服务器内部异常，请稍后再试！'
+              this.error.message = this.$t('resetPassword.serverError')
               break
             default:
-              this.error.message = '应用异常，请稍后再试！'
+              this.error.message = this.$t('resetPassword.appError')
           }
         })
       })
-    }
+    },
+    sendCheckCodeNotifyHandler() {
+      if (this.sending || !this.model.loginName) return
+
+      this.sending = true
+      this.$axios.post(`/v1/message/send`, {
+        loginName: this.model.loginName,
+        authCodeType: 'resetPassword'
+      }).then(res => {
+        const {ret, errcode, data, msg} = res.data
+
+        this.sending = false
+        if (ret === 0 && errcode === 0) {
+          this.waitingTimer = 60
+        } else {
+          this.$message.error(msg)
+        }
+      })
+    },
   }
 }

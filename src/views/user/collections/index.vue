@@ -5,7 +5,7 @@
         <el-input size="small"
                   style="width: 400px"
                   suffix-icon="el-icon-search"
-                  placeholder="按回车搜索"
+                  :placeholder="$t('common.searchPlaceholder')"
                   v-model="searchInput"></el-input>
       </el-form-item>
     </el-form>
@@ -16,7 +16,7 @@
                    :pagination="paginationConfig">
       <template slot="list">
         <el-table-column
-                label="资源|类型">
+                :label="$t('collections.tableColumn[0]')">
           <template slot-scope="scope">
             <div>
               <p class="resource-name">{{ scope.row.resourceName }}</p>
@@ -28,7 +28,7 @@
           </template>
         </el-table-column>
         <el-table-column
-                label="资源作者"
+                :label="$t('collections.tableColumn[1]')"
                 width="200">
           <template slot-scope="scope">
             <div class="node-domain">
@@ -38,7 +38,7 @@
         </el-table-column>
         <el-table-column
                 width="145"
-                label="更新时间">
+                :label="$t('collections.tableColumn[2]')">
           <template slot-scope="scope">
             {{scope.row.updateDate |fmtDate}}
           </template>
@@ -87,24 +87,25 @@ export default {
       // })
     },
     resolveStatus(status) {
+      const $i18n = this.$i18n
       let text
       switch (status) {
         case 1:
-          text = '不可用'
+          text = $i18n.t('collections.contractStatus.inactive')
           break
         case 2:
-          text = '不可用'
+          text = $i18n.t('collections.contractStatus.inactive')
           break
         case 3:
-          text = '可用'
+          text = $i18n.t('collections.contractStatus.active')
           break
         case 4:
         case 5:
         case 6:
-          text = '合同终止'
+          text = $i18n.t('collections.contractStatus.termination')
           break
         default:
-          text = '未知状态'
+          text = $i18n.t('collections.contractStatus.unknown')
       }
 
       return text

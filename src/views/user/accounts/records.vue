@@ -6,14 +6,14 @@
                        :config="tableConfig"
                        :pagination="paginationConfig">
           <template slot="list">
-            <el-table-column label="分类" align="center" width="70">
+            <el-table-column :label="$t('accounts.records.tableColumn[0]')" align="center" width="70">
               <template slot-scope="scope">
                 <div class="trans-type" :class="['trans-type-'+scope.row.tradeType]">
                   <i></i>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="交易时间" width="110">
+            <el-table-column :label="$t('accounts.records.tableColumn[1]')" width="110">
               <template slot-scope="scope">
                 <div class="trans-date">
                   <div class="trans-date-1">{{scope.row.createDate|fmtDate('yyyy-MM-dd')}}</div>
@@ -21,7 +21,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column width="300" label="名称|对方|流水号">
+            <el-table-column width="300" :label="$t('accounts.records.tableColumn[2]')">
               <template slot-scope="scope">
                 <div class="trans-target-info">
                   <p class="trans-target-name" :title="scope.row.tradeDesc">{{scope.row.tradeDesc}}</p>
@@ -33,7 +33,7 @@
               </template>
             </el-table-column>
             <el-table-column
-                    label="金额|币种"
+                    :label="$t('accounts.records.tableColumn[3]')"
                     align="right"
                     width="150">
               <template slot-scope="scope">
@@ -44,7 +44,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="订单备注">
+            <el-table-column :label="$t('accounts.records.tableColumn[4]')">
               <template slot-scope="scope">
                 <div class="trans-remark" :title="scope.row.remark">
                   {{scope.row.remark}}
@@ -53,11 +53,11 @@
             </el-table-column>
           </template>
           <div slot="footer" class="footer-comment">
-            注释：
+            {{$t('accounts.records.commentTitle')}}
             <ul>
-              <li class="trans-type trans-type-1"><i></i>充值</li>
-              <li class="trans-type trans-type-2"><i></i>转账</li>
-              <li class="trans-type trans-type-3"><i></i>节点消费</li>
+              <li class="trans-type trans-type-1"><i></i>{{$t('accounts.records.commentList[0]')}}</li>
+              <li class="trans-type trans-type-2"><i></i>{{$t('accounts.records.commentList[1]')}}</li>
+              <li class="trans-type trans-type-3"><i></i>{{$t('accounts.records.commentList[2]')}}</li>
             </ul>
           </div>
         </fl-pagination>
@@ -110,10 +110,11 @@ export default {
 
   computed: {
     navTitle() {
-      return `${this.currencyInfo.name}账户账单`
+      return `${this.currencyInfo.name}` + this.$i18n.t('accounts.records.title')
     },
     currencyInfo() {
-      return AccountTypes[this.renderData.currencyType]
+      const i = this.renderData.currencyType
+      return this.$i18n.t(`accounts.currencyAccounts[${i}]`)
     },
     renderData() {
       return this.$route.query
@@ -128,13 +129,13 @@ export default {
       let text = ''
       switch (row.correlativeInfo.accountType) {
         case 1:
-          text = `账户名 ${row.targetInfo.nickName}`
+          text = this.$i18n.t('accounts.index.name') + ` ${row.targetInfo.nickName}`
           break
         case 2:
-          text = `合同ID ${row.targetInfo.contractId}`
+          text = this.$i18n.t('accounts.index.id') + ` ${row.targetInfo.contractId}`
           break
         case 3:
-          text = `节点 ${resolveNodeDomain(row.targetInfo.nodeDomain)}`
+          text = this.$i18n.t('accounts.index.node') + ` ${resolveNodeDomain(row.targetInfo.nodeDomain)}`
           break
         case 4:
           break

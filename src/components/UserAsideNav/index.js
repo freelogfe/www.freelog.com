@@ -7,22 +7,18 @@ export default {
       activeNavName: 'my-profile',
       navs: [
         {
-          title: '我的关注',
           name: 'my-collections',
           link: 'collections'
         },
         {
-          title: '我的资源',
           name: 'my-resources',
           link: 'resources'
         },
         {
-          title: '我的账户',
           name: 'my-accounts',
           link: 'accounts'
         },
         {
-          title: '资料与账号',
           name: 'my-profile',
           link: 'profile'
         }
