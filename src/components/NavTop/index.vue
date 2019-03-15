@@ -13,8 +13,19 @@
             <!--</el-dropdown-menu>-->
           <!--</el-dropdown>-->
         </li>
-        <li class="nav-top-item" @click="logoutHandler">{{$t('navTop[0]')}}</li>
-        <li class="nav-top-item"><a href="/">{{$t('navTop[1]')}}</a></li>
+        <li class="nav-top-item" @click="logoutHandler">{{$t('navTop.logout')}}</li>
+        <li class="nav-top-item"><a href="/">{{$t('navTop.myFreelog')}}</a></li>
+        <li class="nav-top-item">
+          <el-dropdown @command="handleCommand" trigger="click" style="height: 20px; margin-top: 6px;">
+            <span class="el-dropdown-link">
+              <img class="language-icon" src="../../assets/img/language.png" alt="">
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="zh-CN">中文</el-dropdown-item>
+              <el-dropdown-item command="en">English</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </li>
       </ul>
     </div>
   </div>

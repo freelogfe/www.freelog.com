@@ -20,7 +20,11 @@ export default {
   userAsideNav: {
     title: ['我的关注','我的资源','我的账户','资料与账号']
   },
-  navTop: ['退出','我的freelog'],
+  navTop: {
+    logout: '退出',
+    myFreelog: '我的freelog',
+    langSwitchQuestion:'切换为 {lang}？'
+  },
   pagination: {
     emptyText: '暂无数据',
     start: '首页',
