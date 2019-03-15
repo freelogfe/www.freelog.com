@@ -20,7 +20,11 @@ export default {
   userAsideNav: {
     title: ['My focus','My resources','My Account','Information & Account']
   },
-  navTop: ['exit','My freelog'],
+  navTop: {
+    logout: 'exit',
+    myFreelog: 'My freelog',
+    langSwitchQuestion: 'Change language to {lang}?'
+  },
   pagination: {
     emptyText: 'No data',
     start: 'First Page',
