@@ -20,7 +20,11 @@ export default {
   userAsideNav: {
     title: ['My focus','My resources','My Account','Information & Account']
   },
-  navTop: ['exit','My freelog'],
+  navTop: {
+    logout: 'exit',
+    myFreelog: 'My freelog',
+    langSwitchQuestion: 'Change language to {lang}?'
+  },
   pagination: {
     emptyText: 'No data',
     start: 'First Page',
@@ -228,7 +232,7 @@ export default {
     usernamePlaceholder: 'Please enter user name',
     password: 'password',
     backToLogin: 'back to login',
-    verifyCodeStatus: ['Verifying...','Verify immediately'],
+    verifyCodeStatus: ['Verifying...','Verify immediately', 'update successfully, go to sign in'],
     resetSuccess:'update successfully',
     verifyCodeInputTip: 'enter check code',
     sendingText: 'sending',
