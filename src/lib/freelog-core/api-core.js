@@ -56,8 +56,8 @@ class APIGenerator {
 
   // 获取节点的presentables列表
   fetchPresentablesList(params = {}) {
-    params = Object.assign({nodeId: this.nodeId}, params)
-    return load('/v1/presentables', {data: params})
+    params = Object.assign({ nodeId: this.nodeId }, params)
+    return load('/v1/presentables', { data: params })
       .then(resp => resp.json())
   }
 
@@ -70,8 +70,8 @@ class APIGenerator {
   fetchPresentableResource(target, params = {}) {
     const url = `/v1/auths/presentable/${target}`
 
-    params = Object.assign({nodeId: this.nodeId}, params)
-    return load(url, {data: params})
+    params = Object.assign({ nodeId: this.nodeId }, params)
+    return load(url, { data: params })
       .then((resp) => {
         const headers = resp.headers
         const rids = headers.get('freelog-sub-resourceids')
@@ -99,7 +99,7 @@ class APIGenerator {
   }
 
   fetchSubResource(resourceId) {
-    return this.resolveResourceUrl({resourceId})
+    return this.resolveResourceUrl({ resourceId })
       .then(resourceUrl => load(resourceUrl))
   }
 

@@ -5,6 +5,11 @@ export default class MiddlewareAuth extends MiddlewareBase {
   transformResponse(resp) {
     return resp
   }
+
+
+  transformRequest(url, req) {
+    return [url, req]
+  }
 }
 
 // export default function middlewareAuth (ctx, next){

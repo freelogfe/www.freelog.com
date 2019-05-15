@@ -10,4 +10,8 @@ export default class MiddlewareJWT extends MiddlewareBase {
     }
     return [url, req]
   }
+
+  transformResponse(resp) {
+    return resp
+  }
 }
