@@ -26,6 +26,16 @@ export default {
       }
     }
 
+    const validateUserName = (rule, value, callback) => {
+      if (/^[^-][A-Za-z\d-]{1, 30}[^-]$/.test(value)) {
+        callback(new Error(this.$t('signup.checkUserInputTip')))
+      } else if (value !== this.model.username) {
+        callback(new Error(this.$t('signup.inconsistentUserdTip')))
+      } else {
+        callback()
+      }
+    }
+
     const rules = {
       loginName: [
         {required: true, message: this.$t('signup.loginNamePlaceholder'), trigger: 'blur'},
@@ -33,6 +43,10 @@ export default {
       ],
       nickname: [
         {required: true, message: this.$t('signup.nicknamePlaceholder'), trigger: 'blur'}
+      ],
+      username: [
+        {required: true, message: this.$t('signup.usernamePlaceholder'), trigger: 'blur'},
+        {validator: validateUserName, trigger: 'blur'},
       ],
       password: [
         {required: true, message: this.$t('signup.passwordInputTip'), trigger: 'blur'},
@@ -48,6 +62,7 @@ export default {
     const model = {
       loginName: '',
       nickname: '',
+      username: '',
       password: '',
       checkPassword: '',
       authCode: ''

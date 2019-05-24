@@ -29,7 +29,7 @@ function getBaseUrl() {
 
 function getDevServer() {
   var config = {
-    port: 9080,
+    port: 9880,
     inline: false,
     /**
      * 关闭host check，方便使用ngrok之类的内网转发工具
@@ -54,7 +54,7 @@ function getDevServer() {
 
 
 module.exports = {
-  baseUrl: getBaseUrl(),
+  publicPath: getBaseUrl(),
   assetsDir: 'public',
   crossorigin: 'anonymous',
   devServer: getDevServer(),
@@ -110,7 +110,7 @@ module.exports = {
       }
     },
     plugins: [
-      // new BundleAnalyzerPlugin()
+      new BundleAnalyzerPlugin()
     ]
   },
   configureWebpack: config => {
