@@ -84,6 +84,20 @@ export default {
         default:
           break
       }
+    },
+    handleCommand(lang) {
+      if (lang === this.$i18n.locale) return
+      var langMap = {
+        'en': 'English',
+        'zh-CN': '中文'
+      }
+      this.$confirm(this.$t('navTop.langSwitchQuestion', {lang: langMap[lang]}))
+        .then(() => {
+          window.localStorage.setItem('locale', lang)
+          this.$i18n.locale = lang
+          window.location.reload()
+        }).catch(() => {
+      })
     }
   }
 }

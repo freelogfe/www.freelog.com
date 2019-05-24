@@ -1,4 +1,4 @@
-import { isSafeUrl } from '@/lib/security'
+import {isSafeUrl} from '@/lib/security'
 import {EMAIL_REG, PHONE_REG, validateLoginName} from '../login/validator'
 
 export default {
@@ -8,11 +8,11 @@ export default {
     // form validate rules
     const rules = {
       loginName: [
-        { required: true, message: this.$t('resetPassword.loginNamePlaceholder'), trigger: 'blur' },
-        { validator: validateLoginName, trigger: 'blur' }
+        {required: true, message: this.$t('resetPassword.loginNamePlaceholder'), trigger: 'blur'},
+        {validator: validateLoginName, trigger: 'blur'}
       ],
       verifyCode: [
-        { required: true, message: this.$t('resetPassword.verifyCodeInputTip'), trigger: 'blur' }
+        {required: true, message: this.$t('resetPassword.verifyCodeInputTip'), trigger: 'blur'}
       ]
     }
 
@@ -27,13 +27,14 @@ export default {
       loading: false,
       sending: false,
       waitingTimer: 0,
-      readonly: true
+      readonly: true,
+      resetSuccess: false
     }
   },
 
   computed: {
     disabledCheckCodeBtn() {
-      return this.waitingTimer> 0 || !(EMAIL_REG.test(this.model.loginName) || PHONE_REG.test(this.model.loginName))
+      return this.waitingTimer > 0 || !(EMAIL_REG.test(this.model.loginName) || PHONE_REG.test(this.model.loginName))
     },
     vcodeBtnText() {
       if (this.sending) {
@@ -46,6 +47,18 @@ export default {
       }
 
       return this.$t('resetPassword.checkcodeBtnText')
+    },
+    submitBtnText() {
+      var index
+
+      if (this.loading) {
+        index = 0
+      } else if (this.resetSuccess) {
+        index = 2
+      } else {
+        index = 1
+      }
+      return this.$t(`resetPassword.verifyCodeStatus[${index}]`)
     }
   },
 
@@ -58,6 +71,10 @@ export default {
 
   methods: {
     submit(ref) {
+      if (this.resetSuccess) {
+        return this.$router.push('/login')
+      }
+
       this.$refs[ref].validate((valid) => {
         if (!valid) {
           return
@@ -65,22 +82,19 @@ export default {
 
         this.error = null
         this.loading = true
-
+        this.resetSuccess = false
         this.$axios.post('/v1/userinfos/resetPassword', this.model).then((res) => {
-          if (res.data.errcode === 0) {
-            let redirect = this.$route.query.redirect
-            this.$message.success(this.$t('resetPassword.resetSuccess'))
-            if (!redirect || !isSafeUrl(redirect)) {
-              redirect = '/'
-            }
-            this.$router.replace(redirect)
+          const {msg, ret, errcode} = res.data
+          if (errcode === 0 && ret === 0) {
+            this.resetSuccess = true
+            // this.$message.success(this.$t('resetPassword.resetSuccess'))
           } else {
-            this.error = { title: '', message: res.data.msg }
+            this.error = {title: '', message: msg}
           }
           this.loading = false
         }).catch((err) => {
           this.loading = false
-          this.error = { title: this.$t('resetPassword.errorTitle'), message: this.$t('resetPassword.defaultErrorMsg') }
+          this.error = {title: this.$t('resetPassword.errorTitle'), message: this.$t('resetPassword.defaultErrorMsg')}
 
 
           switch (err.response && err.response.status) {
