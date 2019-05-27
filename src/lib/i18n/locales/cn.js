@@ -1,4 +1,4 @@
-
+import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 // 异常码对应的解释和eventName
 import { HANDLE_INVALID_AUTH, GO_TO_LOGIN, REPORT_ERROR, NOTIFY_NODE } from '@/views/pagebuild/event-center/event-name.js'
 const noLogin = {
@@ -387,4 +387,5 @@ export default {
       }
     }
   },
+  ...zhLocale
 }

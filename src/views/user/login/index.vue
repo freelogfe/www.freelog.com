@@ -119,13 +119,23 @@ export default {
 
         this.$store.dispatch('userLogin', data)
           .then(() => {
-            window.localStorage.setItem('loginName', data.loginName)
-            const redirect = this.$route.query.redirect
+            var redirect = this.$route.query.redirect
+            if(data.loginName !== window.localStorage.getItem('loginName')) {
+              // 如果登录的账户不同，跳转首页
+              try{
+                const oTmp = new URL(redirect)
+                redirect = oTmp.origin
+              }catch(e) {
+                console.warn(e)
+              }
+            }
+
             if (isSafeUrl(redirect)) {
               window.location.replace(redirect)
             } else {
               self.$router.replace('/')
             }
+            window.localStorage.setItem('loginName', data.loginName)
             self.loading = false
           })
           .catch((err) => {
@@ -149,7 +159,7 @@ export default {
             self.loading = false
           })
       })
-    }
+    },
   }
 }
 </script>
