@@ -46,6 +46,7 @@ export default {
         //     loading: false,
         //     rememberUser: false
         // }
+        return {};
     },
     mounted() {
         // const redirect = this.$route.query.redirect

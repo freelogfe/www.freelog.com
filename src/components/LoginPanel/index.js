@@ -1,3 +1,5 @@
+import {axios} from '@/lib/index';
+
 export default {
     name: 'login-panel',
 
@@ -79,7 +81,8 @@ export default {
                     isRememer: this.rememberUser ? 1 : 0
                 });
 
-                this.$store.dispatch('userLogin', data)
+                // this.$store.dispatch('userLogin', data)
+                axios.post('/v1/passport/login', data)
                     .then(() => {
                         window.localStorage.setItem('loginName', data.loginName);
                         // const redirect = this.$route.query.redirect
