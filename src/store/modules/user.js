@@ -101,6 +101,7 @@ const user = {
         },
         [types.USER_LOGIN]({commit}, data) {
             return axios.post('/v1/passport/login', data).then((res) => {
+                // debugger;
                 if (res.data.ret === 0 && res.data.errcode === 0) {
                     commit(types.CHANGE_SESSION, res.data.data)
                     return res.data.data
