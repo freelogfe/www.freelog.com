@@ -79,7 +79,8 @@
             </el-form-item>
             <el-form-item
                 prop="authCode"
-                :label="$t('signup.verifyCode')">
+                :label="$t('signup.verifyCode')"
+            >
                 <el-input
                     v-model="model.authCode"
                     style="width: 60%"
