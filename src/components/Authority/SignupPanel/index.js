@@ -1,6 +1,6 @@
 // import {isSafeUrl} from '@/lib/security';
 import {axios} from '@/lib/index';
-import {validateLoginName, EMAIL_REG, PHONE_REG} from './validator';
+import {validateLoginName, EMAIL_REG, PHONE_REG} from '../validator';
 // import SignunPanel from '@/components/SignunPanel/index.vue';
 
 export default {
