@@ -10,6 +10,12 @@
         components: {
             UserAuthority,
         },
+        methods:{
+            loginSuccess() {
+                console.log('loginSuccessloginSuccessloginSuccess');
+            }
+        }
+
     }
 </script>
 
