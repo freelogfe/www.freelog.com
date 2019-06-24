@@ -97,11 +97,17 @@
                 </div>
             </el-form-item>
             <el-form-item>
-                <router-link
-                    to="/login"
-                    class="user-op">
+<!--                <router-link-->
+<!--                    to="/login"-->
+<!--                    class="user-op">-->
+<!--                    {{$t('signup.loginText')}}<i class="el-icon-d-arrow-right"></i>-->
+<!--                </router-link>-->
+                <a
+                    class="user-op"
+                    @click="$emit('switch', 'login')"
+                >
                     {{$t('signup.loginText')}}<i class="el-icon-d-arrow-right"></i>
-                </router-link>
+                </a>
             </el-form-item>
             <el-form-item class="login-btns">
                 <el-button

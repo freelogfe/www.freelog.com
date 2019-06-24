@@ -11,12 +11,12 @@ export default {
                 const EMAIL_REG = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/
                 const PHONE_REG = /^1[34578]\d{9}$/;
                 if (!EMAIL_REG.test(value) && !PHONE_REG.test(value)) {
-                    callback(new Error($i18n.t('login.validateErrors[0]')))
+                    callback(new Error($i18n.t('login.validateErrors[0]')));
                 } else {
-                    callback()
+                    callback();
                 }
             } else {
-                callback(new Error($i18n.t('login.validateErrors[1]')))
+                callback(new Error($i18n.t('login.validateErrors[1]')));
             }
         };
 
@@ -28,7 +28,7 @@ export default {
             password: [
                 {required: true, message: $i18n.t('login.ruleMessages[1]'), trigger: 'blur'},
                 {min: 6, message: $i18n.t('login.ruleMessages[2]'), trigger: 'blur'}
-            ]
+            ],
         };
 
         const loginName = window.localStorage.getItem('loginName') || '';
@@ -48,25 +48,15 @@ export default {
             // 是否是加载中
             loading: false,
             // 是否勾选『记住我』
-            rememberUser: false
+            rememberUser: false,
         }
     },
-    // mounted() {
-    //     const redirect = this.$route.query.redirect
-    //     if (isSafeUrl(redirect)) {
-    //         this.signUpLink += `?redirect=${redirect}`
-    //     }
-    // },
 
     methods: {
-        // redirect() {
-        //     const redirect = this.$route.query.redirect
-        //     if (isSafeUrl(redirect)) {
-        //         window.location.replace(redirect)
-        //     } else {
-        //         this.$router.replace('/')
-        //     }
-        // },
+        switchPanel(panel) {
+            // console.log(panel, '1234234234');
+            this.$emit('switch', panel);
+        },
         submit(ref) {
             const self = this;
             this.$refs[ref].validate((valid) => {
@@ -81,43 +71,36 @@ export default {
                     isRememer: this.rememberUser ? 1 : 0
                 });
 
-                // this.$store.dispatch('userLogin', data)
                 axios.post('/v1/passport/login', data)
                     .then(() => {
                         window.localStorage.setItem('loginName', data.loginName);
-                        // const redirect = this.$route.query.redirect
-                        // if (isSafeUrl(redirect)) {
-                        //     window.location.replace(redirect)
-                        // } else {
-                        //     self.$router.replace('/')
-                        // }
                         self.loading = false;
                         self.$emit('success');
                     })
                     .catch((err) => {
                         // console.log(err)
-                        const $i18n = self.$i18n
+                        const $i18n = self.$i18n;
                         if (typeof err === 'string') {
                             self.error = {title: '', message: err}
                         } else {
                             self.error = {
                                 title: $i18n.t('login.errorTitle'),
                                 message: err.response.errorMsg || $i18n.t('login.errors[0]')
-                            }
+                            };
                             switch (err.response && err.response.status) {
                                 case 401:
-                                    self.error.message = $i18n.t('login.errors[1]')
-                                    break
+                                    self.error.message = $i18n.t('login.errors[1]');
+                                    break;
                                 case 500:
-                                    self.error.message = $i18n.t('login.errors[2]')
-                                    break
+                                    self.error.message = $i18n.t('login.errors[2]');
+                                    break;
                                 default:
-                                    self.error.message = $i18n.t('login.errors[3]')
+                                    self.error.message = $i18n.t('login.errors[3]');
                             }
                         }
-                        self.loading = false
-                    })
-            })
+                        self.loading = false;
+                    });
+            });
         }
     }
 }

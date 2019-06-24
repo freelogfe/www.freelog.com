@@ -17,6 +17,7 @@ import AccountListManagerView from '@/views/user/accounts/list.vue'
 import AddPayAccountView from '@/views/user/accounts/add-pay-account.vue'
 import ResourceContractDetailView from '@/views/user/resources/detail.vue'
 import LoginView from '@/views/user/login/index.vue'
+import AuthView from '@/views/user/auth/index.vue'
 import SignupView from '@/views/user/signup/index.vue'
 import RsetPasswordView from '@/views/user/reset-password/index.vue'
 import ErrorView from '@/views/error/index.vue'
@@ -55,6 +56,14 @@ export default new Router({
         theme: 'transparent'
       },
       component: LoginView
+    },
+      {
+      path: '/auth',
+      meta: {
+        title: '登录',
+        theme: 'transparent'
+      },
+      component: AuthView
     },
     {
       path: '/signup',

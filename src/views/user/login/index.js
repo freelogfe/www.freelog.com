@@ -1,5 +1,5 @@
 import {isSafeUrl} from '../../../lib/security';
-import LoginPanel from '@/components/Authority/LoginPanel/index.vue';
+import LoginPanel from '@/components/UserAuthority/LoginPanel/index.vue';
 
 export default {
     name: 'freelog-ui-login',

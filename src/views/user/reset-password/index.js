@@ -1,6 +1,6 @@
 // import {isSafeUrl} from '@/lib/security'
 import {EMAIL_REG, PHONE_REG, validateLoginName} from '../login/validator';
-import ResetPanel from '@/components/Authority/ResetPanel/index.vue';
+import ResetPanel from '@/components/UserAuthority/ResetPanel/index.vue';
 
 export default {
     name: 'reset-password',

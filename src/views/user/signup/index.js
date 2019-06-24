@@ -1,6 +1,6 @@
 import {isSafeUrl} from '@/lib/security';
 // import {validateLoginName, EMAIL_REG, PHONE_REG} from '../login/validator';
-import SignunPanel from '@/components/Authority/SignupPanel/index.vue';
+import SignunPanel from '@/components/UserAuthority/SignupPanel/index.vue';
 
 export default {
     name: 'signup',

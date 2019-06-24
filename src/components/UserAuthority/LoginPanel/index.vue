@@ -55,17 +55,24 @@
             <el-form-item>
                 <el-checkbox v-model="rememberUser">{{$t('login.rememberUser')}}</el-checkbox>
                 <span class="user-ops">
-                    <router-link
-                        to="/reset_pw"
-                        class="user-op">
+<!--                    <router-link-->
+<!--                        to="/reset_pw"-->
+<!--                        class="user-op">-->
+<!--                        {{$t('login.resetPW')}}-->
+<!--                    </router-link>-->
+                    <a class="user-op" @click="switchPanel('reset')">
                         {{$t('login.resetPW')}}
-                    </router-link>
+                    </a>
                     &nbsp;|&nbsp;
-                    <router-link
-                        class="user-op"
-                        :to="signUpLink">
+                    <!--                    <router-link-->
+                    <!--                        class="user-op"-->
+                    <!--                        :to="signUpLink">-->
+                    <!--                        {{$t('login.signup')}}-->
+                    <!--                     </router-link>-->
+                    <a class="user-op" @click="switchPanel('signup')">
                         {{$t('login.signup')}}
-                    </router-link>
+                    </a>
+
                 </span>
             </el-form-item>
             <el-form-item class="login-btns">

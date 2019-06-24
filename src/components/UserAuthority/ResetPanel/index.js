@@ -72,7 +72,9 @@ export default {
     methods: {
         submit(ref) {
             if (this.resetSuccess) {
-                return this.$router.push('/login');
+                // return this.$router.push('/login');
+                return this.$emit('switch', 'login');
+
             }
 
             this.$refs[ref].validate((valid) => {
