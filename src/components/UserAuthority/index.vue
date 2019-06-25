@@ -67,7 +67,7 @@
         }
     }
 
-    export {tools} from './tools';
+    export {default as tools} from './tools';
 </script>
 
 <style scoped>

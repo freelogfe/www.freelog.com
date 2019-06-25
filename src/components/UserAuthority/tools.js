@@ -1,9 +1,10 @@
 /**
  * 去往登录界面
+ * @param {boolean} isForceQuit 是否是因登录信息失效，而强制进行的退出
  * @param {boolean} recover 登录成功后，是否需要恢复到退出界面
  * @param {string} redirect 自定义需要恢复到的 URL
  */
-function gotoLogin(recover = false, redirect) {
+async function gotoLogin(isForceQuit = false, recover = false, redirect) {
     const loginPath = '/auth';
 
     // 判断当前是否
@@ -23,6 +24,6 @@ function gotoLogin(recover = false, redirect) {
     window.location.href = loginUrl;
 }
 
-export {
+export default {
     gotoLogin,
 };
