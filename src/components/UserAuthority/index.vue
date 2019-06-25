@@ -66,6 +66,8 @@
             },
         }
     }
+
+    export {tools} from './tools';
 </script>
 
 <style scoped>
