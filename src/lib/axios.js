@@ -5,7 +5,8 @@
 // cors bug :https://github.com/axios/axios/issues/891
 
 import axios from 'axios'
-import { gotoLogin } from './utils'
+// import { gotoLogin } from './utils'
+import { tools } from '@/components/UserAuthority/index.vue';
 
 const instance = axios.create({
   baseURL: window.FreelogApp.Env.qiOrigin,
@@ -28,7 +29,8 @@ instance.interceptors.response.use(
     const loginPath = '/login'
 
     if ([28, 30].indexOf(data.errcode) > -1 && window.location.pathname !== loginPath) {
-      gotoLogin(window.location.href)
+      // tools.gotoLogin(window.location.href)
+      tools.gotoLogin(true, true);
       return null
     }
     return response

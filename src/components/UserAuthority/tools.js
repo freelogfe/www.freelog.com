@@ -1,3 +1,4 @@
+import {axios } from '@/lib';
 /**
  * 去往登录界面
  * @param {boolean} isForceQuit 是否是因登录信息失效，而强制进行的退出
@@ -5,12 +6,18 @@
  * @param {string} redirect 自定义需要恢复到的 URL
  */
 async function gotoLogin(isForceQuit = false, recover = false, redirect) {
+    // console.log('!@#$!@#$!@#$@#$@#$12341234');
     const loginPath = '/auth';
 
     // 判断当前是否
     // if (window.location.pathname === loginPath) {
     //     return;
     // }
+
+    // 如果是用户点击退出，则需要通知后台清空登录信息
+    if (!isForceQuit) {
+        await axios.get('/v1/passport/logout');
+    }
 
     // 登录界面的 URL
     let loginUrl = `${window.location.origin.replace('console', 'www')}${loginPath}`;

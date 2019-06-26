@@ -1,4 +1,5 @@
 import { mapGetters } from 'vuex'
+import { tools } from '@/components/UserAuthority/index.vue';
 
 export default {
   name: 'nav-top-bar',
@@ -67,14 +68,15 @@ export default {
         })
     },
     logoutHandler() {
-      this.$axios.get('/v1/passport/logout').then(() => {
-        this.$vuex.dispatch('userLogout').then(() => {
-          setTimeout(() => {
-            const redirect = encodeURIComponent(window.location.href)
-            window.location.replace(`//www.${window.FreelogApp.Env.mainDomain}/login?redirect=${redirect}`)
-          }, 20)
-        })
-      })
+        tools.gotoLogin(false, true);
+      // this.$axios.get('/v1/passport/logout').then(() => {
+      //   this.$vuex.dispatch('userLogout').then(() => {
+      //     setTimeout(() => {
+      //       const redirect = encodeURIComponent(window.location.href)
+      //       window.location.replace(`//www.${window.FreelogApp.Env.mainDomain}/login?redirect=${redirect}`)
+      //     }, 20)
+      //   })
+      // })
     },
     handleNavTopCommand(command) {
       switch (command) {
