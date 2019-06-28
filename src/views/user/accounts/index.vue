@@ -64,7 +64,7 @@
             </div>
             <div class="no-account-wrap" v-else>
               {{$t(`accounts.index.types[${index}].noAccountWarning`)}}
-              <el-button type="text" @click="gotoCreateAccountHandler(account)">{{$t('accounts.index.create')}}</el-button>
+              <el-button type="text" @click="gotoCreateAccountHandler(account)">{{$t('index.create')}}</el-button>
             </div>
           </div>
         </li>
