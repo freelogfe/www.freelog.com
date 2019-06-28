@@ -4,7 +4,7 @@ export default function createApi() {
   const apiGen = new APIGenerator()
   const api = {}
   const apiList = [
-    'fetchPresentablesList', 'fetchPresentableInfo', 'fetchPresentableResourceData', 'fetchPresentableResourceInfo', 'fetchSubResource', 'requireSubResource', 'resolveResourceUrl', 'resolveSubResourceUrl', 'fetch'
+    'fetchPresentablesList', 'fetchPresentableInfo', 'fetchPresentableResourceData', 'fetchPresentableResourceInfo', 'fetchSubResource', 'requireSubResource', 'resolveResourceUrl', 'resolveSubResourceUrl', 'fetch', 'loadSubResource'
   ]
   apiList.forEach((name) => {
     api[name] = function (...args) {
