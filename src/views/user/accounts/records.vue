@@ -129,13 +129,13 @@ export default {
       let text = ''
       switch (row.correlativeInfo.accountType) {
         case 1:
-          text = this.$i18n.t('accounts.index.name') + ` ${row.targetInfo.nickName}`
+          text = this.$i18n.t('index.name') + ` ${row.targetInfo.nickName}`
           break
         case 2:
-          text = this.$i18n.t('accounts.index.id') + ` ${row.targetInfo.contractId}`
+          text = this.$i18n.t('index.id') + ` ${row.targetInfo.contractId}`
           break
         case 3:
-          text = this.$i18n.t('accounts.index.node') + ` ${resolveNodeDomain(row.targetInfo.nodeDomain)}`
+          text = this.$i18n.t('index.node') + ` ${resolveNodeDomain(row.targetInfo.nodeDomain)}`
           break
         case 4:
           break
