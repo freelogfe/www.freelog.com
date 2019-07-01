@@ -39,13 +39,17 @@ export default {
     const promises = []
     const vis = {}
     Array.from($widgets).forEach((widget) => {
-      const srcId = widget.getAttribute('data-widget-src')
-      if (srcId && !vis[srcId]) {
-        vis[srcId] = true
-        const p = window.FreelogApp.QI.requireSubResource(srcId)
+      const subReleaseId = widget.getAttribute('data-widget-src')
+      const pbId = widget.getAttribute('data-page-build-id')
+      const version = '0.1.0'
+      if (subReleaseId && !vis[subReleaseId]) {
+        vis[subReleaseId] = true
+        const p = window.FreelogApp.QI.loadSubResource({
+          presentableId: pbId, subReleaseId, version
+        })
         promises.push(p)
       } else {
-        // console.warn('没有找到对应的组件ID')
+        console.warn('没有找到对应的组件ID')
       }
     })
 

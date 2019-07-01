@@ -73,7 +73,8 @@ module.exports = {
       entry: 'src/views/pagebuild/app.js',
       template: 'src/views/layout/pagebuild.pug',
       title: 'freelog',
-      filename: isProd ? 'pages/pagebuild.html' : 'pagebuild/index.html'
+      filename: isProd ? 'pages/pagebuild.html' : 'pagebuild/index.html',
+      chunks: ['chunk-vendors', 'chunk-common', 'pagebuild']
     }
   },
   configureWebpack: {

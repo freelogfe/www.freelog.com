@@ -63,8 +63,7 @@ class APIGenerator {
 
   // 获取单个presentable的详情
   fetchPresentableInfo(presentableId) {
-    return load(`/v1/presentables/${presentableId}`)
-      .then(resp => resp.json())
+    return load(`/v1/presentables/${presentableId}`).then(resp => resp.json())
   }
 
   fetchPresentableResource(target, params = {}) {
@@ -149,6 +148,29 @@ class APIGenerator {
         }
         return Promise.reject(JSON.stringify(data))
       })
+  }
+
+  fetchSubResource({ presentableId, subReleaseId, version }) {
+    const url = `/v1/auths/presentables/${presentableId}/subRelease/${subReleaseId}.info?version=${version}`
+    return load(url).then(resp => resp.json())
+  }
+
+  loadSubResource({ presentableId, subReleaseId, version }) {
+    const url = `/v1/auths/presentables/${presentableId}/subRelease/${subReleaseId}.file?version=${version}`
+    var type
+    return load(url)
+    .then(resp => {
+      const contentType = resp.headers.get('content-type')
+      if (/css/.test(contentType)) {
+        type = 'text/css'
+      } else if (/javascript/.test(contentType)) {
+        type = 'text/javascript'
+      }
+      return resp.text()
+    })
+    .then(data => {
+      return helpers.injectCodeResource(data, type)
+    })
   }
 
   resolveResourceUrl({presentableId, resourceId}) {
