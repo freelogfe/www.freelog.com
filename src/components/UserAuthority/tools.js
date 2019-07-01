@@ -1,4 +1,6 @@
-import {axios } from '@/lib';
+import {axios} from '@/lib';
+import {cookieStore} from '@/lib/storage'
+
 /**
  * 去往登录界面
  * @param {boolean} isForceQuit 是否是因登录信息失效，而强制进行的退出
@@ -31,6 +33,57 @@ async function gotoLogin(isForceQuit = false, recover = false, redirect) {
     window.location.href = loginUrl;
 }
 
+/**
+ * 判断当前是否是登录状态
+ * @return {Promise<boolean>}
+ */
+async function isPermissionValid() {
+    return !!(cookieStore.get('authInfo') && cookieStore.get('uid'));
+}
+
+
+/**
+ * 获取用户信息
+ * @return {Promise<*>}
+ */
+async function getCurrentUserInfo() {
+    let userInfo = null;
+
+    /**
+     * 获取当前用户信息，且缓存并返回用户信息
+     * @return {Promise<*>}
+     */
+    async function getInfo() {
+        const res = await axios.get('/v1/userinfos/current');
+        // console.log(res, 'resfasdfccxvasd');
+        userInfo = res.data.data;
+        return userInfo;
+    }
+
+    // 如果登录信息已存在
+    if (cookieStore.get('authInfo') && cookieStore.get('uid')) {
+
+        if (userInfo && userInfo.userId === cookieStore.get('uid')) {
+            /*
+            如果用户信息已存在, 且用户信息就为当前登录用户
+            直接返回用户信息
+            */
+
+            return userInfo;
+        }
+
+        /*
+        如果没有缓存信息
+        则去向服务端获取用户信息
+        */
+        return await getInfo();
+    }
+
+    throw new Error('请先登录，才能获取用户信息');
+}
+
 export default {
     gotoLogin,
+    isPermissionValid,
+    getCurrentUserInfo,
 };
