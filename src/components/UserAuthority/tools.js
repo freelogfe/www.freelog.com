@@ -34,6 +34,13 @@ async function gotoLogin(isForceQuit = false, recover = false, redirect) {
 }
 
 /**
+ * 去往首页
+ */
+function goHome() {
+    window.location.replace(window.location.origin);
+}
+
+/**
  * 判断当前是否是登录状态
  * @return {Promise<boolean>}
  */
@@ -84,6 +91,7 @@ async function getCurrentUserInfo() {
 
 export default {
     gotoLogin,
+    goHome,
     isPermissionValid,
     getCurrentUserInfo,
 };

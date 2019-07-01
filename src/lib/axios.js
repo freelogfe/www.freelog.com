@@ -33,6 +33,9 @@ instance.interceptors.response.use(
       tools.gotoLogin(true, true);
       return null
     }
+    if (data.errcode === 3){
+        tools.goHome();
+    }
     return response
   },
   (err) => {

@@ -22,6 +22,8 @@ import SignupView from '@/views/user/signup/index.vue'
 import RsetPasswordView from '@/views/user/reset-password/index.vue'
 import ErrorView from '@/views/error/index.vue'
 
+import {tools} from "@/components/UserAuthority/index";
+
 const scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
     return savedPosition
@@ -40,7 +42,7 @@ const scrollBehavior = (to, from, savedPosition) => {
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   scrollBehavior,
   base: '/',
@@ -192,3 +194,25 @@ export default new Router({
     // },
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  /* must call `next` */
+  // console.log(to, 'tototototototo');
+    if (to.path === '/auth'){
+        next();
+        return;
+    }
+  tools.isPermissionValid()
+      .then(result => {
+        if (result){
+          next();
+          return;
+        }
+
+        tools.gotoLogin(true, true, to.fullPath);
+      });
+
+
+});
+
+export default router;
