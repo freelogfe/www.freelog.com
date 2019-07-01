@@ -209,7 +209,11 @@ router.beforeEach((to, from, next) => {
           return;
         }
 
-        tools.gotoLogin(true, true, to.fullPath);
+        tools.gotoLogin({
+          isForceQuit: true,
+          recover: true,
+          redirect:to.fullPath,
+        });
       });
 
 

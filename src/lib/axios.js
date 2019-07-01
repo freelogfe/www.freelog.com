@@ -30,7 +30,10 @@ instance.interceptors.response.use(
 
     if ([28, 30].indexOf(data.errcode) > -1 && window.location.pathname !== loginPath) {
       // tools.gotoLogin(window.location.href)
-      tools.gotoLogin(true, true);
+      tools.gotoLogin({
+          isForceQuit: true,
+          recover:true,
+      });
       return null
     }
     if (data.errcode === 3){

@@ -3,11 +3,11 @@ import {cookieStore} from '@/lib/storage'
 
 /**
  * 去往登录界面
- * @param {boolean} isForceQuit 是否是因登录信息失效，而强制进行的退出
+ * @param {boolean} isForceQuit 是否是因登录信息失效，而强制进行的退出，（而非用户点击『退出』的正常退出）
  * @param {boolean} recover 登录成功后，是否需要恢复到退出界面
  * @param {string} redirect 自定义需要恢复到的 URL
  */
-async function gotoLogin(isForceQuit = false, recover = false, redirect) {
+async function gotoLogin({isForceQuit = false, recover = false, redirect = ''}) {
     // console.log('!@#$!@#$!@#$@#$@#$12341234');
     const loginPath = '/auth';
 

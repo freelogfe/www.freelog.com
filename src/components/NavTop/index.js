@@ -68,7 +68,9 @@ export default {
         })
     },
     logoutHandler() {
-        tools.gotoLogin(false, true);
+        tools.gotoLogin({
+          recover:true,
+        });
       // this.$axios.get('/v1/passport/logout').then(() => {
       //   this.$vuex.dispatch('userLogout').then(() => {
       //     setTimeout(() => {
