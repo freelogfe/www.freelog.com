@@ -120,7 +120,7 @@ function routerBeforeEach(router) {
  * @param axiosInstance
  */
 function listenResponseAuth(axiosInstance) {
-    instance.interceptors.response.use(
+    axiosInstance.interceptors.response.use(
         (response) => {
             const {data} = response;
             const loginPath = '/auth';
