@@ -25,26 +25,14 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
   (response) => {
-    const { data } = response
-    const loginPath = '/login'
 
-    if ([28, 30].indexOf(data.errcode) > -1 && window.location.pathname !== loginPath) {
-      // tools.gotoLogin(window.location.href)
-      tools.gotoLogin({
-          isForceQuit: true,
-          recover:true,
-      });
-      return null
-    }
-    if (data.errcode === 3){
-        tools.goHome();
-    }
-    return response
   },
   (err) => {
     err.response = err.response || {}
     return Promise.reject(err)
   },
 )
+
+tools.listenResponseAuth(instance);
 
 export default instance

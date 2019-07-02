@@ -195,28 +195,35 @@ const router = new Router({
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  /* must call `next` */
-  // console.log(to, 'tototototototo');
-    if (to.path === '/auth'){
-        next();
-        return;
-    }
-  tools.isPermissionValid()
-      .then(result => {
-        if (result){
-          next();
-          return;
-        }
+tools.routerBeforeEach(router);
 
-        tools.gotoLogin({
-          isForceQuit: true,
-          recover: true,
-          redirect:to.fullPath,
-        });
-      });
+// setTimeout(() => {
+//   console.log(tools, 'toolstoolstools11111111');
+// });
 
-
-});
+// router.beforeEach((to, from, next) => {
+//   /* must call `next` */
+//   // console.log(to, 'tototototototo');
+//     if (to.path === '/auth'){
+//         next();
+//         return;
+//     }
+//     console.log(tools, 'toolstoolstoolstools222222222');
+//   tools.isPermissionValid()
+//       .then(result => {
+//         if (result){
+//           next();
+//           return;
+//         }
+//
+//         tools.gotoLogin({
+//           isForceQuit: true,
+//           recover: true,
+//           redirect:to.fullPath,
+//         });
+//       });
+//
+//
+// });
 
 export default router;

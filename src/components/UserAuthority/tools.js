@@ -89,9 +89,65 @@ async function getCurrentUserInfo() {
     throw new Error('请先登录，才能获取用户信息');
 }
 
+/**
+ * 监听路由实例改变，决定跳转路由
+ * @param router 路由实例
+ */
+function routerBeforeEach(router) {
+    router.beforeEach(async (to, from, next) => {
+
+        if (to.path === '/auth') {
+            next();
+            return;
+        }
+
+        const hasAuth = await isPermissionValid();
+        if (hasAuth) {
+            next();
+            return;
+        }
+
+        gotoLogin({
+            isForceQuit: true,
+            recover: true,
+            redirect: to.fullPath,
+        });
+    });
+}
+
+/**
+ * 监听因权限问题请求失败情况，做出对应的动作
+ * @param axiosInstance
+ */
+function listenResponseAuth(axiosInstance) {
+    instance.interceptors.response.use(
+        (response) => {
+            const {data} = response;
+            const loginPath = '/auth';
+
+            if ([28, 30].indexOf(data.errcode) > -1 && window.location.pathname !== loginPath) {
+                // tools.gotoLogin(window.location.href)
+                gotoLogin({
+                    isForceQuit: true,
+                    recover: true,
+                });
+                return;
+            }
+            // 无权限
+            if (data.errcode === 3) {
+                goHome();
+                return;
+            }
+            return response;
+        }
+    )
+}
+
 export default {
     gotoLogin,
     goHome,
     isPermissionValid,
     getCurrentUserInfo,
+    routerBeforeEach,
+    listenResponseAuth,
 };
